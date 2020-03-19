@@ -4,16 +4,16 @@ set -xu
 topdir=$(pwd)
 echo $topdir
 
-echo fv3gfs checkout ...
-if [[ ! -d fv3gfs.fd ]] ; then
-    rm -f ${topdir}/checkout-fv3gfs.log
-    git clone gerrit:NEMSfv3gfs fv3gfs.fd >> ${topdir}/checkout-fv3gfs.log 2>&1
-    cd fv3gfs.fd
-    git checkout gfs.v16_PhysicsUpdate
-    git submodule update --init --recursive
+echo gsmwam_ipe checkout ...
+if [[ ! -d gsmwam_ipe.fd ]] ; then
+    rm -f ${topdir}/checkout-gsmwam_ipe.log
+    git clone --recursive https://github.com/NOAA-SWPC/GSMWAM-IPE.git gsmwam_ipe.fd >> ${topdir}/checkout-gsmwam_ipe.log 2>&1
+    cd gsmwam_ipe.fd
+    git checkout develop
+    git submodule update
     cd ${topdir}
 else
-    echo 'Skip.  Directory fv3gfs.fd already exists.'
+    echo 'Skip.  Directory gsmwam_ipe.fd already exists.'
 fi
 
 echo gsi checkout ...

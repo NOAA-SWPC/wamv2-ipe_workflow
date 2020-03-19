@@ -14,13 +14,13 @@ export RUN_ENVIR="emc"
 # Account, queue, etc.
 if [ $machine = "THEIA" -o $machine = "HERA" ]; then
 
-    export ACCOUNT="fv3-cpu"
+    export ACCOUNT="swpc"
     export QUEUE="batch"
     export QUEUE_ARCH="service"
 
 elif [ $machine = "WCOSS_C" -o $machine = "WCOSS_DELL_P3" ]; then
 
-    export ACCOUNT="FV3GFS-T2O"
+    export ACCOUNT="SPACE-T2O"
     export QUEUE="dev"
     export QUEUE_ARCH="dev_transfer"
 
@@ -52,6 +52,8 @@ elif [ $machine = "HERA" ]; then
     #export NWPROD="/scratch1/NCEPDEV/global/glopara/nwpara"
     export DMPDIR="/scratch1/NCEPDEV/global/glopara/dump"
     export RTMFIX=$CRTM_FIX
+    export PARAMETER_PATH="/scratch1/NCEPDEV/swpc/WAM-IPE_DATA/INPUT_PARAMETERS"
+    export IPE_IC_DIR="/scratch1/NCEPDEV/swpc/WAM-IPE_DATA/IPE_FIX"
 
 elif [ $machine = "WCOSS_C" ]; then
 
@@ -153,7 +155,7 @@ export REALTIME="NO"
 # Build paths relative to $HOMEgfs
 export HOMEgsi="$HOMEgfs"
 export FIXgsi="$HOMEgfs/fix/fix_gsi"
-export HOMEfv3gfs="$HOMEgfs/sorc/fv3gfs.fd"
+export HOMEgsmwam_ipe="$HOMEgfs/sorc/gsmwam_ipe.fd"
 export HOMEpost="$HOMEgfs"
 export HOMEobsproc_prep="$BASE_GIT/obsproc/obsproc_prep_RB-5.2.0"
 export HOMEobsproc_network="$BASE_GIT/obsproc/obsproc_global.v3.2.3"
@@ -168,10 +170,20 @@ export VERBOSE="YES"
 export KEEPDATA="NO"
 export CHGRP_CMD="chgrp rstprod"
 export NEMSIOGET="$HOMEgfs/exec/nemsio_get"
+export UTILDIR=/scratch1/NCEPDEV/swpc/Adam.Kubaryk/util/exec
+export SIGHDR=$UTILDIR/global_sighdr
+export SFCHDR=$UTILDIR/global_sfchdr
+export CHGSFCFHREXEC=$UTILDIR/chgsfcfhr
 
 # Machine environment, jobs, and other utility scripts
 export BASE_ENV="$HOMEgfs/env"
 export BASE_JOB="$HOMEgfs/jobs/rocoto"
+
+# IPE stuff
+export IPEGRIDFILENAME=${IPEGRIDFILENAME:-"IPE_Grid.h5"}
+export IPEGRID=${IPEGRID:-${IPE_IC_DIR}/$IPEGRIDFILENAME}
+export GRIDDIR=${GRIDDIR:-$IPE_IC_DIR}
+export HWMPATH=${HWMPATH:-$IPE_IC_DIR}
 
 # EXPERIMENT specific environment parameters
 export SDATE=@SDATE@
@@ -187,6 +199,11 @@ export DATAROOT="$RUNDIR/$CDATE/$CDUMP"
 export ARCDIR="$NOSCRUB/archive/$PSLOT"
 export ICSDIR="@ICSDIR@"
 export ATARDIR="/NCEPDEV/$HPSS_PROJECT/1year/$USER/$machine/scratch/$PSLOT"
+export ROTDIR=${ROTDIR:-$PTMP/$USER/$JOBNAME}              # where model I/O files are stored
+export COMOUT=${COMOUT:-$ROTDIR}
+export RESTARTDIR=${RESTARTDIR:-$ROTDIR/restart_directory} # folder containing restart files
+export EXECGLOBAL=${EXECGLOBAL:-$BASE_NEMS/exe}            # NEMS executable directory
+export FIXGLOBAL=${FIXGLOBAL:-$FIXgfs/GSM/fix_am}         # global fix files
 
 # Commonly defined parameters in JJOBS
 export envir=${envir:-"prod"}
@@ -206,9 +223,61 @@ export SENDDBN="NO"
 export SENDSDM="NO"
 
 # Resolution specific parameters
-export LEVS=65
+export IDEA=${IDEA:-.true.}
+export NEMS=${NEMS:-.true.}
+export WAM_IPE_COUPLING=${WAM_IPE_COUPLING:-.false.}
+export IPE=${IPE:-.false.}
+
+export LEVS=150
+export LEVR=90
+export TRACERVARS="RI=  296.8034, 461.50, 173.2247,    0.0,  519.674, 259.837 ,CPI= 1039.645, 1846.0, 820.2391,    0.0, 1299.185, 918.0969,"
 export CASE="@CASECTL@"
 export CASE_ENKF="@CASEENS@"
+export JCAP=${JCAP:-62}
+export LATB=${LATB:-94}
+export LONB=${LONB:-192}
+export FHMAX=${FHMAX:-1}
+export FHZER=${FHZER:-$FHRES}
+export FHDFI=${FHDFI:-0}
+export FTSFS=${FTSFS:-0.0}
+export FAISS=${FAISS:-0.0}
+export DOIAU=${DOIAU:-NO}
+
+# Output frequency of the forecast model (for cycling)
+export FHMIN=0
+export FHMAX=9
+export FHOUT=3
+export IPEFREQ=${IPEFREQ:-3600}
+export FHOUT_HF=${FHOUT_HF:-$FHOUT}
+
+## I/O
+export NEMSIO_IN=${NEMSIO_IN:-.false.}
+export NEMSIO_OUT=${NEMSIO_OUT:-.false.}
+if [[ $NEMSIO_IN = .true. ]] ; then
+        export SIGIO_IN=${SIGIO_IN:-.false.}
+        export SIGOSUF=${SIGOSUF:-gfn}
+        export SFCOSUF=${SFCOSUF:-sfn}
+        export NSTOSUF=${NSTOSUF:-nsn}
+        export FLXOSUF=${FLXOSUF:-fln}
+        export SEARCH=*nanl* # used in checks.sh
+else
+        export SIGIO_IN=${SIGIO_IN:-.true.}
+        export SIGOSUF=${SIGOSUF:-sig}
+        export SFCOSUF=${SFCOSUF:-sfc}
+        export NSTOSUF=${NSTOSUF:-nst}
+        export FLXOSUF=${FLXOSUF:-flx}
+        export SEARCH=s*anl* # used in checks.sh
+fi
+if [[ $NEMSIO_OUT = .true. ]] ; then
+        export SIGIO_OUT=${SIGIO_OUT:-.false.}
+else
+        export SIGIO_OUT=${SIGIO_OUT:-.true.}
+fi
+export SUFOUT=${SUFOUT:-".$CDATE"}
+
+## filename settings used for checks.sh
+export ATM=${SIGOSUF}anl
+export SFC=${SFCOSUF}anl
 
 # Surface cycle update frequency
 if [[ "$CDUMP" == "gdas" ]] ; then
@@ -217,11 +286,6 @@ if [[ "$CDUMP" == "gdas" ]] ; then
 elif [[ "$CDUMP" == "gfs" ]] ; then
    export FHCYC=24
 fi
-
-# Output frequency of the forecast model (for cycling)
-export FHMIN=0
-export FHMAX=9
-export FHOUT=3
 
 # GFS cycle info
 export gfs_cyc=@gfs_cyc@ # 0: no GFS cycle, 1: 00Z only, 2: 00Z and 12Z only, 4: all 4 cycles.
@@ -242,9 +306,9 @@ export FHOUT_HF_GFS=1
 # I/O QUILTING, true--use Write Component; false--use GFDL FMS
 # if quilting=true, choose OUTPUT_GRID as cubed_sphere_grid in netcdf or gaussian_grid
 # if gaussian_grid, set OUTPUT_FILE for nemsio or netcdf
-export QUILTING=".true."
+export QUILTING=".false."
 export OUTPUT_GRID="gaussian_grid"
-export OUTPUT_FILE="nemsio"
+export OUTPUT_FILE="sigio"
 
 # IAU related parameters
 export DOIAU="NO"
@@ -260,7 +324,7 @@ export imp_physics=11
 
 # Shared parameters
 # Hybrid related
-export DOHYBVAR="YES"
+export DOHYBVAR="NO"
 export NMEM_ENKF=@NMEM_ENKF@
 export SMOOTH_ENKF="YES"
 export l4densvar=".true."

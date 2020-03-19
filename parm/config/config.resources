@@ -49,7 +49,7 @@ elif [ $step = "anal" ]; then
       export nth_anal=14
     fi
     if [[ "$machine" != "WCOSS_C" ]]; then
-     if [ $CASE = "C384" -o $CASE = "C192" -o $CASE = "C96" -o $CASE = "C48" ]; then
+     if [ $CASE = "C384" -o $CASE = "C192" -o $CASE = "C96" -o $CASE = "T62" ]; then
       export npe_anal=84
       export nth_anal=4
       export npe_node_anal=$(echo "$npe_node_max / $nth_anal" | bc)
@@ -69,10 +69,9 @@ elif [ $step = "fcst" ]; then
     fi
     export wtime_fcst="01:00:00"
     export wtime_fcst_gfs="06:00:00"
-    export npe_fcst=$(echo "$layout_x * $layout_y * 6" | bc)
-    export npe_fcst_gfs=$(echo "$layout_x_gfs * $layout_y_gfs * 6" | bc)
-    export nth_fcst=${nth_fv3:-2}
-    #export npe_node_fcst=${npe_node_fcst:-12}
+    export npe_fcst=72
+    export npe_fcst_gfs=72
+    export nth_fcst=${nth_fv3:-1}
     export npe_node_fcst=$(echo "$npe_node_max / $nth_fcst" | bc)
     if [[ "$machine" == "WCOSS_C" ]]; then
         export memory_fcst="1024M"
@@ -85,7 +84,7 @@ elif [ $step = "post" ]; then
     export npe_post=144
     export nth_post=1
     export npe_node_dwn=$npe_node_max
-    if [ $CASE = "C384" -o $CASE = "C192" -o $CASE = "C96" -o $CASE = "C48" ]; then
+    if [ $CASE = "C384" -o $CASE = "C192" -o $CASE = "C96" -o $CASE = "T62" ]; then
       export wtime_post="00:10:00"
       export wtime_post_gfs="00:30:00"
       export npe_post=$(echo "$npe_node_max * 2" | bc)
@@ -132,7 +131,7 @@ elif [ $step = "eobs" -o $step = "eomg" ]; then
       export npe_eobs=42
     elif [ $CASE = "C192" ]; then
       export npe_eobs=28
-    elif [ $CASE = "C96" -o $CASE = "C48" ]; then
+    elif [ $CASE = "C96" -o $CASE = "T62" ]; then
       export npe_eobs=14
     fi
     export nth_eobs=2
@@ -153,7 +152,7 @@ elif [ $step = "eupd" ]; then
     elif [ $CASE = "C384" ]; then
       export npe_eupd=84
       export nth_eupd=2
-    elif [ $CASE = "C192" -o $CASE = "C96" -o $CASE = "C48" ]; then
+    elif [ $CASE = "C192" -o $CASE = "C96" -o $CASE = "T62" ]; then
       export npe_eupd=42
       export nth_eupd=2
     fi
@@ -168,7 +167,7 @@ elif [ $step = "ecen" ]; then
     export npe_ecen=80
     export nth_ecen=6
     export npe_node_ecen=4
-    if [ $CASE = "C384" -o $CASE = "C192" -o $CASE = "C96" -o $CASE = "C48" ]; then
+    if [ $CASE = "C384" -o $CASE = "C192" -o $CASE = "C96" -o $CASE = "T62" ]; then
       export npe_ecen=84
       export nth_ecen=2
       export npe_node_ecen=$(echo "$npe_node_max / $nth_ecen" | bc)
@@ -184,7 +183,7 @@ elif [ $step = "ecen" ]; then
 elif [ $step = "efcs" ]; then
 
     export wtime_efcs="03:00:00"
-    export npe_efcs=$(echo "$layout_x * $layout_y * 6" | bc)
+    export npe_efcs=32
     export nth_efcs=${nth_fv3:-2}
     #export npe_node_efcs=${npe_node_fcst:-12}
     export npe_node_efcs=$(echo "$npe_node_max / $nth_efcs" | bc)

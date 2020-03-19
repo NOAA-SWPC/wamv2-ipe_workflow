@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/bash
 set -ex
 
 #--make symbolic links for EMC installation and hardcopies for NCO delivery
@@ -8,16 +8,16 @@ machine=${2}
 
 if [ $# -lt 2 ]; then
     echo '***ERROR*** must specify two arguements: (1) RUN_ENVIR, (2) machine'
-    echo ' Syntax: link_fv3gfs.sh ( nco | emc ) ( cray | dell | theia | hera )'
+    echo ' Syntax: link_gsmwam_ipe.sh ( nco | emc ) ( cray | dell | theia | hera )'
     exit 1
 fi
 
 if [ $RUN_ENVIR != emc -a $RUN_ENVIR != nco ]; then
-    echo 'Syntax: link_fv3gfs.sh ( nco | emc ) ( cray | dell | theia | hera )'
+    echo 'Syntax: link_gsmwam_ipe.sh ( nco | emc ) ( cray | dell | theia | hera )'
     exit 1
 fi
 if [ $machine != cray -a $machine != theia -a $machine != dell -a $machine != hera ]; then
-    echo 'Syntax: link_fv3gfs.sh ( nco | emc ) ( cray | dell | theia | hera )'
+    echo 'Syntax: link_gsmwam_ipe.sh ( nco | emc ) ( cray | dell | theia | hera )'
     exit 1
 fi
 
@@ -34,17 +34,14 @@ if [ $machine == "cray" ]; then
     FIX_DIR="/gpfs/hps3/emc/global/noscrub/emc.glopara/git/fv3gfs/fix"
 elif [ $machine = "dell" ]; then
     FIX_DIR="/gpfs/dell2/emc/modeling/noscrub/emc.glopara/git/fv3gfs/fix"
-elif [ $machine = "theia" ]; then
-    FIX_DIR="/scratch4/NCEPDEV/global/save/glopara/git/fv3gfs/fix"
 elif [ $machine = "hera" ]; then
-    FIX_DIR="/scratch1/NCEPDEV/global/glopara/fix"
+    FIX_DIR="/scratch1/NCEPDEV/swpc/WAM-IPE_DATA/WAM_FIX"
 fi
 cd ${pwd}/../fix                ||exit 8
-for dir in fix_am fix_fv3 fix_orog fix_fv3_gmted2010 fix_verif ; do
+for dir in GSM IPE_FIX MED_SPACEWX WAM_gh_L150 ; do
     [[ -d $dir ]] && rm -rf $dir
 done
 $LINK $FIX_DIR/* .
-
 
 #---------------------------------------
 #--add files from external repositories
@@ -61,13 +58,13 @@ cd ${pwd}/../scripts            ||exit 8
     $LINK ../sorc/gfs_post.fd/scripts/exglobal_pmgr.sh.ecf   .
     $LINK ../sorc/ufs_utils.fd/scripts/exemcsfc_global_sfc_prep.sh.ecf .
 cd ${pwd}/../ush                ||exit 8
-    for file in fv3gfs_downstream_nems.sh  fv3gfs_dwn_nems.sh  gfs_nceppost.sh  \
+    for file in gfs_nceppost.sh  \
         gfs_transfer.sh  link_crtm_fix.sh  trim_rh.sh fix_precip.sh; do
         $LINK ../sorc/gfs_post.fd/ush/$file                  .
     done
-    for file in emcsfc_ice_blend.sh  fv3gfs_driver_grid.sh  fv3gfs_make_orog.sh  global_cycle_driver.sh \
-        emcsfc_snow.sh  fv3gfs_filter_topo.sh  global_chgres_driver.sh  global_cycle.sh \
-        fv3gfs_chgres.sh  fv3gfs_make_grid.sh  global_chgres.sh ; do
+    for file in emcsfc_ice_blend.sh  global_cycle_driver.sh \
+        emcsfc_snow.sh  global_chgres_driver.sh  global_cycle.sh \
+        global_chgres.sh ; do
         $LINK ../sorc/ufs_utils.fd/ush/$file                  .
     done
 cd ${pwd}/../util               ||exit 8
@@ -106,13 +103,13 @@ cd ${pwd}/../jobs               ||exit 8
     $LINK ../sorc/gsi.fd/jobs/JGDAS_ENKF_FCST            .
     $LINK ../sorc/gsi.fd/jobs/JGDAS_ENKF_POST            .
 cd ${pwd}/../scripts            ||exit 8
-    $LINK ../sorc/gsi.fd/scripts/exglobal_analysis_fv3gfs.sh.ecf           .
-    $LINK ../sorc/gsi.fd/scripts/exglobal_innovate_obs_fv3gfs.sh.ecf       .
-    $LINK ../sorc/gsi.fd/scripts/exglobal_enkf_innovate_obs_fv3gfs.sh.ecf  .
-    $LINK ../sorc/gsi.fd/scripts/exglobal_enkf_update_fv3gfs.sh.ecf        .
-    $LINK ../sorc/gsi.fd/scripts/exglobal_enkf_recenter_fv3gfs.sh.ecf      .
-    $LINK ../sorc/gsi.fd/scripts/exglobal_enkf_fcst_fv3gfs.sh.ecf          .
-    $LINK ../sorc/gsi.fd/scripts/exglobal_enkf_post_fv3gfs.sh.ecf          .
+    $LINK ../sorc/gsi.fd/scripts/exglobal_analysis.sh.ecf           .
+    $LINK ../sorc/gsi.fd/scripts/exglobal_innovate_obs.sh.ecf       .
+    $LINK ../sorc/gsi.fd/scripts/exglobal_enkf_innovate_obs.sh.ecf  .
+    $LINK ../sorc/gsi.fd/scripts/exglobal_enkf_update.sh.ecf        .
+    $LINK ../sorc/gsi.fd/scripts/exglobal_enkf_recenter.sh.ecf      .
+    $LINK ../sorc/gsi.fd/scripts/exglobal_enkf_fcst.sh.ecf          .
+    $LINK ../sorc/gsi.fd/scripts/exglobal_enkf_post.sh.ecf          .
 cd ${pwd}/../fix                ||exit 8
     [[ -d fix_gsi ]] && rm -rf fix_gsi
     $LINK ../sorc/gsi.fd/fix  fix_gsi
@@ -169,8 +166,9 @@ cd ${pwd}/../ush                ||exit 8
 #------------------------------
 
 cd $pwd/../exec
-[[ -s global_fv3gfs.x ]] && rm -f global_fv3gfs.x
-$LINK ../sorc/fv3gfs.fd/NEMS/exe/global_fv3gfs.x .
+executable=global_gsmwam_ipe.x
+[[ -s $executable ]] && rm -f $executable
+$LINK ../sorc/gsmwam_ipe.fd/NEMS/exe/NEMS.x $executable
 
 [[ -s gfs_ncep_post ]] && rm -f gfs_ncep_post
 $LINK ../sorc/gfs_post.fd/exec/ncep_post gfs_ncep_post

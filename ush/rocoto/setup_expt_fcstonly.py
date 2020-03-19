@@ -63,7 +63,7 @@ def edit_baseconfig():
                     .replace('@PSLOT@', pslot) \
                     .replace('@SDATE@', idate.strftime('%Y%m%d%H')) \
                     .replace('@EDATE@', edate.strftime('%Y%m%d%H')) \
-                    .replace('@CASECTL@', 'C%d' % res) \
+                    .replace('@CASECTL@', 'T%d' % res) \
                     .replace('@HOMEgfs@', top) \
                     .replace('@gfs_cyc@', '%d' % gfs_cyc)
                 if expdir is not None:
@@ -92,7 +92,7 @@ Create COMROT experiment directory structure'''
 
     parser = ArgumentParser(description=description, formatter_class=ArgumentDefaultsHelpFormatter)
     parser.add_argument('--pslot', help='parallel experiment name', type=str, required=False, default='test')
-    parser.add_argument('--res', help='resolution of the model forecast', type=int, required=False, default=192)
+    parser.add_argument('--res', help='resolution of the model forecast', type=int, required=False, default=62)
     parser.add_argument('--comrot', help='full path to COMROT', type=str, required=False, default=None)
     parser.add_argument('--expdir', help='full path to EXPDIR', type=str, required=False, default=None)
     parser.add_argument('--idate', help='starting date of experiment, initial conditions must exist!', type=str, required=True)

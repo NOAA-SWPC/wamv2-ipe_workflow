@@ -42,7 +42,7 @@ def main():
         print 'input arg:     --expdir = %s' % repr(args.expdir)
         sys.exit(1)
 
-    gfs_steps = ['prep', 'anal', 'fcst', 'postsnd', 'post', 'awips', 'gempak', 'vrfy', 'arch']
+    gfs_steps = ['prep', 'anal', 'fcst', 'arch']
     hyb_steps = ['eobs', 'eomg', 'eupd', 'ecen', 'efcs', 'epos', 'earc']
 
     steps = gfs_steps + hyb_steps if _base.get('DOHYBVAR', 'NO') == 'YES' else gfs_steps
@@ -217,14 +217,7 @@ def get_gdasgfs_resources(dict_configs, cdump='gdas'):
     do_gempak = base.get('DO_GEMPAK', 'NO').upper()
     do_awips = base.get('DO_AWIPS', 'NO').upper()
 
-    tasks = ['prep', 'anal', 'fcst', 'post', 'vrfy', 'arch']
-
-    if cdump in ['gfs'] and do_bufrsnd in ['Y', 'YES']:
-        tasks += ['postsnd']
-    if cdump in ['gfs'] and do_gempak in ['Y', 'YES']:
-        tasks += ['gempak']
-    if cdump in ['gfs'] and do_awips in ['Y', 'YES']:
-        tasks += ['awips']
+    tasks = ['prep', 'anal', 'fcst', 'arch']
 
     dict_resources = OrderedDict()
 
@@ -351,7 +344,7 @@ def get_gdasgfs_tasks(dict_configs, cdump='gdas'):
 
     # prep
     deps = []
-    dep_dict = {'type': 'metatask', 'name': '%spost' % 'gdas', 'offset': '-06:00:00'}
+    dep_dict = {'type': 'task', 'name': '%sfcst' % 'gdas', 'offset': '-06:00:00'}
     deps.append(rocoto.add_dependency(dep_dict))
     data = '&ROTDIR;/gdas.@Y@m@d/@H/gdas.t@Hz.atmf009.nemsio'
     dep_dict = {'type': 'data', 'data': data, 'offset': '-06:00:00'}
@@ -401,77 +394,6 @@ def get_gdasgfs_tasks(dict_configs, cdump='gdas'):
     task = wfu.create_wf_task('fcst', cdump=cdump, envar=envars, dependency=dependencies)
 
     dict_tasks['%sfcst' % cdump] = task
-
-    # post
-    deps = []
-    data = '&ROTDIR;/%s.@Y@m@d/@H/%s.t@Hz.log#dep#.nemsio' % (cdump, cdump)
-    dep_dict = {'type': 'data', 'data': data}
-    deps.append(rocoto.add_dependency(dep_dict))
-    dep_dict = {'type': 'task', 'name': '%sfcst' % cdump}
-    deps.append(rocoto.add_dependency(dep_dict))
-    dependencies = rocoto.create_dependency(dep_condition='or', dep=deps)
-    fhrgrp = rocoto.create_envar(name='FHRGRP', value='#grp#')
-    fhrlst = rocoto.create_envar(name='FHRLST', value='#lst#')
-    ROTDIR = rocoto.create_envar(name='ROTDIR', value='&ROTDIR;')
-    postenvars = envars + [fhrgrp] + [fhrlst] + [ROTDIR]
-    varname1, varname2, varname3 = 'grp', 'dep', 'lst'
-    varval1, varval2, varval3 = get_postgroups(dict_configs['post'], cdump=cdump)
-    vardict = {varname2: varval2, varname3: varval3}
-    task = wfu.create_wf_task('post', cdump=cdump, envar=postenvars, dependency=dependencies,
-                              metatask='post', varname=varname1, varval=varval1, vardict=vardict)
-
-    dict_tasks['%spost' % cdump] = task
-
-    # vrfy
-    deps = []
-    dep_dict = {'type': 'metatask', 'name': '%spost' % cdump}
-    deps.append(rocoto.add_dependency(dep_dict))
-    dependencies = rocoto.create_dependency(dep=deps)
-    task = wfu.create_wf_task('vrfy', cdump=cdump, envar=envars, dependency=dependencies)
-
-    dict_tasks['%svrfy' % cdump] = task
-
-
-    if cdump in ['gfs'] and do_bufrsnd in ['Y', 'YES']:
-        #postsnd
-        deps = []
-        dep_dict = {'type': 'task', 'name': '%sfcst' % cdump}
-        deps.append(rocoto.add_dependency(dep_dict))
-        dependencies = rocoto.create_dependency(dep=deps)
-        task = wfu.create_wf_task('postsnd', cdump=cdump, envar=envars, dependency=dependencies)
-
-        dict_tasks['%spostsnd' % cdump] = task
-
-    if cdump in ['gfs'] and do_awips in ['Y', 'YES']:
-        # awips
-        deps = []
-        data = '&ROTDIR;/%s.@Y@m@d/@H/%s.t@Hz.sfluxgrb#dep#.grib2.idx' % (cdump, cdump)
-        dep_dict = {'type': 'data', 'data': data}
-        deps.append(rocoto.add_dependency(dep_dict))
-        dep_dict = {'type': 'metatask', 'name': '%spost' % cdump}
-        deps.append(rocoto.add_dependency(dep_dict))
-        dependencies = rocoto.create_dependency(dep_condition='or', dep=deps)
-        fhrgrp = rocoto.create_envar(name='FHRGRP', value='#grp#')
-        fhrlst = rocoto.create_envar(name='FHRLST', value='#lst#')
-        ROTDIR = rocoto.create_envar(name='ROTDIR', value='&ROTDIR;')
-        awipsenvars = envars + [fhrgrp] + [fhrlst] + [ROTDIR]
-        varname1, varname2, varname3 = 'grp', 'dep', 'lst'
-        varval1, varval2, varval3 = get_awipsgroups(dict_configs['awips'], cdump=cdump)
-        vardict = {varname2: varval2, varname3: varval3}
-        task = wfu.create_wf_task('awips', cdump=cdump, envar=awipsenvars, dependency=dependencies,
-                                  metatask='awips', varname=varname1, varval=varval1, vardict=vardict)
-
-        dict_tasks['%sawips' % cdump] = task
-
-    if cdump in ['gfs'] and do_gempak in ['Y', 'YES']:
-        # gempak
-        deps = []
-        dep_dict = {'type': 'metatask', 'name': '%spost' % cdump}
-        deps.append(rocoto.add_dependency(dep_dict))
-        dependencies = rocoto.create_dependency(dep=deps)
-        task = wfu.create_wf_task('gempak', cdump=cdump, envar=envars, dependency=dependencies)
-
-        dict_tasks['%sgempak' % cdump] = task
 
     # arch
     deps = []

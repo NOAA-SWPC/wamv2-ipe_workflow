@@ -50,9 +50,9 @@ echo " .... Library build not currently supported .... "
 #------------------------------------
 # build fv3
 #------------------------------------
-$Build_fv3gfs && {
-echo " .... Building fv3 .... "
-./build_fv3.sh > $logs_dir/build_fv3.log 2>&1
+$Build_gsmwam_ipe && {
+echo " .... Building gsmwam_ipe .... "
+./build_gsmwam_ipe.sh > $logs_dir/build_gsmwam_ipe.log 2>&1
 }
 
 #------------------------------------
@@ -85,22 +85,6 @@ echo " .... Building ufs_utils .... "
 $Build_gfs_wafs  && {
 echo " .... Building gfs_wafs  .... "
 ./build_gfs_wafs.sh > $logs_dir/build_gfs_wafs .log 2>&1
-}
-
-#------------------------------------
-# build sfcanl_nsttfchg 
-#------------------------------------
-$Build_sfcanl_nsttfchg && {
-echo " .... Building gaussian_sfcanl and nst_tf_chg .... "
-./build_sfcanl_nsttfchg.sh > $logs_dir/build_sfcanl_nsttfchg.log 2>&1
-}
-
-#------------------------------------
-# build enkf_chgres_recenter
-#------------------------------------
-$Build_enkf_chgres_recenter && {
-echo " .... Building enkf_chgres_recenter .... "
-./build_enkf_chgres_recenter.sh > $logs_dir/build_enkf_chgres_recenter.log 2>&1
 }
 
 #------------------------------------
@@ -149,22 +133,6 @@ echo " .... Building gfs_wintemv .... "
 $Build_gfs_bufrsnd && {
 echo " .... Building gfs_bufrsnd .... "
 ./build_gfs_bufrsnd.sh > $logs_dir/build_gfs_bufrsnd.log 2>&1
-}
-
-#------------------------------------
-# build fv3nc2nemsio
-#------------------------------------
-$Build_fv3nc2nemsio && {
-echo " .... Building fv3nc2nemsio .... "
-./build_fv3nc2nemsio.sh > $logs_dir/build_fv3nc2nemsio.log 2>&1
-}
-
-#------------------------------------
-# build regrid_nemsio
-#------------------------------------
-$Build_regrid_nemsio && {
-echo " .... Building regrid_nemsio .... "
-./build_regrid_nemsio.sh > $logs_dir/build_regrid_nemsio.log 2>&1
 }
 
 #------------------------------------

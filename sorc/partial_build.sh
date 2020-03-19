@@ -1,19 +1,15 @@
 #
 # define the array of the name of build program
 #
- declare -a Build_prg=("Build_libs" "Build_fv3gfs" \
+ declare -a Build_prg=("Build_libs" "Build_gsmwam_ipe" \
                        "Build_gsi" "Build_ncep_post" \
                        "Build_ufs_utils" \
                        "Build_gfs_wafs" \
                        "Build_gdas" \
-                       "Build_sfcanl_nsttfchg" \
                        "Build_tropcy" \
-                       "Build_enkf_chgres_recenter" \
                        "Build_gfs_fbwndgfs" "Build_gfs_overpdtg2" \
                        "Build_gfs_wintemv" \
                        "Build_gfs_bufrsnd" \
-                       "Build_fv3nc2nemsio" \
-                       "Build_regrid_nemsio" \
                        "Build_gfs_util" \
                        "Build_prod_util" \
                        "Build_grib_util")
@@ -165,7 +161,7 @@
 #
 # set default values for partial build
 #
-   parse_cfg 1 "config=fv3gfs_build.cfg" ${Build_prg[@]}
+   parse_cfg 1 "config=gsmwam_ipe_build.cfg" ${Build_prg[@]}
  else
 
 #

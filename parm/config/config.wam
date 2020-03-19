@@ -1,0 +1,38 @@
+#!/bin/ksh -x
+
+########## config.wam ##########
+# WAM model resolution specific parameters
+# e.g. time-step, processor layout, physics and dynamics parameters
+# This config sets default variables for FV3 for a given resolution
+# User can over-ride after sourcing this config file
+
+if [ $# -ne 1 ]; then
+
+    echo "Must specify an input resolution argument to set variables!"
+    echo "argument can be any one of the following:"
+    echo "T62"
+    exit 1
+
+fi
+
+case_in=$1
+
+echo "BEGIN: config.wam"
+
+# (Standard) Model resolution dependent variables
+case $case_in in
+    "T62")
+        export DELTIM=60
+        export coupling_interval_fast_sec=${DELTIM}.0
+        export coupling_interval_slow_sec=180.0
+        export npe_node_fcst=72
+        export nth=1
+        export cdmbgwd="0.125,3.0"  # mountain blocking, gwd
+        ;;
+    *)
+        echo "grid $case_in not supported, ABORT!"
+        exit 1
+        ;;
+esac
+
+echo "END: config.wam"

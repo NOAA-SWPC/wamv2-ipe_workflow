@@ -51,13 +51,13 @@ def create_COMROT():
     makedirs_if_missing(os.path.join(comrot, enkfdir))
     for i in range(1, nens + 1):
         makedirs_if_missing(os.path.join(comrot, enkfdir, 'mem%03d' % i))
-        os.symlink(os.path.join(icsdir, idatestr, 'C%d' % resens, 'mem%03d' % i, 'INPUT'),
+        os.symlink(os.path.join(icsdir, idatestr, 'T%d' % resens, 'mem%03d' % i, 'INPUT'),
                    os.path.join(comrot, enkfdir, 'mem%03d' % i, 'INPUT'))
 
     # Link deterministic initial conditions
     detdir = '%s.%s/%s' % (cdump, cymd, chh)
     makedirs_if_missing(os.path.join(comrot, detdir))
-    os.symlink(os.path.join(icsdir, idatestr, 'C%d' % resdet, 'control', 'INPUT'),
+    os.symlink(os.path.join(icsdir, idatestr, 'T%d' % resdet, 'control', 'INPUT'),
                os.path.join(comrot, detdir, 'INPUT'))
 
     # Link bias correction and radiance diagnostics files
@@ -87,8 +87,8 @@ def edit_baseconfig():
                     .replace('@PSLOT@', pslot) \
                     .replace('@SDATE@', idate.strftime('%Y%m%d%H')) \
                     .replace('@EDATE@', edate.strftime('%Y%m%d%H')) \
-                    .replace('@CASEENS@', 'C%d' % resens) \
-                    .replace('@CASECTL@', 'C%d' % resdet) \
+                    .replace('@CASEENS@', 'T%d' % resens) \
+                    .replace('@CASECTL@', 'T%d' % resdet) \
                     .replace('@NMEM_ENKF@', '%d' % nens) \
                     .replace('@HOMEgfs@', top) \
                     .replace('@gfs_cyc@', '%d' % gfs_cyc)

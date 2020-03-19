@@ -580,7 +580,7 @@ export FNSLPC=${FNSLPC:-${FIXGLOBAL}/global_slope.1x1.grb}
 export FNABSC=${FNABSC:-${FIXGLOBAL}/global_snoalb.1x1.grb}
 export FNMSKH=${FNMSKH:-${FIXGLOBAL}/seaice_newland.grb}
 export OROGRAPHY=${OROGRAPHY:-${FIXGLOBAL}/global_orography.t$MTNRSL.grb}
-export OROGRAPHY_UF=${OROGRAPHY_UF:-${FIXGLOBAL}/global_orography_uf.t$MTNRSLUF.grb}
+export OROGRAPHY_UF=${OROGRAPHY_UF:-${FIXGLOBAL}/global_orography_uf.t$MTNRSLUF.$LONB.$LATB.grb}
 export LONSPERLAT=${LONSPERLAT:-${FIXGLOBAL}/global_lonsperlat.t${JCAP}.$LONB.$LATB.txt}
 export LONSPERLAR=${LONSPERLAR:-$LONSPERLAT}
 export FNTSFA=${FNTSFA}
@@ -782,7 +782,7 @@ export MEMBER_NAMES=${MEMBER_NAMES:-''}
 
 export REDOUT=${REDOUT:-'1>'}
 export REDERR=${REDERR:-'2>'}
-export print_esmf=${print_esmf:-.false.}
+export print_esmf=${print_esmf:-.true.}
 
 ################################################################################
 #  Preprocessing
@@ -1792,7 +1792,7 @@ cat  > atm_namelist <<EOF
   height_dependent_g=$HEIGHT_DEPENDENT_G,
   semi_implicit_temp_profile=$SEMI_IMPLICIT_TEMP_PROFILE,
   thermodyn_id=$THERMODYN_ID, sfcpress_id=$SFCPRESS_ID,
-  dfilevs=$DFILEVS, liope=$liope,
+  dfilevs=$DFILEVS, liope=${liope:-.false.},
   FHOUT_HF=$FHOUT_HF, FHMAX_HF=$FHMAX_HF,
   nemsio_in=.false.,nemsio_out=.false.,
   SHUM=0.0, -999., -999., -999, -999,SHUM_TAU=2.16E4, 1.728E5, 6.912E5, 7.776E6, 3.1536E7,SHUM_LSCALE=500.E3, 1000.E3, 2000.E3, 2000.E3, 2000.E3,ISEED_SHUM=0,
@@ -1819,7 +1819,7 @@ cat  > atm_namelist <<EOF
   gen_coord_hybrid=$GEN_COORD_HYBRID,
   thermodyn_id=$THERMODYN_ID, sfcpress_id=$SFCPRESS_ID,
   FHOUT_HF=$FHOUT_HF, FHMAX_HF=$FHMAX_HF,
-  nstf_name=${nstf_name},liope=$liope,
+  nstf_name=${nstf_name},liope=${liope:-.false.},
   SHUM=0.0, -999., -999., -999, -999, SPPT=0.0,0.0,0.0,0.0,0.0,SKEB=0.0, -999., -999., -999, -999, VC=0.0,VCAMP=0.0, -999., -999., -999, -999,
   $PHYVARS /
  &TRACER_CONSTANT

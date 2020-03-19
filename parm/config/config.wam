@@ -25,7 +25,7 @@ case $case_in in
         export DELTIM=60
         export coupling_interval_fast_sec=${DELTIM}.0
         export coupling_interval_slow_sec=180.0
-        export npe_node_fcst=72
+        export npe_node_fcst=112
         export nth=1
         export cdmbgwd="0.125,3.0"  # mountain blocking, gwd
         ;;

@@ -226,8 +226,8 @@ export SENDSDM="NO"
 # Resolution specific parameters
 export IDEA=${IDEA:-.true.}
 export NEMS=${NEMS:-.true.}
-export WAM_IPE_COUPLING=${WAM_IPE_COUPLING:-.false.}
-export IPE=${IPE:-.false.}
+export WAM_IPE_COUPLING=${WAM_IPE_COUPLING:-.true.}
+export IPE=${IPE:-.true.}
 
 export LEVS=150
 export LEVR=90

@@ -69,8 +69,8 @@ elif [ $step = "fcst" ]; then
     fi
     export wtime_fcst="01:00:00"
     export wtime_fcst_gfs="06:00:00"
-    export npe_fcst=72
-    export npe_fcst_gfs=72
+    export npe_fcst=112
+    export npe_fcst_gfs=112
     export nth_fcst=${nth_fv3:-1}
     export npe_node_fcst=$(echo "$npe_node_max / $nth_fcst" | bc)
     if [[ "$machine" == "WCOSS_C" ]]; then

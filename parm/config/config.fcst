@@ -14,9 +14,9 @@ echo "BEGIN: config.fcst"
 . $EXPDIR/config.fcst_namelist
 
 export med_model="swpc"
-export med_petlist_bounds="0 71"
+export med_petlist_bounds="40 79"
 export ipm_petlist_bounds="0 39"
-export atm_petlist_bounds="40 71"
+export atm_petlist_bounds="80 111"
 export FORECASTSH="$HOMEgfs/scripts/exglobal_fcst_nems.sh"
 export FCSTEXECDIR="$HOMEgfs/exec"
 export FCSTEXEC="global_gsmwam_ipe.x"

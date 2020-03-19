@@ -16,17 +16,17 @@ else
     echo 'Skip.  Directory gsmwam_ipe.fd already exists.'
 fi
 
-echo gsi checkout ...
-if [[ ! -d gsi.fd ]] ; then
-    rm -f ${topdir}/checkout-gsi.log
-    git clone --recursive gerrit:ProdGSI gsi.fd >> ${topdir}/checkout-gsi.log 2>&1
-    cd gsi.fd
-    git checkout cb8f69d82f38dcf85669b45aaf95dad068f0103c
-    git submodule update
-    cd ${topdir}
-else
-    echo 'Skip.  Directory gsi.fd already exists.'
-fi
+#echo gsi checkout ...
+#if [[ ! -d gsi.fd ]] ; then
+#    rm -f ${topdir}/checkout-gsi.log
+#    git clone --recursive gerrit:ProdGSI gsi.fd >> ${topdir}/checkout-gsi.log 2>&1
+#    cd gsi.fd
+#    git checkout cb8f69d82f38dcf85669b45aaf95dad068f0103c
+#    git submodule update
+#    cd ${topdir}
+#else
+#    echo 'Skip.  Directory gsi.fd already exists.'
+#fi
 
 echo ufs_utils checkout ...
 if [[ ! -d ufs_utils.fd ]] ; then

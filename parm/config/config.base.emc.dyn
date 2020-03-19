@@ -204,6 +204,7 @@ export COMOUT=${COMOUT:-$ROTDIR}
 export RESTARTDIR=${RESTARTDIR:-$ROTDIR/restart_directory} # folder containing restart files
 export EXECGLOBAL=${EXECGLOBAL:-$BASE_NEMS/exe}            # NEMS executable directory
 export FIXGLOBAL=${FIXGLOBAL:-$FIXgfs/GSM/fix_am}         # global fix files
+export FIX_IDEA=$FIXgfs/WAM_gh_l150
 
 # Commonly defined parameters in JJOBS
 export envir=${envir:-"prod"}

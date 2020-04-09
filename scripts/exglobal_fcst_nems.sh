@@ -402,10 +402,11 @@ export COMPLIANCECHECK=${COMPLIANCECHECK:-OFF}
 export ESMF_RUNTIME_COMPLIANCECHECK=$COMPLIANCECHECK:depth=4
 #
 export APRUN=${APRUN:-""}
-export FCST_LAUNCHER=${FCST_LAUNCHER:-mpirun -n $npe_wam}
+export FCST_LAUNCHER=${FCST_LAUNCHER:-"srun --export=ALL"}
 export model=${model:-global}
 export NEMSIO_IN=${NEMSIO_IN:-".true."}
 export NEMSIO_OUT=${NEMSIO_OUT:-".true."}
+MEMBER=${MEMBER:-"-1"} # -1: control, 0: ensemble mean, >0: ensemble member $MEMBER
 export ENS_NUM=${ENS_NUM:-1}
 export FM=${FM}
 
@@ -460,7 +461,6 @@ export PARMGLOBAL=${PARMGLOBAL:-$NWPROD/gsm.$gsm_ver/$PARMSUBDA}
 export PARM_NGAC=${PARM_NGAC:-$NWPROD/parm/parm_ngac}
 export EXECGLOBAL=${EXECGLOBAL:-$NWPROD/exec}
 export DATA=${DATA:-$(pwd)}
-export COMOUT=${COMOUT:-$(pwd)}
 
 #  Filenames.
 MN=${MN:-""}
@@ -602,28 +602,28 @@ export ICO2=${ICO2:-0}
 export IALB=${IALB:-0}
 #
 LOCD=${LOCD:-""}
-export COMENS=$COMOUT'$LOCD'
-export GRDR1=${GRDR1:-${COMENS}/grdr1}
-export GRDR2=${GRDR2:-${COMENS}/grdr2}
-export SIGR1=${SIGR1:-${COMENS}/sigr1}
-export SIGR2=${SIGR2:-${COMENS}/sigr2}
-export SFCR=${SFCR:-${COMENS}/sfcr}
-export NSTR=${NSTR:-${COMENS}/nstr}
+export GRDR1='${memdir}'/RESTART/grdr1
+export GRDR2='${memdir}'/RESTART/grdr2
+export SIGR1='${memdir}'/RESTART/sigr1
+export SIGR2='${memdir}'/RESTART/sigr2
+export SFCR='${memdir}'/RESTART/sfcr
+export NSTR='${memdir}'/RESTART/nstr
+export IPER='${memdir}'/RESTART/iper
 
-export SIGS1=${SIGS1:-${COMENS}/sigs1}
-export SIGS2=${SIGS2:-${COMENS}/sigs2}
-export SFCS=${SFCS:-${COMENS}/sfcs}
-export NSTS=${NSTS:-${COMENS}/nsts}
+## Input Files
+export SIGI='${memdir}'/$CDUMP.${cyc}z.$ATM$SUFOUT
+export SFCI='${memdir}'/$CDUMP.${cyc}z.$SFC$SUFOUT
+export PLASI='${memdir}'/$CDUMP.${cyc}z.$PLAS.'${CIPEDATE}'
 
 ## History Files
-export SIGO=${SIGO:-${COMENS}/${SIGOSUF}f'${FHIAU}''${MN}'$SUFOUT}
-export SFCO=${SFCO:-${COMENS}/${SFCOSUF}f'${FHIAU}''${MN}'$SUFOUT}
-export FLXO=${FLXO:-${COMENS}/${FLXOSUF}f'${FHIAU}''${MN}'$SUFOUT}
-export LOGO=${LOGO:-${COMENS}/logf'${FHIAU}''${MN}'$SUFOUT}
-export D3DO=${D3DO:-${COMENS}/d3df'${FHIAU}''${MN}'$SUFOUT}
-export NSTO=${NSTO:-${COMENS}/${NSTOSUF}f'${FHIAU}''${MN}'$SUFOUT}
-export AERO=${AERO:-${COMOUT}/aerf'${FH}''${MN}'$SUFOUT}
-export PLASO=${PLASO:-'IPE_State.apex.${TIMESTAMP}.h5'}
+export SIGO=${SIGO:-'${memdir}'/$CDUMP.${cyc}z.${SIGOSUF}f'${FHIAU}''${MN}'$SUFOUT}
+export SFCO=${SFCO:-'${memdir}'/$CDUMP.${cyc}z.${SFCOSUF}f'${FHIAU}''${MN}'$SUFOUT}
+export FLXO=${FLXO:-'${memdir}'/$CDUMP.${cyc}z.${FLXOSUF}f'${FHIAU}''${MN}'$SUFOUT}
+export PLASO=${PLASO:-'$(memdir}'/$CDUMP.${cyc}z.$PLAS.'${TIMESTAMP}'.h5}
+export LOGO=${LOGO:-'${memdir}'/$CDUMP.${cyc}z.logf'${FHIAU}''${MN}'$SUFOUT}
+export D3DO=${D3DO:-'${memdir}'/$CDUMP.${cyc}z.d3df'${FHIAU}''${MN}'$SUFOUT}
+export NSTO=${NSTO:-'${memdir}'/$CDUMP.${cyc}z.${NSTOSUF}f'${FHIAU}''${MN}'$SUFOUT}
+export AERO=${AERO:-'${memdir}'/$CDUMP.${cyc}z.aerf'${FH}''${MN}'$SUFOUT}
 
 export INISCRIPT=${INISCRIPT}
 export ERRSCRIPT=${ERRSCRIPT:-'eval [[ $err = 0 ]]'}
@@ -795,7 +795,6 @@ else
    mkdata=YES
 fi
 cd $DATA||exit 99
-[[ -d $COMOUT ]]||mkdir -p $COMOUT
 ################################################################################
 #  Make forecast
 export PGM='$FCST_LAUNCHER $DATA/$(basename $FCSTEXEC)'
@@ -804,6 +803,34 @@ $LOGSCRIPT
 ${NCP:-cp} $FCSTEXECDIR/$FCSTEXEC $DATA
 
 #------------------------------------------------------------
+if [[ $NEMS = .true. ]] ; then
+  if [ $NEMSIO_IN = .true. ]; then
+    idate=` $NEMSIOGET $GRDI idate  | tr -s ' ' | cut -d' ' -f 3-7`
+    iyear=` echo $idate | cut -d' ' -f 1`
+    imonth=`printf "%02d" $(echo $idate | cut -d' ' -f 2)`
+    iday=`  printf "%02d" $(echo $idate | cut -d' ' -f 3)`
+    ihour=` printf "%02d" $(echo $idate | cut -d' ' -f 4)`
+    export CDATE=${iyear}${imonth}${iday}${ihour}
+    nfhour=`$NEMSIOGET $GRDI nfhour | tr -s ' ' | cut -d' ' -f 3`
+    export FDATE=`$NDATE $nfhour $CDATE`
+  else
+    export CDATE=`$SIGHDR $SIGI idate`
+    export FDATE=`$NDATE \`$SIGHDR $SIGI fhour | cut -d'.' -f 1\` $CDATE`
+  fi
+else
+  FDATE=$(echo $CIPEDATE | cut -c1-10)
+fi
+INI_YEAR=$(echo $FDATE   | cut -c1-4)
+INI_MONTH=$(echo $FDATE  | cut -c5-6)
+INI_DAY=$(echo $FDATE    | cut -c7-8)
+INI_HOUR=$(echo $FDATE   | cut -c9-10)
+CIPEDATE=${FDATE}00
+
+C_YEAR=$(echo $CDATE     | cut -c1-4)
+C_MONTH=$(echo $CDATE    | cut -c5-6)
+C_DAY=$(echo $CDATE      | cut -c7-8)
+C_HOUR=$(echo $CDATE     | cut -c9-10)
+
 if [ $FHROT -gt 0 ] ; then export RESTART=.true. ; fi
 export RESTART=${RESTART:-.false.}
 if [ $RESTART = .false. ] ; then # when restarting should not remove - Weiyu
@@ -924,7 +951,19 @@ secs=$((DELTIM-(DELTIM/60)*60))
 export FHINI=$((FHINI+0))
 export FHROT=$((FHROT+0))
 
-if [[ $ENS_NUM -le 1 ]] ; then
+if [ $MEMBER -lt 0 ]; then
+  prefix=$CDUMP
+  rprefix=$rCDUMP
+  memchar=""
+else
+  prefix=enkf$CDUMP
+  rprefix=enkf$rCDUMP
+  memchar=mem$(printf %03i $MEMBER)
+fi
+memdir=$ROTDIR/${prefix}.$PDY/$cyc/$memchar
+if [ ! -d $memdir ]; then mkdir -p $memdir; fi
+
+if [[ $MEMBER -lt 0 ]] ; then
   FH=$((10#$FHINI))
   [[ $FH -lt 10 ]]&&FH=0$FH
   if [[ $FHINI -gt 0 ]] ; then
@@ -946,7 +985,7 @@ if [[ $ENS_NUM -le 1 ]] ; then
     fi
     ln -fs $SFCI  sfc_ini
     ln -fs $NSTI  nst_ini
-    ln -fs $PLASI IPE_State.apex.${CIPEDATE}.h5
+    ln -fs $PLASI $PLAS.${CIPEDATE}.h5
     if [ $FHROT -gt 0 ] ; then
       export RESTART=.true.
       ln -fs $GRDI  grid_ini
@@ -966,7 +1005,7 @@ if [[ $ENS_NUM -le 1 ]] ; then
     ln -fs $SIGI2 sig_ini2
     ln -fs $SFCI  sfc_ini
     ln -fs $NSTI  nst_ini
-    ln -fs $PLASI IPE_State.apex.${CIPEDATE}.h5
+    ln -fs $PLASI .
     if [ $WAM_IPE_COUPLING = .true. ];then
       export RESTART_AND_COUPLED=.true.
       ln -fs $RSTR  WAM_IPE_RST_rd
@@ -1020,7 +1059,7 @@ if [[ $ENS_NUM -le 1 ]] ; then
     STEP=1
     while [[ $STEP -le $STEPS ]] ; do
       TIMESTAMP=`$MDATE $((STEP*IPEFREQ/60)) $CIPEDATE`
-      eval $NLN ${COMOUT}/${PLASO} ${PLASO}
+      eval $NLN ${memdir}/${PLASO} ${PLASO}
       STEP=$((STEP+1))
     done
   fi
@@ -1155,69 +1194,10 @@ done
 
 export wgrib=${wgrib:-$NWPROD/util/exec/wgrib}
 
-if [[ $NEMS = .true. ]] ; then
-  if [[ $ENS_NUM -le 1 ]] ; then
-    if [ $NEMSIO_IN = .true. ]; then
-      if [ $ioform_sig = 'grib' ] ; then # unsupported
-        export CDATE_NEMS=$($wgrib -4yr $GRDI | grep -i hgt |awk -F: '{print $3}' |awk -F= '{print $2}')
-      else
-        idate=` $NEMSIOGET $GRDI idate  | tr -s ' ' | cut -d' ' -f 3-7`
-        iyear=` echo $idate | cut -d' ' -f 1`
-        imonth=`printf "%02d" $(echo $idate | cut -d' ' -f 2)`
-        iday=`  printf "%02d" $(echo $idate | cut -d' ' -f 3)`
-        ihour=` printf "%02d" $(echo $idate | cut -d' ' -f 4)`
-        export CDATE=${iyear}${imonth}${iday}${ihour}
-        nfhour=`$NEMSIOGET $GRDI nfhour | tr -s ' ' | cut -d' ' -f 3`
-        export FDATE=`$NDATE $nfhour $CDATE`
-      fi
-    else
-      export CDATE=`$SIGHDR $SIGI idate`
-      export FDATE=`$NDATE \`$SIGHDR $SIGI fhour | cut -d'.' -f 1\` $CDATE`
-    fi
-  else # also unsupported
-    MN=c00
-    if [ $NEMSIO_IN = .true. ]; then
-      if [ $ioform_sig = 'grib' ] ; then
-        export CDATE_NEMS=$($wgrib -4yr ${GRDI}${MN} | grep -i hgt |awk -F: '{print $3}' |awk -F= '{print $2}')
-      else
-        export CDATE_NEMS=$($NEMSIOGET $GRDI idate |grep -i "idate" |awk -F= '{print $2}')
-      fi
-    else
-      export CDATE_SIG=$(echo idate|$SIGHDR ${SIGI}i${MN})
-    fi
-  fi
-else
-  FDATE=$(echo $CIPEDATE | cut -c1-10)
-fi
-INI_YEAR=$(echo $FDATE   | cut -c1-4)
-INI_MONTH=$(echo $FDATE  | cut -c5-6)
-INI_DAY=$(echo $FDATE    | cut -c7-8)
-INI_HOUR=$(echo $FDATE   | cut -c9-10)
-
-C_YEAR=$(echo $CDATE     | cut -c1-4)
-C_MONTH=$(echo $CDATE    | cut -c5-6)
-C_DAY=$(echo $CDATE      | cut -c7-8)
-C_HOUR=$(echo $CDATE     | cut -c9-10)
-
 ## copy configure files needed for NEMS GFS
 ${NCP} ${MAPL:-$PARM_NGAC/MAPL.rc}                    MAPL.rc
 ${NCP} ${CHEM_REGISTRY:-$PARM_NGAC/Chem_Registry.rc}  Chem_Registry.rc
 
-## copy configure files and fixed files needed for GOCART
-if [ $GOCART == 1 ] ; then
- ${NCP} ${CONFIG_DU:-$PARM_NGAC/DU_GridComp.rc}             DU_GridComp.rc
- ${NCP} ${CONFIG_SU:-$PARM_NGAC/SU_GridComp.rc}             SU_GridComp.rc
- ${NCP} ${CONFIG_OC:-$PARM_NGAC/OC_GridComp.rc}             OC_GridComp.rc
- ${NCP} ${CONFIG_OCx:-$PARM_NGAC/OC_GridComp---full.rc}     OC_GridComp---full.rc
- ${NCP} ${CONFIG_BC:-$PARM_NGAC/BC_GridComp.rc}             BC_GridComp.rc
- ${NCP} ${CONFIG_SS:-$PARM_NGAC/SS_GridComp.rc}             SS_GridComp.rc
- ${NCP} ${AOD_REGISTRY:-$PARM_NGAC/Aod-550nm_Registry.rc}   Aod_Registry.rc
-#jw  ${NCP} ${AOD_REGISTRY:-$PARM_NGAC/Aod-550nm_Registry.rc}   $DATA/Aod-550nm_Registry.rc
- ${NCP} $PARM_NGAC/AEROSOL_LUTS.dat                         .
-
- ln -sf $FIX_NGAC  ngac_fix
-fi
-# below seem unnecessary
   if [ $DOIAU = YES ]; then
 
      export RESTART=.false.
@@ -1242,7 +1222,7 @@ if [ $NEMS = .true. ] ; then # grids for mediator
 fi
 
 if [ $IDEA = .true. ]; then
-  ${NLN} $COMOUT/wam_fields_${CDATE}_${cycle}.nc $DATA/wam_fields.nc
+  ${NLN} $memdir/wam_fields_${CDATE}_${cycle}.nc $DATA/wam_fields.nc
 
   START_UT_SEC=$((10#$INI_HOUR*3600))
   if [ $INPUT_PARAMETERS = realtime ] ; then
@@ -1252,16 +1232,8 @@ if [ $IDEA = .true. ]; then
       ${NLN} $WAMINDIR/wam_input_new-${INI_YEAR}${INI_MONTH}${INI_DAY}T${XML_HOUR}15.xml ./wam_input2.xsd
       $HOMEgsmwam_ipe/scripts/parse_f107_xml/parse.py -s `$NDATE -36 $FDATE` -d $((36+ 10#$FHMAX - 10#$FHINI))
       ${NLN} $DATA/wam_input.asc $DATA/wam_input_f107_kp.txt
-    elif [ -e $WAMINDIR/wam_input-${INI_YEAR}${INI_MONTH}${INI_DAY}T${XML_HOUR}15.xml ] ; then # then go old format
-      ${NLN} $WAMINDIR/wam_input-${INI_YEAR}${INI_MONTH}${INI_DAY}T${XML_HOUR}15.xml ./wam_input2.xsd
-      $HOMEgsmwam_ipe/scripts/parse_f107_xml/parse.py -s `$NDATE -36 $FDATE` -d $((36+ 10#$FHMAX - 10#$FHINI))
-      ${NLN} $DATA/wam_input.asc $DATA/wam_input_f107_kp.txt
     else
-      if [ -e $COMOUT/wam_input_f107_kp.txt ] ; then
-        ${NCP} $COMOUT/wam_input_f107_kp.txt ${DATA}
-      else
-        echo "failed, no f107 file" ; exit 1
-      fi
+      echo "failed, no f107 file" ; exit 1
     fi
   else
     # work from the database
@@ -1954,7 +1926,7 @@ $ERRSCRIPT||exit 2
     eval $CHGSFCFHREXEC $SFCI $CDATE_SFC $FHINI_SFC
  fi
 
-[[ -f $COMOUT/`eval echo "$PLASO"` ]] && eval ln -fs ${COMOUT}/${PLASO} $IPER
+[[ -f $memdir/`eval echo "$PLASO"` ]] && eval ln -fs ${memdir}/${PLASO} $IPER
 
 ################################################################################
 #  Postprocessing

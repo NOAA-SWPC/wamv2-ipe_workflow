@@ -17,7 +17,7 @@ from datetime import datetime
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 import workflow_utils as wfu
 
-global expdir, configdir, comrot, pslot, resdet, resens, nens, cdump, idate, edate, gfs_cyc
+global expdir, configdir, comrot, pslot, resdet, resens, nens, cdump, idate, edate, wfs_cyc
 
 
 def makedirs_if_missing(d):
@@ -90,8 +90,8 @@ def edit_baseconfig():
                     .replace('@CASEENS@', 'T%d' % resens) \
                     .replace('@CASECTL@', 'T%d' % resdet) \
                     .replace('@NMEM_ENKF@', '%d' % nens) \
-                    .replace('@HOMEgfs@', top) \
-                    .replace('@gfs_cyc@', '%d' % gfs_cyc)
+                    .replace('@HOMEwfs@', top) \
+                    .replace('@wfs_cyc@', '%d' % wfs_cyc)
                 if expdir is not None:
                     line = line.replace('@EXPDIR@', os.path.dirname(expdir))
                 if comrot is not None:
@@ -113,7 +113,7 @@ def edit_baseconfig():
 
 if __name__ == '__main__':
 
-    description = '''Setup files and directories to start a GFS parallel.
+    description = '''Setup files and directories to start a WFS parallel.
 Create EXPDIR, copy config files
 Create COMROT experiment directory structure,
 link initial condition files from $ICSDIR to $COMROT'''
@@ -129,8 +129,8 @@ link initial condition files from $ICSDIR to $COMROT'''
     parser.add_argument('--icsdir', help='full path to initial condition directory', type=str, required=False)
     parser.add_argument('--configdir', help='full path to directory containing the config files', type=str, required=False, default=None)
     parser.add_argument('--nens', help='number of ensemble members', type=int, required=False, default=20)
-    parser.add_argument('--cdump', help='CDUMP to start the experiment', type=str, required=False, default='gdas')
-    parser.add_argument('--gfs_cyc', help='GFS cycles to run', type=int, choices=[0, 1, 2, 4], default=1, required=False)
+    parser.add_argument('--cdump', help='CDUMP to start the experiment', type=str, required=False, default='wdas')
+    parser.add_argument('--wfs_cyc', help='WFS cycles to run', type=int, choices=[0, 1, 2, 4], default=1, required=False)
 
     args = parser.parse_args()
 
@@ -150,7 +150,7 @@ link initial condition files from $ICSDIR to $COMROT'''
     expdir = args.expdir if args.expdir is None else os.path.join(args.expdir, pslot)
     nens = args.nens
     cdump = args.cdump
-    gfs_cyc = args.gfs_cyc
+    wfs_cyc = args.wfs_cyc
 
     if args.icsdir is not None and not os.path.exists(icsdir):
         msg = 'Initial conditions do not exist in %s' % icsdir

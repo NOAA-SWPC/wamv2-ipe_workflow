@@ -68,9 +68,9 @@ elif [ $step = "fcst" ]; then
       export npe_node_max=24
     fi
     export wtime_fcst="01:00:00"
-    export wtime_fcst_gfs="06:00:00"
-    export npe_fcst=112
-    export npe_fcst_gfs=112
+    export wtime_fcst_wfs="06:00:00"
+    export npe_fcst=32
+    export npe_fcst_wfs=32
     export nth_fcst=${nth_fv3:-1}
     export npe_node_fcst=$(echo "$npe_node_max / $nth_fcst" | bc)
     if [[ "$machine" == "WCOSS_C" ]]; then
@@ -80,13 +80,13 @@ elif [ $step = "fcst" ]; then
 elif [ $step = "post" ]; then
 
     export wtime_post="00:30:00"
-    export wtime_post_gfs="01:30:00"
+    export wtime_post_wfs="01:30:00"
     export npe_post=144
     export nth_post=1
     export npe_node_dwn=$npe_node_max
     if [ $CASE = "C384" -o $CASE = "C192" -o $CASE = "C96" -o $CASE = "T62" ]; then
       export wtime_post="00:10:00"
-      export wtime_post_gfs="00:30:00"
+      export wtime_post_wfs="00:30:00"
       export npe_post=$(echo "$npe_node_max * 2" | bc)
     fi
     export npe_node_post=$(echo "$npe_node_max / $nth_post" | bc)
@@ -98,15 +98,15 @@ elif [ $step = "vrfy" ]; then
 
     export wtime_vrfy="03:00:00"
     if [[ "$machine" == "HERA" ]]; then
-      export wtime_vrfy_gfs="08:00:00"
+      export wtime_vrfy_wfs="08:00:00"
     else
-      export wtime_vrfy_gfs="06:00:00"
+      export wtime_vrfy_wfs="06:00:00"
     fi
     export npe_vrfy=1
     export nth_vrfy=1
     export npe_node_vrfy=1
-    export npe_vrfy_gfs=1
-    export npe_node_vrfy_gfs=1
+    export npe_vrfy_wfs=1
+    export npe_node_vrfy_wfs=1
     if [[ "$machine" == "WCOSS_C" ]]; then
 	    export memory_vrfy="3072M"
     elif [[ "$machine" == "THEIA" ]]; then

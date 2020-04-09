@@ -2,14 +2,14 @@
 
 '''
     PROGRAM:
-        Create the ROCOTO workflow given the configuration of the GFS parallel
+        Create the ROCOTO workflow given the configuration of the WFS parallel
 
     AUTHOR:
         Rahul.Mahajan
         rahul.mahajan@noaa.gov
 
     FILE DEPENDENCIES:
-        1. config files for the parallel; e.g. config.base, config.fcst[.gfs], etc.
+        1. config files for the parallel; e.g. config.base, config.fcst[.wfs], etc.
         Without these dependencies, the script will fail
 
     OUTPUT:
@@ -28,7 +28,7 @@ import rocoto
 import workflow_utils as wfu
 
 def main():
-    parser = ArgumentParser(description='Setup XML workflow and CRONTAB for a GFS parallel.', formatter_class=ArgumentDefaultsHelpFormatter)
+    parser = ArgumentParser(description='Setup XML workflow and CRONTAB for a WFS parallel.', formatter_class=ArgumentDefaultsHelpFormatter)
     parser.add_argument('--expdir', help='full path to experiment directory containing config files', type=str, required=False, default=os.environ['PWD'])
     args = parser.parse_args()
 
@@ -42,16 +42,16 @@ def main():
         print 'input arg:     --expdir = %s' % repr(args.expdir)
         sys.exit(1)
 
-    gfs_steps = ['prep', 'anal', 'fcst', 'arch']
+    wfs_steps = ['prep', 'anal', 'fcst', 'arch']
     hyb_steps = ['eobs', 'eomg', 'eupd', 'ecen', 'efcs', 'epos', 'earc']
 
-    steps = gfs_steps + hyb_steps if _base.get('DOHYBVAR', 'NO') == 'YES' else gfs_steps
+    steps = wfs_steps + hyb_steps if _base.get('DOHYBVAR', 'NO') == 'YES' else wfs_steps
 
     dict_configs = wfu.source_configs(configs, steps)
 
-    # Check and set gfs_cyc specific variables
-    if dict_configs['base']['gfs_cyc'] != 0:
-        dict_configs['base'] = get_gfs_cyc_dates(dict_configs['base'])
+    # Check and set wfs_cyc specific variables
+    if dict_configs['base']['wfs_cyc'] != 0:
+        dict_configs['base'] = get_wfs_cyc_dates(dict_configs['base'])
 
     # First create workflow XML
     create_xml(dict_configs)
@@ -62,51 +62,51 @@ def main():
     return
 
 
-def get_gfs_cyc_dates(base):
+def get_wfs_cyc_dates(base):
     '''
-        Generate GFS dates from experiment dates and gfs_cyc choice
+        Generate WFS dates from experiment dates and wfs_cyc choice
     '''
 
     base_out = base.copy()
 
-    gfs_cyc = base['gfs_cyc']
+    wfs_cyc = base['wfs_cyc']
     sdate = base['SDATE']
     edate = base['EDATE']
 
-    interval_gfs = wfu.get_gfs_interval(gfs_cyc)
+    interval_wfs = wfu.get_wfs_interval(wfs_cyc)
 
-    # Set GFS cycling dates
+    # Set WFS cycling dates
     hrdet = 0
-    if gfs_cyc == 1:
+    if wfs_cyc == 1:
         hrinc = 24 - sdate.hour
         hrdet = edate.hour
-    elif gfs_cyc == 2:
+    elif wfs_cyc == 2:
         if sdate.hour in [0, 12]:
             hrinc = 12
         elif sdate.hour in [6, 18]:
             hrinc = 6
         if edate.hour in [6, 18]:
             hrdet = 6
-    elif gfs_cyc == 4:
+    elif wfs_cyc == 4:
         hrinc = 6
-    sdate_gfs = sdate + timedelta(hours=hrinc)
-    edate_gfs = edate - timedelta(hours=hrdet)
-    if sdate_gfs > edate:
+    sdate_wfs = sdate + timedelta(hours=hrinc)
+    edate_wfs = edate - timedelta(hours=hrdet)
+    if sdate_wfs > edate:
         print 'W A R N I N G!'
-        print 'Starting date for GFS cycles is after Ending date of experiment'
+        print 'Starting date for WFS cycles is after Ending date of experiment'
         print 'SDATE = %s,     EDATE = %s' % (sdate.strftime('%Y%m%d%H'), edate.strftime('%Y%m%d%H'))
-        print 'SDATE_GFS = %s, EDATE_GFS = %s' % (sdate_gfs.strftime('%Y%m%d%H'), edate_gfs.strftime('%Y%m%d%H'))
-        gfs_cyc = 0
+        print 'SDATE_WFS = %s, EDATE_WFS = %s' % (sdate_wfs.strftime('%Y%m%d%H'), edate_wfs.strftime('%Y%m%d%H'))
+        wfs_cyc = 0
 
-    base_out['gfs_cyc'] = gfs_cyc
-    base_out['SDATE_GFS'] = sdate_gfs
-    base_out['EDATE_GFS'] = edate_gfs
-    base_out['INTERVAL_GFS'] = interval_gfs
+    base_out['wfs_cyc'] = wfs_cyc
+    base_out['SDATE_WFS'] = sdate_wfs
+    base_out['EDATE_WFS'] = edate_wfs
+    base_out['INTERVAL_WFS'] = interval_wfs
 
-    fhmax_gfs = {}
+    fhmax_wfs = {}
     for hh in ['00', '06', '12', '18']:
-        fhmax_gfs[hh] = base.get('FHMAX_GFS_%s' % hh, 'FHMAX_GFS_00')
-    base_out['FHMAX_GFS'] = fhmax_gfs
+        fhmax_wfs[hh] = base.get('FHMAX_WFS_%s' % hh, 'FHMAX_WFS_00')
+    base_out['FHMAX_WFS'] = fhmax_wfs
 
     return base_out
 
@@ -152,8 +152,8 @@ def get_definitions(base):
     strings.append('\t<!ENTITY SDATE "%s">\n' % base['SDATE'].strftime('%Y%m%d%H%M'))
     strings.append('\t<!ENTITY EDATE "%s">\n' % base['EDATE'].strftime('%Y%m%d%H%M'))
 
-    if base['gfs_cyc'] != 0:
-        strings.append(get_gfs_dates(base))
+    if base['wfs_cyc'] != 0:
+        strings.append(get_wfs_dates(base))
         strings.append('\n')
 
     strings.append('\t<!-- Run Envrionment -->\n')
@@ -164,7 +164,7 @@ def get_definitions(base):
     strings.append('\t<!ENTITY ROTDIR "%s">\n' % base['ROTDIR'])
     strings.append('\n')
     strings.append('\t<!-- Directories for driving the workflow -->\n')
-    strings.append('\t<!ENTITY HOMEgfs  "%s">\n' % base['HOMEgfs'])
+    strings.append('\t<!ENTITY HOMEwfs  "%s">\n' % base['HOMEwfs'])
     strings.append('\t<!ENTITY JOBS_DIR "%s">\n' % base['BASE_JOB'])
     strings.append('\t<!ENTITY DMPDIR   "%s">\n' % base['DMPDIR'])
     strings.append('\n')
@@ -189,25 +189,25 @@ def get_definitions(base):
     return ''.join(strings)
 
 
-def get_gfs_dates(base):
+def get_wfs_dates(base):
     '''
-        Generate GFS dates entities
+        Generate WFS dates entities
     '''
 
     strings = []
 
     strings.append('\n')
-    strings.append('\t<!-- Starting and ending dates for GFS cycle -->\n')
-    strings.append('\t<!ENTITY SDATE_GFS    "%s">\n' % base['SDATE_GFS'].strftime('%Y%m%d%H%M'))
-    strings.append('\t<!ENTITY EDATE_GFS    "%s">\n' % base['EDATE_GFS'].strftime('%Y%m%d%H%M'))
-    strings.append('\t<!ENTITY INTERVAL_GFS "%s">\n' % base['INTERVAL_GFS'])
+    strings.append('\t<!-- Starting and ending dates for WFS cycle -->\n')
+    strings.append('\t<!ENTITY SDATE_WFS    "%s">\n' % base['SDATE_WFS'].strftime('%Y%m%d%H%M'))
+    strings.append('\t<!ENTITY EDATE_WFS    "%s">\n' % base['EDATE_WFS'].strftime('%Y%m%d%H%M'))
+    strings.append('\t<!ENTITY INTERVAL_WFS "%s">\n' % base['INTERVAL_WFS'])
 
     return ''.join(strings)
 
 
-def get_gdasgfs_resources(dict_configs, cdump='gdas'):
+def get_wdaswfs_resources(dict_configs, cdump='wdas'):
     '''
-        Create GDAS or GFS resource entities
+        Create WDAS or WFS resource entities
     '''
 
     base = dict_configs['base']
@@ -252,7 +252,7 @@ def get_hyb_resources(dict_configs):
     machine = base.get('machine', wfu.detectMachine())
     scheduler = wfu.get_scheduler(machine)
     lobsdiag_forenkf = base.get('lobsdiag_forenkf', '.false.').upper()
-    eupd_cyc= base.get('EUPD_CYC', 'gdas').upper()
+    eupd_cyc= base.get('EUPD_CYC', 'wdas').upper()
 
     dict_resources = OrderedDict()
 
@@ -262,11 +262,11 @@ def get_hyb_resources(dict_configs):
         tasks.remove('eomg')
 
     if eupd_cyc in ['BOTH']:
-        cdumps = ['gfs', 'gdas']
-    elif eupd_cyc in ['GFS']:
-        cdumps = ['gfs']
-    elif eupd_cyc in ['GDAS']:
-        cdumps = ['gdas']
+        cdumps = ['wfs', 'wdas']
+    elif eupd_cyc in ['WFS']:
+        cdumps = ['wfs']
+    elif eupd_cyc in ['WDAS']:
+        cdumps = ['wdas']
 
     for cdump in cdumps:
         for task in tasks1:
@@ -289,8 +289,8 @@ def get_hyb_resources(dict_configs):
             dict_resources['%s%s' % (cdump, task)] = ''.join(strings)
 
 
-    # These tasks are always run as part of the GDAS cycle
-    cdump = 'gdas'
+    # These tasks are always run as part of the WDAS cycle
+    cdump = 'wdas'
     tasks2 = ['ecen', 'efcs', 'epos', 'earc']
     for task in tasks2:
 
@@ -315,16 +315,16 @@ def get_hyb_resources(dict_configs):
     return dict_resources
 
 
-def get_gdasgfs_tasks(dict_configs, cdump='gdas'):
+def get_wdaswfs_tasks(dict_configs, cdump='wdas'):
     '''
-        Create GDAS or GFS tasks
+        Create WDAS or WFS tasks
     '''
 
     envars = []
     if wfu.get_scheduler(wfu.detectMachine()) in ['slurm']:
         envars.append(rocoto.create_envar(name='SLURM_SET', value='YES'))
     envars.append(rocoto.create_envar(name='RUN_ENVIR', value='&RUN_ENVIR;'))
-    envars.append(rocoto.create_envar(name='HOMEgfs', value='&HOMEgfs;'))
+    envars.append(rocoto.create_envar(name='HOMEwfs', value='&HOMEwfs;'))
     envars.append(rocoto.create_envar(name='EXPDIR', value='&EXPDIR;'))
     envars.append(rocoto.create_envar(name='CDATE', value='<cyclestr>@Y@m@d@H</cyclestr>'))
     envars.append(rocoto.create_envar(name='CDUMP', value='%s' % cdump))
@@ -332,9 +332,9 @@ def get_gdasgfs_tasks(dict_configs, cdump='gdas'):
     envars.append(rocoto.create_envar(name='cyc', value='<cyclestr>@H</cyclestr>'))
 
     base = dict_configs['base']
-    gfs_cyc = base.get('gfs_cyc', 0)
+    wfs_cyc = base.get('wfs_cyc', 0)
     dohybvar = base.get('DOHYBVAR', 'NO').upper()
-    eupd_cyc = base.get('EUPD_CYC', 'gdas').upper()
+    eupd_cyc = base.get('EUPD_CYC', 'wdas').upper()
     do_bufrsnd = base.get('DO_BUFRSND', 'NO').upper()
     do_gempak = base.get('DO_GEMPAK', 'NO').upper()
     do_awips = base.get('DO_AWIPS', 'NO').upper()
@@ -344,9 +344,9 @@ def get_gdasgfs_tasks(dict_configs, cdump='gdas'):
 
     # prep
     deps = []
-    dep_dict = {'type': 'task', 'name': '%sfcst' % 'gdas', 'offset': '-06:00:00'}
+    dep_dict = {'type': 'task', 'name': '%sfcst' % 'wdas', 'offset': '-06:00:00'}
     deps.append(rocoto.add_dependency(dep_dict))
-    data = '&ROTDIR;/gdas.@Y@m@d/@H/gdas.t@Hz.atmf009.nemsio'
+    data = '&ROTDIR;/wdas.@Y@m@d/@H/wdas.t@Hz.atmf009.nemsio'
     dep_dict = {'type': 'data', 'data': data, 'offset': '-06:00:00'}
     deps.append(rocoto.add_dependency(dep_dict))
     data = '&DMPDIR;/%s%s.@Y@m@d/@H/%s.t@Hz.updated.status.tm00.bufr_d' % (cdump, dumpsuffix, cdump)
@@ -354,13 +354,13 @@ def get_gdasgfs_tasks(dict_configs, cdump='gdas'):
     deps.append(rocoto.add_dependency(dep_dict))
     dependencies = rocoto.create_dependency(dep_condition='and', dep=deps)
 
-    gfs_enkf = True if eupd_cyc in ['BOTH', 'GFS'] and dohybvar in ['Y', 'YES'] else False
+    wfs_enkf = True if eupd_cyc in ['BOTH', 'WFS'] and dohybvar in ['Y', 'YES'] else False
 
-    if gfs_enkf and cdump in ['gfs']:
-        if gfs_cyc == 4:
+    if wfs_enkf and cdump in ['wfs']:
+        if wfs_cyc == 4:
             task = wfu.create_wf_task('prep', cdump=cdump, envar=envars, dependency=dependencies)
         else:
-            task = wfu.create_wf_task('prep', cdump=cdump, envar=envars, dependency=dependencies, cycledef='gdas')
+            task = wfu.create_wf_task('prep', cdump=cdump, envar=envars, dependency=dependencies, cycledef='wdas')
 
     else:
         task = wfu.create_wf_task('prep', cdump=cdump, envar=envars, dependency=dependencies)
@@ -372,7 +372,7 @@ def get_gdasgfs_tasks(dict_configs, cdump='gdas'):
     dep_dict = {'type': 'task', 'name': '%sprep' % cdump}
     deps.append(rocoto.add_dependency(dep_dict))
     if dohybvar in ['y', 'Y', 'yes', 'YES']:
-        dep_dict = {'type': 'metatask', 'name': '%sepmn' % 'gdas', 'offset': '-06:00:00'}
+        dep_dict = {'type': 'metatask', 'name': '%sepmn' % 'wdas', 'offset': '-06:00:00'}
         deps.append(rocoto.add_dependency(dep_dict))
         dependencies = rocoto.create_dependency(dep_condition='and', dep=deps)
     else:
@@ -385,11 +385,11 @@ def get_gdasgfs_tasks(dict_configs, cdump='gdas'):
     deps = []
     dep_dict = {'type': 'task', 'name': '%sanal' % cdump}
     deps.append(rocoto.add_dependency(dep_dict))
-    if cdump in ['gdas']:
+    if cdump in ['wdas']:
         dep_dict = {'type': 'cycleexist', 'condition': 'not', 'offset': '-06:00:00'}
         deps.append(rocoto.add_dependency(dep_dict))
         dependencies = rocoto.create_dependency(dep_condition='or', dep=deps)
-    elif cdump in ['gfs']:
+    elif cdump in ['wfs']:
         dependencies = rocoto.create_dependency(dep=deps)
     task = wfu.create_wf_task('fcst', cdump=cdump, envar=envars, dependency=dependencies)
 
@@ -418,7 +418,7 @@ def get_hyb_tasks(dict_configs, cycledef='enkf'):
     base = dict_configs['base']
     nens = base['NMEM_ENKF']
     lobsdiag_forenkf = base.get('lobsdiag_forenkf', '.false.').upper()
-    eupd_cyc = base.get('EUPD_CYC', 'gdas').upper()
+    eupd_cyc = base.get('EUPD_CYC', 'wdas').upper()
 
     eobs = dict_configs['eobs']
     nens_eomg = eobs['NMEM_EOMGGRP']
@@ -439,7 +439,7 @@ def get_hyb_tasks(dict_configs, cycledef='enkf'):
     if wfu.get_scheduler(wfu.detectMachine()) in ['slurm']:
        envars.append(rocoto.create_envar(name='SLURM_SET', value='YES'))
     envars.append(rocoto.create_envar(name='RUN_ENVIR', value='&RUN_ENVIR;'))
-    envars.append(rocoto.create_envar(name='HOMEgfs', value='&HOMEgfs;'))
+    envars.append(rocoto.create_envar(name='HOMEwfs', value='&HOMEwfs;'))
     envars.append(rocoto.create_envar(name='EXPDIR', value='&EXPDIR;'))
     envars.append(rocoto.create_envar(name='CDATE', value='<cyclestr>@Y@m@d@H</cyclestr>'))
     #envars.append(rocoto.create_envar(name='CDUMP', value='%s' % cdump))
@@ -451,11 +451,11 @@ def get_hyb_tasks(dict_configs, cycledef='enkf'):
     dict_tasks = OrderedDict()
 
     if eupd_cyc in ['BOTH']:
-        cdumps = ['gfs', 'gdas']
-    elif eupd_cyc in ['GFS']:
-        cdumps = ['gfs']
-    elif eupd_cyc in ['GDAS']:
-        cdumps = ['gdas']
+        cdumps = ['wfs', 'wdas']
+    elif eupd_cyc in ['WFS']:
+        cdumps = ['wfs']
+    elif eupd_cyc in ['WDAS']:
+        cdumps = ['wdas']
 
     for cdump in cdumps:
 
@@ -466,7 +466,7 @@ def get_hyb_tasks(dict_configs, cycledef='enkf'):
         deps = []
         dep_dict = {'type': 'task', 'name': '%sprep' % cdump}
         deps.append(rocoto.add_dependency(dep_dict))
-        dep_dict = {'type': 'metatask', 'name': '%sepmn' % 'gdas', 'offset': '-06:00:00'}
+        dep_dict = {'type': 'metatask', 'name': '%sepmn' % 'wdas', 'offset': '-06:00:00'}
         deps.append(rocoto.add_dependency(dep_dict))
         dependencies = rocoto.create_dependency(dep_condition='and', dep=deps)
         task = wfu.create_wf_task('eobs', cdump=cdump, envar=envars1, dependency=dependencies, cycledef=cycledef)
@@ -497,11 +497,11 @@ def get_hyb_tasks(dict_configs, cycledef='enkf'):
 
         dict_tasks['%seupd' % cdump] = task
 
-    # All hybrid tasks beyond this point are always executed in the GDAS cycle
-    cdump = 'gdas'
+    # All hybrid tasks beyond this point are always executed in the WDAS cycle
+    cdump = 'wdas'
     envar_cdump = rocoto.create_envar(name='CDUMP', value='%s' % cdump)
     envars1 = envars + [envar_cdump]
-    cdump_eupd = 'gfs' if eupd_cyc in ['GFS'] else 'gdas'
+    cdump_eupd = 'wfs' if eupd_cyc in ['WFS'] else 'wdas'
 
     # ecen
     deps = []
@@ -574,9 +574,9 @@ def get_workflow_header(base):
     strings.append('\t<!-- Define the cycles -->\n')
     strings.append('\t<cycledef group="first">&SDATE;     &SDATE;     06:00:00</cycledef>\n')
     strings.append('\t<cycledef group="enkf" >&SDATE;     &EDATE;     06:00:00</cycledef>\n')
-    strings.append('\t<cycledef group="gdas" >&SDATE;     &EDATE;     06:00:00</cycledef>\n')
-    if base['gfs_cyc'] != 0:
-        strings.append('\t<cycledef group="gfs"  >&SDATE_GFS; &EDATE_GFS; &INTERVAL_GFS;</cycledef>\n')
+    strings.append('\t<cycledef group="wdas" >&SDATE;     &EDATE;     06:00:00</cycledef>\n')
+    if base['wfs_cyc'] != 0:
+        strings.append('\t<cycledef group="wfs"  >&SDATE_WFS; &EDATE_WFS; &INTERVAL_WFS;</cycledef>\n')
 
     strings.append('\n')
 
@@ -594,20 +594,20 @@ def get_workflow_footer():
     return ''.join(strings)
 
 
-def get_postgroups(post, cdump='gdas'):
+def get_postgroups(post, cdump='wdas'):
 
     fhmin = post['FHMIN']
     fhmax = post['FHMAX']
     fhout = post['FHOUT']
 
     # Get a list of all forecast hours
-    if cdump in ['gdas']:
+    if cdump in ['wdas']:
         fhrs = range(fhmin, fhmax+fhout, fhout)
-    elif cdump in ['gfs']:
-        fhmax = np.max([post['FHMAX_GFS_00'],post['FHMAX_GFS_06'],post['FHMAX_GFS_12'],post['FHMAX_GFS_18']])
-        fhout = post['FHOUT_GFS']
-        fhmax_hf = post['FHMAX_HF_GFS']
-        fhout_hf = post['FHOUT_HF_GFS']
+    elif cdump in ['wfs']:
+        fhmax = np.max([post['FHMAX_WFS_00'],post['FHMAX_WFS_06'],post['FHMAX_WFS_12'],post['FHMAX_WFS_18']])
+        fhout = post['FHOUT_WFS']
+        fhmax_hf = post['FHMAX_HF_WFS']
+        fhout_hf = post['FHOUT_HF_WFS']
         fhrs_hf = range(fhmin, fhmax_hf+fhout_hf, fhout_hf)
         fhrs = fhrs_hf + range(fhrs_hf[-1]+fhout, fhmax+fhout, fhout)
 
@@ -624,20 +624,20 @@ def get_postgroups(post, cdump='gdas'):
 
     return fhrgrp, fhrdep, fhrlst
 
-def get_awipsgroups(awips, cdump='gdas'):
+def get_awipsgroups(awips, cdump='wdas'):
 
     fhmin = awips['FHMIN']
     fhmax = awips['FHMAX']
     fhout = awips['FHOUT']
 
     # Get a list of all forecast hours
-    if cdump in ['gdas']:
+    if cdump in ['wdas']:
         fhrs = range(fhmin, fhmax+fhout, fhout)
-    elif cdump in ['gfs']:
-        fhmax = np.max([awips['FHMAX_GFS_00'],awips['FHMAX_GFS_06'],awips['FHMAX_GFS_12'],awips['FHMAX_GFS_18']])
-        fhout = awips['FHOUT_GFS']
-        fhmax_hf = awips['FHMAX_HF_GFS']
-        fhout_hf = awips['FHOUT_HF_GFS']
+    elif cdump in ['wfs']:
+        fhmax = np.max([awips['FHMAX_WFS_00'],awips['FHMAX_WFS_06'],awips['FHMAX_WFS_12'],awips['FHMAX_WFS_18']])
+        fhout = awips['FHOUT_WFS']
+        fhmax_hf = awips['FHMAX_HF_WFS']
+        fhout_hf = awips['FHOUT_HF_WFS']
         if fhmax > 240:
             fhmax = 240
         if fhmax_hf > 240:
@@ -658,7 +658,7 @@ def get_awipsgroups(awips, cdump='gdas'):
 
     return fhrgrp, fhrdep, fhrlst
 
-def get_eposgroups(epos, cdump='gdas'):
+def get_eposgroups(epos, cdump='wdas'):
 
     fhmin = epos['FHMIN_ENKF']
     fhmax = epos['FHMAX_ENKF']
@@ -699,8 +699,8 @@ def create_xml(dict_configs):
 
     base = dict_configs['base']
     dohybvar = base.get('DOHYBVAR', 'NO').upper()
-    gfs_cyc = base.get('gfs_cyc', 0)
-    eupd_cyc = base.get('EUPD_CYC', 'gdas').upper()
+    wfs_cyc = base.get('wfs_cyc', 0)
+    eupd_cyc = base.get('EUPD_CYC', 'wdas').upper()
 
     # Start collecting workflow pieces
     preamble = get_preamble()
@@ -708,9 +708,9 @@ def create_xml(dict_configs):
     workflow_header = get_workflow_header(base)
     workflow_footer = get_workflow_footer()
 
-    # Get GDAS related entities, resources, workflow
-    dict_gdas_resources = get_gdasgfs_resources(dict_configs)
-    dict_gdas_tasks = get_gdasgfs_tasks(dict_configs)
+    # Get WDAS related entities, resources, workflow
+    dict_wdas_resources = get_wdaswfs_resources(dict_configs)
+    dict_wdas_tasks = get_wdaswfs_tasks(dict_configs)
 
     # Get hybrid related entities, resources, workflow
     if dohybvar in ['Y', 'YES']:
@@ -719,7 +719,7 @@ def create_xml(dict_configs):
         dict_hyb_tasks = get_hyb_tasks(dict_configs)
 
         # Removes <memory>&MEMORY_JOB_DUMP</memory> post mortem from hyb tasks
-        hyp_tasks = {'gdaseobs':'gdaseobs', 'gdaseomg':'gdaseomn', 'gdaseupd':'gdaseupd','gdasecen':'gdasecen','gdasefcs':'gdasefmn','gdasepos':'gdasepmn','gdasearc':'gdaseamn'}
+        hyp_tasks = {'wdaseobs':'wdaseobs', 'wdaseomg':'wdaseomn', 'wdaseupd':'wdaseupd','wdasecen':'wdasecen','wdasefcs':'wdasefmn','wdasepos':'wdasepmn','wdasearc':'wdaseamn'}
         for each_task, each_resource_string in dict_hyb_resources.iteritems():
             #print each_task,hyp_tasks[each_task]
             #print dict_hyb_tasks[hyp_tasks[each_task]]
@@ -737,31 +737,31 @@ def create_xml(dict_configs):
                              temp_task_string.append(each_line)
                     dict_hyb_tasks[hyp_tasks[each_task]] = ''.join(temp_task_string)
 
-    # Get GFS cycle related entities, resources, workflow
-    dict_gfs_resources = get_gdasgfs_resources(dict_configs, cdump='gfs')
-    dict_gfs_tasks = get_gdasgfs_tasks(dict_configs, cdump='gfs')
+    # Get WFS cycle related entities, resources, workflow
+    dict_wfs_resources = get_wdaswfs_resources(dict_configs, cdump='wfs')
+    dict_wfs_tasks = get_wdaswfs_tasks(dict_configs, cdump='wfs')
 
-    # Removes <memory>&MEMORY_JOB_DUMP</memory> post mortem from gdas tasks
-    for each_task, each_resource_string in dict_gdas_resources.iteritems():
-        if each_task not in dict_gdas_tasks:
+    # Removes <memory>&MEMORY_JOB_DUMP</memory> post mortem from wdas tasks
+    for each_task, each_resource_string in dict_wdas_resources.iteritems():
+        if each_task not in dict_wdas_tasks:
             continue
         if 'MEMORY' not in each_resource_string:
             temp_task_string = []
-            for each_line in re.split(r'(\s+)', dict_gdas_tasks[each_task]):
+            for each_line in re.split(r'(\s+)', dict_wdas_tasks[each_task]):
                 if 'memory' not in each_line:
                      temp_task_string.append(each_line)
-            dict_gdas_tasks[each_task] = ''.join(temp_task_string)
+            dict_wdas_tasks[each_task] = ''.join(temp_task_string)
 
-    # Removes <memory>&MEMORY_JOB_DUMP</memory> post mortem from gfs tasks
-    for each_task, each_resource_string in dict_gfs_resources.iteritems():
-        if each_task not in dict_gfs_tasks:
+    # Removes <memory>&MEMORY_JOB_DUMP</memory> post mortem from wfs tasks
+    for each_task, each_resource_string in dict_wfs_resources.iteritems():
+        if each_task not in dict_wfs_tasks:
             continue
         if 'MEMORY' not in each_resource_string:
             temp_task_string = []
-            for each_line in re.split(r'(\s+)', dict_gfs_tasks[each_task]):
+            for each_line in re.split(r'(\s+)', dict_wfs_tasks[each_task]):
                 if 'memory' not in each_line:
                      temp_task_string.append(each_line)
-            dict_gfs_tasks[each_task] = ''.join(temp_task_string)
+            dict_wfs_tasks[each_task] = ''.join(temp_task_string)
 
     # Put together the XML file
     xmlfile = []
@@ -770,27 +770,27 @@ def create_xml(dict_configs):
 
     xmlfile.append(definitions)
 
-    xmlfile.append(dict_to_strings(dict_gdas_resources))
+    xmlfile.append(dict_to_strings(dict_wdas_resources))
 
     if dohybvar in ['Y', 'YES']:
         xmlfile.append(dict_to_strings(dict_hyb_resources))
 
-    if gfs_cyc != 0:
-        xmlfile.append(dict_to_strings(dict_gfs_resources))
-    elif gfs_cyc == 0 and dohybvar in ['Y', 'YES'] and eupd_cyc in ['BOTH', 'GFS']:
-        xmlfile.append(dict_gfs_resources['gfsprep'])
+    if wfs_cyc != 0:
+        xmlfile.append(dict_to_strings(dict_wfs_resources))
+    elif wfs_cyc == 0 and dohybvar in ['Y', 'YES'] and eupd_cyc in ['BOTH', 'WFS']:
+        xmlfile.append(dict_wfs_resources['wfsprep'])
 
     xmlfile.append(workflow_header)
 
-    xmlfile.append(dict_to_strings(dict_gdas_tasks))
+    xmlfile.append(dict_to_strings(dict_wdas_tasks))
 
     if dohybvar in ['Y', 'YES']:
         xmlfile.append(dict_to_strings(dict_hyb_tasks))
 
-    if gfs_cyc != 0:
-        xmlfile.append(dict_to_strings(dict_gfs_tasks))
-    elif gfs_cyc == 0 and dohybvar in ['Y', 'YES'] and eupd_cyc in ['BOTH', 'GFS']:
-        xmlfile.append(dict_gfs_tasks['gfsprep'])
+    if wfs_cyc != 0:
+        xmlfile.append(dict_to_strings(dict_wfs_tasks))
+    elif wfs_cyc == 0 and dohybvar in ['Y', 'YES'] and eupd_cyc in ['BOTH', 'WFS']:
+        xmlfile.append(dict_wfs_tasks['wfsprep'])
         xmlfile.append('\n')
 
     xmlfile.append(wfu.create_firstcyc_task())

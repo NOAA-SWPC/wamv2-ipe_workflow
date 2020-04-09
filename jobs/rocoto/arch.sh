@@ -4,17 +4,17 @@
 ## Abstract:
 ## Archive driver script
 ## RUN_ENVIR : runtime environment (emc | nco)
-## HOMEgfs   : /full/path/to/workflow
+## HOMEwfs   : /full/path/to/workflow
 ## EXPDIR : /full/path/to/config/files
 ## CDATE  : current analysis date (YYYYMMDDHH)
-## CDUMP  : cycle name (gdas / gfs)
+## CDUMP  : cycle name (wdas / wfs)
 ## PDY    : current date (YYYYMMDD)
 ## cyc    : current cycle (HH)
 ###############################################################
 
 ###############################################################
 # Source FV3GFS workflow modules
-. $HOMEgfs/ush/load_fv3gfs_modules.sh
+. $HOMEwfs/ush/load_fv3gfs_modules.sh
 status=$?
 [[ $status -ne 0 ]] && exit $status
 
@@ -58,17 +58,17 @@ $NCP ${APREFIX}gsistat $ARCDIR/gsistat.${CDUMP}.${CDATE}
 $NCP ${APREFIX}pgrb.1p00.anl $ARCDIR/pgbanl.${CDUMP}.${CDATE}
 
 # Archive 1 degree forecast GRIB1 files for verification
-if [ $CDUMP = "gfs" ]; then
-    fhmax=$FHMAX_GFS
+if [ $CDUMP = "wfs" ]; then
+    fhmax=$FHMAX_WFS
     fhr=0
     while [ $fhr -le $fhmax ]; do
         fhr2=$(printf %02i $fhr)
         fhr3=$(printf %03i $fhr)
         $NCP ${APREFIX}pgrb.1p00.f$fhr3 $ARCDIR/pgbf${fhr2}.${CDUMP}.${CDATE}
-        (( fhr = $fhr + $FHOUT_GFS ))
+        (( fhr = $fhr + $FHOUT_WFS ))
     done
 fi
-if [ $CDUMP = "gdas" ]; then
+if [ $CDUMP = "wdas" ]; then
     flist="000 003 006 009"
     for fhr in $flist; do
         fname=${APREFIX}pgrb.1p00.f${fhr}
@@ -82,19 +82,19 @@ if [ -s avno.t${cyc}z.cyclone.trackatcfunix ]; then
     cat avno.t${cyc}z.cyclone.trackatcfunix | sed s:AVNO:${PLSOT4}:g  > ${ARCDIR}/atcfunix.${CDUMP}.$CDATE
     cat avnop.t${cyc}z.cyclone.trackatcfunix | sed s:AVNO:${PLSOT4}:g  > ${ARCDIR}/atcfunixp.${CDUMP}.$CDATE
 fi
-if [ $CDUMP = "gfs" ]; then
+if [ $CDUMP = "wfs" ]; then
     $NCP storms.gfso.atcf_gen.$CDATE      ${ARCDIR}/.
     $NCP storms.gfso.atcf_gen.altg.$CDATE ${ARCDIR}/.
     $NCP trak.gfso.atcfunix.$CDATE        ${ARCDIR}/.
     $NCP trak.gfso.atcfunix.altg.$CDATE   ${ARCDIR}/.
 fi
 
-# Archive atmospheric nemsio gfs forecast files for fit2obs
+# Archive atmospheric nemsio wfs forecast files for fit2obs
 VFYARC=$ROTDIR/vrfyarch
 [[ ! -d $VFYARC ]] && mkdir -p $VFYARC
-if [ $CDUMP = "gfs" -a $FITSARC = "YES" ]; then
+if [ $CDUMP = "wfs" -a $FITSARC = "YES" ]; then
     mkdir -p $VFYARC/${CDUMP}.$PDY/$cyc
-    fhmax=${FHMAX_FITS:-$FHMAX_GFS}
+    fhmax=${FHMAX_FITS:-$FHMAX_WFS}
     fhr=0
     while [[ $fhr -le $fhmax ]]; do
       fhr3=$(printf %03i $fhr)
@@ -143,16 +143,16 @@ ARCH_LIST="$COMIN/archlist"
 mkdir -p $ARCH_LIST
 cd $ARCH_LIST
 
-$HOMEgfs/ush/hpssarch_gen.sh $CDUMP
+$HOMEwfs/ush/hpssarch_gen.sh $CDUMP
 status=$?
 if [ $status -ne 0  ]; then
-    echo "$HOMEgfs/ush/hpssarch_gen.sh $CDUMP failed, ABORT!"
+    echo "$HOMEwfs/ush/hpssarch_gen.sh $CDUMP failed, ABORT!"
     exit $status
 fi
 
 cd $ROTDIR
 
-if [ $CDUMP = "gfs" ]; then
+if [ $CDUMP = "wfs" ]; then
 
     #for targrp in gfsa gfsb - NOTE - do not check htar error status
     for targrp in gfsa gfsb; do
@@ -191,28 +191,28 @@ if [ $CDUMP = "gfs" ]; then
 fi
 
 
-if [ $CDUMP = "gdas" ]; then
+if [ $CDUMP = "wdas" ]; then
 
-    htar -P -cvf $ATARDIR/$CDATE/gdas.tar `cat $ARCH_LIST/gdas.txt`
+    htar -P -cvf $ATARDIR/$CDATE/wdas.tar `cat $ARCH_LIST/wdas.txt`
     status=$?
     if [ $status -ne 0  -a $CDATE -ge $firstday ]; then
-        echo "HTAR $CDATE gdas.tar failed"
+        echo "HTAR $CDATE wdas.tar failed"
         exit $status
     fi
 
     if [ $SAVEWARMICA = "YES" -o $SAVEFCSTIC = "YES" ]; then
-        htar -P -cvf $ATARDIR/$CDATE/gdas_restarta.tar `cat $ARCH_LIST/gdas_restarta.txt`
+        htar -P -cvf $ATARDIR/$CDATE/wdas_restarta.tar `cat $ARCH_LIST/wdas_restarta.txt`
         status=$?
         if [ $status -ne 0  -a $CDATE -ge $firstday ]; then
-            echo "HTAR $CDATE gdas_restarta.tar failed"
+            echo "HTAR $CDATE wdas_restarta.tar failed"
             exit $status
         fi
     fi
     if [ $SAVEWARMICB = "YES" -o $SAVEFCSTIC = "YES" ]; then
-        htar -P -cvf $ATARDIR/$CDATE/gdas_restartb.tar `cat $ARCH_LIST/gdas_restartb.txt`
+        htar -P -cvf $ATARDIR/$CDATE/wdas_restartb.tar `cat $ARCH_LIST/wdas_restartb.txt`
         status=$?
         if [ $status -ne 0  -a $CDATE -ge $firstday ]; then
-            echo "HTAR $CDATE gdas_restartb.tar failed"
+            echo "HTAR $CDATE wdas_restartb.tar failed"
             exit $status
         fi
     fi
@@ -275,10 +275,10 @@ while [ $GDATE -le $GDATEEND ]; do
     GDATE=$($NDATE +$assim_freq $GDATE)
 done
 
-# Remove archived stuff in $VFYARC that are (48+$FHMAX_GFS) hrs behind
+# Remove archived stuff in $VFYARC that are (48+$FHMAX_WFS) hrs behind
 # 1. atmospheric nemsio files used for fit2obs
-if [ $CDUMP = "gfs" ]; then
-    GDATE=$($NDATE -$FHMAX_GFS $GDATE)
+if [ $CDUMP = "wfs" ]; then
+    GDATE=$($NDATE -$FHMAX_WFS $GDATE)
     gPDY=$(echo $GDATE | cut -c1-8)
     COMIN="$VFYARC/$CDUMP.$gPDY"
     [[ -d $COMIN ]] && rm -rf $COMIN

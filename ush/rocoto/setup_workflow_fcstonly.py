@@ -2,14 +2,14 @@
 
 '''
     PROGRAM:
-        Create the ROCOTO workflow for a forecast only experiment given the configuration of the GFS parallel
+        Create the ROCOTO workflow for a forecast only experiment given the configuration of the WFS parallel
 
     AUTHOR:
         Rahul.Mahajan
         rahul.mahajan@noaa.gov
 
     FILE DEPENDENCIES:
-        1. config files for the parallel; e.g. config.base, config.fcst[.gfs], etc.
+        1. config files for the parallel; e.g. config.base, config.fcst[.wfs], etc.
         Without this dependency, the script will fail
 
     OUTPUT:
@@ -33,7 +33,7 @@ taskplan = ['getic', 'fcst', 'post', 'vrfy', 'arch']
 def main():
     parser = ArgumentParser(description='Setup XML workflow and CRONTAB for a forecast only experiment.', formatter_class=ArgumentDefaultsHelpFormatter)
     parser.add_argument('--expdir',help='full path to experiment directory containing config files', type=str, required=False, default=os.environ['PWD'])
-    parser.add_argument('--cdump',help='cycle to run forecasts', type=str, choices=['gdas', 'gfs'], default='gfs', required=False)
+    parser.add_argument('--cdump',help='cycle to run forecasts', type=str, choices=['wdas', 'wfs'], default='wfs', required=False)
 
     args = parser.parse_args()
 
@@ -118,7 +118,7 @@ def get_definitions(base):
     strings.append('\t<!ENTITY ICSDIR "%s">\n' % base['ICSDIR'])
     strings.append('\n')
     strings.append('\t<!-- Directories for driving the workflow -->\n')
-    strings.append('\t<!ENTITY HOMEgfs  "%s">\n' % base['HOMEgfs'])
+    strings.append('\t<!ENTITY HOMEwfs  "%s">\n' % base['HOMEwfs'])
     strings.append('\t<!ENTITY JOBS_DIR "%s">\n' % base['BASE_JOB'])
     strings.append('\n')
     strings.append('\t<!-- Machine related entities -->\n')
@@ -141,7 +141,7 @@ def get_definitions(base):
     return ''.join(strings)
 
 
-def get_resources(dict_configs, cdump='gdas'):
+def get_resources(dict_configs, cdump='wdas'):
     '''
         Create resource entities
     '''
@@ -179,20 +179,20 @@ def get_resources(dict_configs, cdump='gdas'):
     return ''.join(strings)
 
 
-def get_postgroups(post, cdump='gdas'):
+def get_postgroups(post, cdump='wdas'):
 
     fhmin = post['FHMIN']
     fhmax = post['FHMAX']
     fhout = post['FHOUT']
 
     # Get a list of all forecast hours
-    if cdump in ['gdas']:
+    if cdump in ['wdas']:
         fhrs = range(fhmin, fhmax+fhout, fhout)
-    elif cdump in ['gfs']:
-        fhmax = np.max([post['FHMAX_GFS_00'],post['FHMAX_GFS_06'],post['FHMAX_GFS_12'],post['FHMAX_GFS_18']])
-        fhout = post['FHOUT_GFS']
-        fhmax_hf = post['FHMAX_HF_GFS']
-        fhout_hf = post['FHOUT_HF_GFS']
+    elif cdump in ['wfs']:
+        fhmax = np.max([post['FHMAX_WFS_00'],post['FHMAX_WFS_06'],post['FHMAX_WFS_12'],post['FHMAX_WFS_18']])
+        fhout = post['FHOUT_WFS']
+        fhmax_hf = post['FHMAX_HF_WFS']
+        fhout_hf = post['FHOUT_HF_WFS']
         fhrs_hf = range(fhmin, fhmax_hf+fhout_hf, fhout_hf)
         fhrs = fhrs_hf + range(fhrs_hf[-1]+fhout, fhmax+fhout, fhout)
 
@@ -210,14 +210,14 @@ def get_postgroups(post, cdump='gdas'):
     return fhrgrp, fhrdep, fhrlst
 
 
-def get_workflow(dict_configs, cdump='gdas'):
+def get_workflow(dict_configs, cdump='wdas'):
     '''
         Create tasks for forecast only workflow
     '''
 
     envars = []
     envars.append(rocoto.create_envar(name='RUN_ENVIR', value='&RUN_ENVIR;'))
-    envars.append(rocoto.create_envar(name='HOMEgfs', value='&HOMEgfs;'))
+    envars.append(rocoto.create_envar(name='HOMEwfs', value='&HOMEwfs;'))
     envars.append(rocoto.create_envar(name='EXPDIR', value='&EXPDIR;'))
     envars.append(rocoto.create_envar(name='CDATE', value='<cyclestr>@Y@m@d@H</cyclestr>'))
     envars.append(rocoto.create_envar(name='CDUMP', value='&CDUMP;'))
@@ -248,7 +248,7 @@ def get_workflow(dict_configs, cdump='gdas'):
 
     # fcst
     deps = []
-    data = '&ICSDIR;/@Y@m@d@H/&CDUMP;/&CASE;/INPUT/gfs_data.tile6.nc'
+    data = '&ICSDIR;/@Y@m@d@H/&CDUMP;/&CASE;/INPUT/wfs_data.tile6.nc'
     dep_dict = {'type':'data', 'data':data}
     deps.append(rocoto.add_dependency(dep_dict))
     data = '&ICSDIR;/@Y@m@d@H/&CDUMP;/&CASE;/INPUT/sfc_data.tile6.nc'
@@ -302,7 +302,7 @@ def get_workflow(dict_configs, cdump='gdas'):
     return ''.join(tasks)
 
 
-def get_workflow_body(dict_configs, cdump='gdas'):
+def get_workflow_body(dict_configs, cdump='wdas'):
     '''
         Create the workflow body
     '''
@@ -333,7 +333,7 @@ def create_xml(dict_configs):
     '''
 
 
-    dict_configs['base']['INTERVAL'] = wfu.get_gfs_interval(dict_configs['base']['gfs_cyc'])
+    dict_configs['base']['INTERVAL'] = wfu.get_wfs_interval(dict_configs['base']['wfs_cyc'])
     base = dict_configs['base']
 
     preamble = get_preamble()
@@ -341,7 +341,7 @@ def create_xml(dict_configs):
     resources = get_resources(dict_configs, cdump=base['CDUMP'])
     workflow = get_workflow_body(dict_configs, cdump=base['CDUMP'])
 
-    # Removes <memory>&MEMORY_JOB_DUMP</memory> post mortem from gdas tasks
+    # Removes <memory>&MEMORY_JOB_DUMP</memory> post mortem from wdas tasks
     temp_workflow = ''
     memory_dict = []
     for each_resource_string in re.split(r'(\s+)', resources):

@@ -1,8 +1,8 @@
 #!/bin/ksh -x
 
 ###############################################################
-# Source FV3GFS workflow modules
-. $HOMEgfs/ush/load_fv3gfs_modules.sh
+# Source WFS workflow modules
+. $HOMEwfs/ush/load_fv3gfs_modules.sh
 status=$?
 [[ $status -ne 0 ]] && exit $status
 
@@ -30,18 +30,18 @@ export COMOUT="$ROTDIR/$CDUMP.$PDY/$cyc"
 ###############################################################
 # If ROTDIR_DUMP=YES, copy dump files to rotdir 
 if [ $ROTDIR_DUMP = "YES" ]; then
-    $HOMEgfs/ush/getdump.sh $CDATE $CDUMP $DMPDIR/${CDUMP}${DUMP_SUFFIX}.${PDY}/${cyc} $COMOUT
+    $HOMEwfs/ush/getdump.sh $CDATE $CDUMP $DMPDIR/${CDUMP}${DUMP_SUFFIX}.${PDY}/${cyc} $COMOUT
     status=$?
     [[ $status -ne 0 ]] && exit $status
 
-#   Ensure previous cycle gdas dumps are available (used by cycle & downstream)
+#   Ensure previous cycle wdas dumps are available (used by cycle & downstream)
     GDATE=$($NDATE -$assim_freq $CDATE)
     gPDY=$(echo $GDATE | cut -c1-8)
     gcyc=$(echo $GDATE | cut -c9-10)
-    GDUMP=gdas
+    GDUMP=wdas
     gCOMOUT="$ROTDIR/$GDUMP.$gPDY/$gcyc"
     if [ ! -s $gCOMOUT/$GDUMP.t${gcyc}z.updated.status.tm00.bufr_d ]; then
-     $HOMEgfs/ush/getdump.sh $GDATE $GDUMP $DMPDIR/${GDUMP}${DUMP_SUFFIX}.${gPDY}/${gcyc} $gCOMOUT
+     $HOMEwfs/ush/getdump.sh $GDATE $GDUMP $DMPDIR/${GDUMP}${DUMP_SUFFIX}.${gPDY}/${gcyc} $gCOMOUT
      status=$?
      [[ $status -ne 0 ]] && exit $status
     fi
@@ -70,7 +70,7 @@ if [ $PROCESS_TROPCY = "YES" ]; then
 
     [[ $ROTDIR_DUMP = "YES" ]] && rm $COMOUT${CDUMP}.t${cyc}z.syndata.tcvitals.tm00
 
-    $HOMEgfs/jobs/JGLOBAL_TROPCY_QC_RELOC
+    $HOMEwfs/jobs/JGLOBAL_TROPCY_QC_RELOC
     status=$?
     [[ $status -ne 0 ]] && exit $status
 
@@ -95,8 +95,8 @@ if [ $DO_MAKEPREPBUFR = "YES" ]; then
       export COMSP=${COMSP:-$COMIN_OBS/$CDUMP.t${cyc}z.}
     fi
     export COMIN=${COMIN:-$ROTDIR/$CDUMP.$PDY/$cyc}
-    export COMINgdas=${COMINgdas:-$ROTDIR/gdas.$PDY/$cyc}
-    export COMINgfs=${COMINgfs:-$ROTDIR/gfs.$PDY/$cyc}
+    export COMINwdas=${COMINwdas:-$ROTDIR/wdas.$PDY/$cyc}
+    export COMINwfs=${COMINwfs:-$ROTDIR/wfs.$PDY/$cyc}
 
     $HOMEobsproc_network/jobs/JGLOBAL_PREP
     status=$?

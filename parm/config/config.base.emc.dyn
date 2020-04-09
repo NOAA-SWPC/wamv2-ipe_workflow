@@ -30,13 +30,13 @@ fi
 HPSS_PROJECT=emc-global
 
 # Directories relative to installation areas:
-export HOMEgfs=@HOMEgfs@
-export PARMgfs=$HOMEgfs/parm
-export FIXgfs=$HOMEgfs/fix
-export USHgfs=$HOMEgfs/ush
-export UTILgfs=$HOMEgfs/util
-export EXECgfs=$HOMEgfs/exec
-export SCRgfs=$HOMEgfs/scripts
+export HOMEwfs=@HOMEwfs@
+export PARMwfs=$HOMEwfs/parm
+export FIXwfs=$HOMEwfs/fix
+export USHwfs=$HOMEwfs/ush
+export UTILwfs=$HOMEwfs/util
+export EXECwfs=$HOMEwfs/exec
+export SCRwfs=$HOMEwfs/scripts
 
 ########################################################################
 
@@ -137,7 +137,7 @@ if [ $machine = "THEIA" ]; then
 
 fi
 
-# Toggle to turn on/off GFS downstream processing.
+# Toggle to turn on/off WFS downstream processing.
 export DO_BUFRSND="NO"
 export DO_GEMPAK="NO"
 export DO_AWIPS="NO"
@@ -152,13 +152,13 @@ export REALTIME="NO"
 # FEEL FREE TO MOVE THEM ABOVE THIS LINE TO KEEP IT
 # CLEAR
 ####################################################
-# Build paths relative to $HOMEgfs
-export HOMEgsi="$HOMEgfs"
-export FIXgsi="$HOMEgfs/fix/fix_gsi"
-export HOMEgsmwam_ipe="$HOMEgfs/sorc/gsmwam_ipe.fd"
-export HOMEpost="$HOMEgfs"
-export HOMEobsproc_prep="$BASE_GIT/obsproc/obsproc_prep_RB-5.2.0"
-export HOMEobsproc_network="$BASE_GIT/obsproc/obsproc_global.v3.2.3"
+# Build paths relative to $HOMEwfs
+export HOMEgsi="$HOMEwfs"
+export FIXgsi="$HOMEwfs/fix/fix_gsi"
+export HOMEgsmwam_ipe="$HOMEwfs/sorc/gsmwam_ipe.fd"
+export HOMEpost="$HOMEwfs"
+export HOMEobsproc_prep="/scratch1/NCEPDEV/swpc/Adam.Kubaryk/obsproc/obsproc_prep_RB-5.2.0"
+export HOMEobsproc_network="/scratch1/NCEPDEV/swpc/Adam.Kubaryk/obsproc/obsproc_global.v3.2.3"
 export HOMEobsproc_global=$HOMEobsproc_network
 export BASE_VERIF="$BASE_SVN/verif/global/tags/vsdb"
 
@@ -169,15 +169,15 @@ export NLN="/bin/ln -sf"
 export VERBOSE="YES"
 export KEEPDATA="NO"
 export CHGRP_CMD="chgrp rstprod"
-export NEMSIOGET="$HOMEgfs/exec/nemsio_get"
+export NEMSIOGET="$HOMEwfs/exec/nemsio_get"
 export UTILDIR=/scratch1/NCEPDEV/swpc/Adam.Kubaryk/util/exec
 export SIGHDR=$UTILDIR/global_sighdr
 export SFCHDR=$UTILDIR/global_sfchdr
 export CHGSFCFHREXEC=$UTILDIR/chgsfcfhr
 
 # Machine environment, jobs, and other utility scripts
-export BASE_ENV="$HOMEgfs/env"
-export BASE_JOB="$HOMEgfs/jobs/rocoto"
+export BASE_ENV="$HOMEwfs/env"
+export BASE_JOB="$HOMEwfs/jobs/rocoto"
 
 # IPE stuff
 export IPEGRIDFILENAME=${IPEGRIDFILENAME:-"IPE_Grid.h5"}
@@ -200,16 +200,15 @@ export ARCDIR="$NOSCRUB/archive/$PSLOT"
 export ICSDIR="@ICSDIR@"
 export ATARDIR="/NCEPDEV/$HPSS_PROJECT/1year/$USER/$machine/scratch/$PSLOT"
 export ROTDIR=${ROTDIR:-$PTMP/$USER/$JOBNAME}              # where model I/O files are stored
-export COMOUT=${COMOUT:-$ROTDIR}
 export RESTARTDIR=${RESTARTDIR:-$ROTDIR/restart_directory} # folder containing restart files
 export EXECGLOBAL=${EXECGLOBAL:-$BASE_NEMS/exe}            # NEMS executable directory
-export FIXGLOBAL=${FIXGLOBAL:-$FIXgfs/GSM/fix_am}         # global fix files
-export FIX_IDEA=$FIXgfs/WAM_gh_l150
+export FIXGLOBAL=${FIXGLOBAL:-$FIXwfs/GSM/fix_am}         # global fix files
+export FIX_IDEA=$FIXwfs/WAM_gh_l150
 
 # Commonly defined parameters in JJOBS
 export envir=${envir:-"prod"}
-export NET="gfs"
-export RUN=${RUN:-${CDUMP:-"gfs"}}
+export NET="wfs"
+export RUN=${RUN:-${CDUMP:-"wfs"}}
 export jlogfile="${EXPDIR}/logs/jlogfile"
 export ERRSCRIPT=${ERRSCRIPT:-'eval [[ $err = 0 ]]'}
 export LOGSCRIPT=${LOGSCRIPT:-""}
@@ -226,8 +225,8 @@ export SENDSDM="NO"
 # Resolution specific parameters
 export IDEA=${IDEA:-.true.}
 export NEMS=${NEMS:-.true.}
-export WAM_IPE_COUPLING=${WAM_IPE_COUPLING:-.true.}
-export IPE=${IPE:-.true.}
+export WAM_IPE_COUPLING=${WAM_IPE_COUPLING:-.false.}
+export IPE=${IPE:-.false.}
 
 export LEVS=150
 export LEVR=90
@@ -263,7 +262,7 @@ if [[ $NEMSIO_IN = .true. ]] ; then
         export SEARCH=*nanl* # used in checks.sh
 else
         export SIGIO_IN=${SIGIO_IN:-.true.}
-        export SIGOSUF=${SIGOSUF:-sig}
+        export SIGOSUF=${SIGOSUF:-atm}
         export SFCOSUF=${SFCOSUF:-sfc}
         export NSTOSUF=${NSTOSUF:-nst}
         export FLXOSUF=${FLXOSUF:-flx}
@@ -274,35 +273,36 @@ if [[ $NEMSIO_OUT = .true. ]] ; then
 else
         export SIGIO_OUT=${SIGIO_OUT:-.true.}
 fi
-export SUFOUT=${SUFOUT:-".$CDATE"}
+export SUFOUT="" # ${SUFOUT:-".$CDATE"}
 
 ## filename settings used for checks.sh
 export ATM=${SIGOSUF}anl
 export SFC=${SFCOSUF}anl
+export PLAS=IPE_State.apex
 
 # Surface cycle update frequency
-if [[ "$CDUMP" == "gdas" ]] ; then
+if [[ "$CDUMP" == "wdas" ]] ; then
    export FHCYC=1
    export FTSFS=10
-elif [[ "$CDUMP" == "gfs" ]] ; then
+elif [[ "$CDUMP" == "wfs"]] ; then
    export FHCYC=24
 fi
 
-# GFS cycle info
-export gfs_cyc=@gfs_cyc@ # 0: no GFS cycle, 1: 00Z only, 2: 00Z and 12Z only, 4: all 4 cycles.
+# WFS cycle info
+export wfs_cyc=@wfs_cyc@ # 0: no wfs cycle, 1: 00Z only, 2: 00Z and 12Z only, 4: all 4 cycles.
 
-# GFS output and frequency
-export FHMIN_GFS=0
+# WFS output and frequency
+export FHMIN_WFS=0
 
-export FHMAX_GFS_00=240
-export FHMAX_GFS_06=240
-export FHMAX_GFS_12=240
-export FHMAX_GFS_18=240
-export FHMAX_GFS=$(eval echo \${FHMAX_GFS_$cyc})
+export FHMAX_WFS_00=240
+export FHMAX_WFS_06=240
+export FHMAX_WFS_12=240
+export FHMAX_WFS_18=240
+export FHMAX_WFS=$(eval echo \${FHMAX_WFS_$cyc})
 
-export FHOUT_GFS=3
-export FHMAX_HF_GFS=0
-export FHOUT_HF_GFS=1
+export FHOUT_WFS=3
+export FHMAX_HF_WFS=0
+export FHOUT_HF_WFS=1
 
 # I/O QUILTING, true--use Write Component; false--use GFDL FMS
 # if quilting=true, choose OUTPUT_GRID as cubed_sphere_grid in netcdf or gaussian_grid
@@ -358,7 +358,7 @@ export INCREMENTS_TO_ZERO="'delz_inc','clwmr_inc','icmr_inc'"
 export HPSSARCH="NO"         # save data to HPSS archive
 export ARCH_CYC=00           # Archive data at this cycle for warm_start capability
 export ARCH_WARMICFREQ=4     # Archive frequency in days for warm_start capability
-export ARCH_FCSTICFREQ=1     # Archive frequency in days for gdas and gfs forecast-only capability
+export ARCH_FCSTICFREQ=1     # Archive frequency in days for wdas and wfs forecast-only capability
 
 
 echo "END: config.base"

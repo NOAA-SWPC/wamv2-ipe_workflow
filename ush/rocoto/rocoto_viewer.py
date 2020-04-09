@@ -1150,7 +1150,7 @@ def main(screen):
 
     html_output_dir = None
     entity_values = get_entity_values( workflow_file )
-    workflow_name = 'gfs_workflow'
+    workflow_name = 'wfs_workflow'
     if 'ROTDIR' in entity_values:
         ROTDIR = entity_values['ROTDIR']
     else:
@@ -1163,8 +1163,8 @@ def main(screen):
         PACKAGE = entity_values['PACKAGE']
         if  PACKAGE == 'ugcs':
             workflow_name = 'ugcs_workflow'
-        if  PACKAGE == 'gfs':
-            workflow_name = 'gfs_workflow'
+        if  PACKAGE == 'wfs':
+            workflow_name = 'wfs_workflow'
     else:
         PACKAGE = 'none'
     if 'EXPDIR' in entity_values:

@@ -17,7 +17,7 @@ from datetime import datetime
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 import workflow_utils as wfu
 
-global expdir, configdir, comrot, pslot, res, idate, edate, gfs_cyc
+global expdir, configdir, comrot, pslot, res, idate, edate, wfs_cyc
 
 
 def makedirs_if_missing(d):
@@ -64,8 +64,8 @@ def edit_baseconfig():
                     .replace('@SDATE@', idate.strftime('%Y%m%d%H')) \
                     .replace('@EDATE@', edate.strftime('%Y%m%d%H')) \
                     .replace('@CASECTL@', 'T%d' % res) \
-                    .replace('@HOMEgfs@', top) \
-                    .replace('@gfs_cyc@', '%d' % gfs_cyc)
+                    .replace('@HOMEwfs@', top) \
+                    .replace('@wfs_cyc@', '%d' % wfs_cyc)
                 if expdir is not None:
                     line = line.replace('@EXPDIR@', os.path.dirname(expdir))
                 if comrot is not None:
@@ -86,7 +86,7 @@ def edit_baseconfig():
 
 if __name__ == '__main__':
 
-    description = '''Setup files and directories to start a GFS parallel.
+    description = '''Setup files and directories to start a WFS parallel.
 Create EXPDIR, copy config files
 Create COMROT experiment directory structure'''
 
@@ -98,7 +98,7 @@ Create COMROT experiment directory structure'''
     parser.add_argument('--idate', help='starting date of experiment, initial conditions must exist!', type=str, required=True)
     parser.add_argument('--edate', help='end date experiment', type=str, required=True)
     parser.add_argument('--configdir', help='full path to directory containing the config files', type=str, required=False, default=None)
-    parser.add_argument('--gfs_cyc', help='GFS cycles to run', type=int, choices=[0, 1, 2, 4], default=1, required=False)
+    parser.add_argument('--wfs_cyc', help='WFS cycles to run', type=int, choices=[0, 1, 2, 4], default=1, required=False)
 
     args = parser.parse_args()
 
@@ -114,7 +114,7 @@ Create COMROT experiment directory structure'''
     res = args.res
     comrot = args.comrot if args.comrot is None else os.path.join(args.comrot, pslot)
     expdir = args.expdir if args.expdir is None else os.path.join(args.expdir, pslot)
-    gfs_cyc = args.gfs_cyc
+    wfs_cyc = args.wfs_cyc
 
     # COMROT directory
     create_comrot = True

@@ -165,7 +165,7 @@ def get_scheduler(machine):
     except KeyError:
         raise UnknownMachineError('Unknown machine: %s, ABORT!' % machine)
 
-def create_wf_task(task, cdump='gdas', cycledef=None, envar=None, dependency=None, \
+def create_wf_task(task, cdump='wdas', cycledef=None, envar=None, dependency=None, \
                    metatask=None, varname=None, varval=None, vardict=None, \
                    final=False):
 
@@ -210,7 +210,7 @@ def create_wf_task(task, cdump='gdas', cycledef=None, envar=None, dependency=Non
     return task
 
 
-def create_firstcyc_task(cdump='gdas'):
+def create_firstcyc_task(cdump='wdas'):
     '''
     This task is needed to run to finalize the first half cycle
     '''
@@ -250,43 +250,43 @@ def create_firstcyc_task(cdump='gdas'):
     return ''.join(task)
 
 
-def get_gfs_interval(gfs_cyc):
+def get_wfs_interval(wfs_cyc):
     '''
-        return interval in hours based on gfs_cyc
+        return interval in hours based on wfs_cyc
     '''
 
     # Get interval from cyc_input
-    if gfs_cyc == 0:
+    if wfs_cyc == 0:
         interval = None
-    if gfs_cyc == 1:
+    if wfs_cyc == 1:
         interval = '24:00:00'
-    elif gfs_cyc == 2:
+    elif wfs_cyc == 2:
         interval = '12:00:00'
-    elif gfs_cyc == 4:
+    elif wfs_cyc == 4:
         interval = '06:00:00'
 
     return interval
 
 
-def get_resources(machine, cfg, task, cdump='gdas'):
+def get_resources(machine, cfg, task, cdump='wdas'):
 
     scheduler = get_scheduler(machine)
 
-    if cdump in ['gfs'] and 'wtime_%s_gfs' % task in cfg.keys():
-        wtimestr = cfg['wtime_%s_gfs' % task]
+    if cdump in ['wfs'] and 'wtime_%s_wfs' % task in cfg.keys():
+        wtimestr = cfg['wtime_%s_wfs' % task]
     else:
         wtimestr = cfg['wtime_%s' % task]
 
     ltask = 'eobs' if task in ['eomg'] else task
 
     memory = cfg.get('memory_%s' % ltask, None)
-    if cdump in ['gfs'] and 'npe_%s_gfs' % ltask in cfg.keys():
-        tasks = cfg['npe_%s_gfs' % ltask]
+    if cdump in ['wfs'] and 'npe_%s_wfs' % ltask in cfg.keys():
+        tasks = cfg['npe_%s_wfs' % ltask]
     else:
         tasks = cfg['npe_%s' % ltask]
 
-    if cdump in ['gfs'] and 'npe_node_%s_gfs' % ltask in cfg.keys():
-        ppn = cfg['npe_node_%s_gfs' % ltask]
+    if cdump in ['wfs'] and 'npe_node_%s_wfs' % ltask in cfg.keys():
+        ppn = cfg['npe_node_%s_wfs' % ltask]
     else:
         ppn = cfg['npe_node_%s' % ltask]
 

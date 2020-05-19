@@ -91,7 +91,7 @@ if [ $ics_from = "opsgfs" ]; then
     if [ $machine = "WCOSS_C" ]; then
 
         # Need COMROOT
-        module load prod_envir >> /dev/null 2>&1
+        module load prod_envir/1.1.0 >> /dev/null 2>&1
 
         comdir="$COMROOT/$CDUMP/prod/$CDUMP.$PDY"
         rc=0
@@ -124,9 +124,11 @@ if [ $ics_from = "opsgfs" ]; then
         fi
 
         # Move the files to legacy EMC filenames
-        for i in `seq 1 $nfanal`; do
-            $NMV ${fanal[i]} ${ftanal[i]}
-        done
+        if [ $CDATE -le "2019061118" ]; then #GFSv14
+           for i in `seq 1 $nfanal`; do
+             $NMV ${fanal[i]} ${flanal[i]}
+           done
+        fi
 
     fi
 

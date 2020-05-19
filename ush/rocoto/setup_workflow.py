@@ -50,8 +50,10 @@ def main():
 
     wfs_steps = ['prep', 'anal', 'fcst', 'arch']
     hyb_steps = ['eobs', 'eomg', 'eupd', 'ecen', 'efcs', 'epos', 'earc']
+    metp_steps = ['metp']
 
     steps = wfs_steps + hyb_steps if _base.get('DOHYBVAR', 'NO') == 'YES' else wfs_steps
+    steps = steps + metp_steps if _base.get('DO_METP', 'NO') == 'YES' else steps
 
     dict_configs = wfu.source_configs(configs, steps)
 
@@ -222,8 +224,18 @@ def get_wdaswfs_resources(dict_configs, cdump='wdas'):
     do_bufrsnd = base.get('DO_BUFRSND', 'NO').upper()
     do_gempak = base.get('DO_GEMPAK', 'NO').upper()
     do_awips = base.get('DO_AWIPS', 'NO').upper()
+    do_metp = base.get('DO_METP', 'NO').upper()
 
     tasks = ['prep', 'anal', 'fcst', 'arch']
+
+    if cdump in ['wfs'] and do_bufrsnd in ['Y', 'YES']:
+        tasks += ['postsnd']
+    if cdump in ['wfs'] and do_gempak in ['Y', 'YES']:
+        tasks += ['gempak']
+    if cdump in ['wfs'] and do_awips in ['Y', 'YES']:
+        tasks += ['awips']
+    if cdump in ['wfs'] and do_metp in ['Y', 'YES']:
+        tasks += ['metp']
 
     dict_resources = OrderedDict()
 
@@ -344,6 +356,7 @@ def get_wdaswfs_tasks(dict_configs, cdump='wdas'):
     do_bufrsnd = base.get('DO_BUFRSND', 'NO').upper()
     do_gempak = base.get('DO_GEMPAK', 'NO').upper()
     do_awips = base.get('DO_AWIPS', 'NO').upper()
+    do_metp = base.get('DO_METP', 'NO').upper()
     dumpsuffix = base.get('DUMP_SUFFIX', '')
 
     dict_tasks = OrderedDict()

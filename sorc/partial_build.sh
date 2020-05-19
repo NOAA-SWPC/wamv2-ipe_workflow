@@ -10,9 +10,7 @@
                        "Build_gfs_fbwndgfs" "Build_gfs_overpdtg2" \
                        "Build_gfs_wintemv" \
                        "Build_gfs_bufrsnd" \
-                       "Build_gfs_util" \
-                       "Build_prod_util" \
-                       "Build_grib_util")
+                       "Build_gfs_util")
 
 #
 # function parse_cfg: read config file and retrieve the values

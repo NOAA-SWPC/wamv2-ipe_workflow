@@ -22,7 +22,7 @@ module load impi/18.0.1
 module load lsf/10.1
 module load prod_util/1.1.0
 module load grib_util/1.0.6
-module load prod_envir/1.0.2
+module load prod_envir/1.1.0
 module load CFP/2.0.1
 
 #module use -a /gpfs/dell1/nco/ops/nwpara/modulefiles/
@@ -46,7 +46,6 @@ export MP_STDOUTMODE=ordered
 
 #export machine="WCOSS_C"
 machine="WCOSS_DELL_P3"
-#machine="THEIA"
 if [ $machine == "WCOSS_C" ]; then
 ##For WCOSS-Cray##################
 export launcher="aprun"

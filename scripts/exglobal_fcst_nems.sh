@@ -463,9 +463,28 @@ export EXECGLOBAL=${EXECGLOBAL:-$NWPROD/exec}
 export DATA=${DATA:-$(pwd)}
 
 #  Filenames.
-MN=${MN:-""}
-export XC=${XC}
-export SUFOUT=${SUFOUT}
+export GRDR1='${memdir}'/RESTART/grdr1
+export GRDR2='${memdir}'/RESTART/grdr2
+export SIGR1='${memdir}'/RESTART/sigr1
+export SIGR2='${memdir}'/RESTART/sigr2
+export SFCR='${memdir}'/RESTART/sfcr
+export NSTR='${memdir}'/RESTART/nstr
+export IPER='${memdir}'/RESTART/iper
+
+## Input Files
+export SIGI='${memdir}'/$CDUMP.t${cyc}z.$ATM$SUFOUT
+export SFCI='${memdir}'/$CDUMP.t${cyc}z.$SFC$SUFOUT
+export PLASI='${memdir}'/$CDUMP.t${cyc}z.$PLAS.'${CIPEDATE}'
+
+## History Files
+export SIGO=${SIGO:-'${memdir}'/$CDUMP.t${cyc}z.${SIGOSUF}f'${FHIAU}''${MN}'$SUFOUT}
+export SFCO=${SFCO:-'${memdir}'/$CDUMP.t${cyc}z.${SFCOSUF}f'${FHIAU}''${MN}'$SUFOUT}
+export FLXO=${FLXO:-'${memdir}'/$CDUMP.t${cyc}z.${FLXOSUF}f'${FHIAU}''${MN}'$SUFOUT}
+export PLASO=${PLASO:-'$(memdir}'/$CDUMP.t${cyc}z.$PLAS.'${TIMESTAMP}'.h5}
+export LOGO=${LOGO:-'${memdir}'/$CDUMP.t${cyc}z.logf'${FHIAU}''${MN}'$SUFOUT}
+export D3DO=${D3DO:-'${memdir}'/$CDUMP.t${cyc}z.d3df'${FHIAU}''${MN}'$SUFOUT}
+export NSTO=${NSTO:-'${memdir}'/$CDUMP.t${cyc}z.${NSTOSUF}f'${FHIAU}''${MN}'$SUFOUT}
+export AERO=${AERO:-'${memdir}'/$CDUMP.t${cyc}z.aerf'${FH}''${MN}'$SUFOUT}
 
 #  Executables.
 export NCP=${NCP:-"/bin/cp -p"}
@@ -473,6 +492,52 @@ export NDATE=${NDATE:-$NWPROD/util/exec/ndate}
 export MDATE=${MDATE:-$NWPROD/util/exec/mdate}
 
 export NEMSIOGET=${NEMSIOGET:-/nwprod/ngac.v1.0.0/exec/nemsio_get}
+export SFCHDR=${SFCHDR:-${EXECGLOBAL}/global_sfchdr$XC}
+export CHGSFCFHREXEC=${CHGSFCFHREXEC:-/swpc/save/swpc.spacepara/util/chgsfcfhr/chgsfcfhr}
+export SIGHDR=${SIGHDR:-${EXECGLOBAL}/global_sighdr$XC}
+
+## File Metadata
+MN=${MN:-""}
+export XC=${XC}
+export SUFOUT=${SUFOUT}
+if [ $MEMBER -lt 0 ]; then
+  prefix=$CDUMP
+  rprefix=$rCDUMP
+  memchar=""
+else
+  prefix=enkf$CDUMP
+  rprefix=enkf$rCDUMP
+  memchar=mem$(printf %03i $MEMBER)
+fi
+memdir=$ROTDIR/${prefix}.$PDY/$cyc/$memchar
+if [[ $NEMS = .true. ]] ; then
+  if [ $NEMSIO_IN = .true. ]; then
+    idate=` $NEMSIOGET $GRDI idate  | tr -s ' ' | cut -d' ' -f 3-7`
+    iyear=` echo $idate | cut -d' ' -f 1`
+    imonth=`printf "%02d" $(echo $idate | cut -d' ' -f 2)`
+    iday=`  printf "%02d" $(echo $idate | cut -d' ' -f 3)`
+    ihour=` printf "%02d" $(echo $idate | cut -d' ' -f 4)`
+    export CDATE=${iyear}${imonth}${iday}${ihour}
+    nfhour=`$NEMSIOGET $GRDI nfhour | tr -s ' ' | cut -d' ' -f 3`
+    export FDATE=`$NDATE $nfhour $CDATE`
+  else
+    export CDATE=$(eval $SIGHDR $SIGI idate)
+    export FDATE=$($NDATE `eval $SIGHDR $SIGI fhour | cut -d'.' -f 1` $CDATE)
+  fi
+else
+  FDATE=$(echo $CIPEDATE | cut -c1-10)
+fi
+INI_YEAR=$(echo $FDATE   | cut -c1-4)
+INI_MONTH=$(echo $FDATE  | cut -c5-6)
+INI_DAY=$(echo $FDATE    | cut -c7-8)
+INI_HOUR=$(echo $FDATE   | cut -c9-10)
+CIPEDATE=${FDATE}00
+
+C_YEAR=$(echo $CDATE     | cut -c1-4)
+C_MONTH=$(echo $CDATE    | cut -c5-6)
+C_DAY=$(echo $CDATE      | cut -c7-8)
+C_HOUR=$(echo $CDATE     | cut -c9-10)
+
 if [ $NEMSIO_IN = .true. ]; then
  export JCAP=${JCAP:-$($NEMSIOGET ${GRDI}$FM jcap |grep -i "jcap" |awk -F"= " '{print $2}' |awk -F" " '{print $1}')}
  export LEVS=${LEVS:-$($NEMSIOGET ${GRDI}$FM levs|grep -i "levs" |awk -F"= " '{print $2}' |awk -F" " '{print $1}')}
@@ -492,21 +557,22 @@ if [ $NEMSIO_IN = .true. ]; then
 else
 
 
- export SFCHDR=${SFCHDR:-${EXECGLOBAL}/global_sfchdr$XC}
- export CHGSFCFHREXEC=${CHGSFCFHREXEC:-/swpc/save/swpc.spacepara/util/chgsfcfhr/chgsfcfhr}
- export SIGHDR=${SIGHDR:-${EXECGLOBAL}/global_sighdr$XC}
- export JCAP=${JCAP:-$(echo jcap|$SIGHDR ${SIGI}$FM)}
- export LEVS=${LEVS:-$(echo levs|$SIGHDR ${SIGI}$FM)}
+ export JCAP=${JCAP:-$(echo jcap|eval $SIGHDR ${SIGI}$FM)}
+ export LEVS=${LEVS:-$(echo levs|eval $SIGHDR ${SIGI}$FM)}
  export LEVR=${LEVR:-$LEVS}
- export LONR=${LONR:-$(echo lonr|$SIGHDR ${SIGI}$FM)}
- export LATR=${LATR:-$(echo latr|$SIGHDR ${SIGI}$FM)}
- export LONF=${LONF:-$(echo lonf|$SIGHDR ${SIGI}$FM)}
- export LATG=${LATG:-$(echo latf|$SIGHDR ${SIGI}$FM)}
- export NTRAC=${NTRAC:-$(echo ntrac|$SIGHDR ${SIGI}$FM)}
- export IDVC=${IDVC:-$(echo idvc|$SIGHDR ${SIGI}$FM)}
- export IDVM=${IDVM:-$(echo idvm|$SIGHDR ${SIGI}$FM)}
- export FHINI=${FHINI:-$(echo ifhr|$SIGHDR ${SIGI}$FM)}
+ export LONR=${LONR:-$(echo lonr|eval $SIGHDR ${SIGI}$FM)}
+ export LATR=${LATR:-$(echo latr|eval $SIGHDR ${SIGI}$FM)}
+ export LONF=${LONF:-$(echo lonf|eval $SIGHDR ${SIGI}$FM)}
+ export LATG=${LATG:-$(echo latf|eval $SIGHDR ${SIGI}$FM)}
+ export NTRAC=${NTRAC:-$(echo ntrac|eval $SIGHDR ${SIGI}$FM)}
+ export IDVC=${IDVC:-$(echo idvc|eval $SIGHDR ${SIGI}$FM)}
+ export IDVM=${IDVM:-$(echo idvm|eval $SIGHDR ${SIGI}$FM)}
+ export FHINI=${FHINI:-$(echo ifhr|eval $SIGHDR ${SIGI}$FM)}
 fi
+
+if [ ! -d $memdir ]; then mkdir -p $memdir; fi
+
+## The Rest
 
 export LONB=${LONB:-$LONF}
 export LATB=${LATB:-$LATG}
@@ -602,28 +668,6 @@ export ICO2=${ICO2:-0}
 export IALB=${IALB:-0}
 #
 LOCD=${LOCD:-""}
-export GRDR1='${memdir}'/RESTART/grdr1
-export GRDR2='${memdir}'/RESTART/grdr2
-export SIGR1='${memdir}'/RESTART/sigr1
-export SIGR2='${memdir}'/RESTART/sigr2
-export SFCR='${memdir}'/RESTART/sfcr
-export NSTR='${memdir}'/RESTART/nstr
-export IPER='${memdir}'/RESTART/iper
-
-## Input Files
-export SIGI='${memdir}'/$CDUMP.${cyc}z.$ATM$SUFOUT
-export SFCI='${memdir}'/$CDUMP.${cyc}z.$SFC$SUFOUT
-export PLASI='${memdir}'/$CDUMP.${cyc}z.$PLAS.'${CIPEDATE}'
-
-## History Files
-export SIGO=${SIGO:-'${memdir}'/$CDUMP.${cyc}z.${SIGOSUF}f'${FHIAU}''${MN}'$SUFOUT}
-export SFCO=${SFCO:-'${memdir}'/$CDUMP.${cyc}z.${SFCOSUF}f'${FHIAU}''${MN}'$SUFOUT}
-export FLXO=${FLXO:-'${memdir}'/$CDUMP.${cyc}z.${FLXOSUF}f'${FHIAU}''${MN}'$SUFOUT}
-export PLASO=${PLASO:-'$(memdir}'/$CDUMP.${cyc}z.$PLAS.'${TIMESTAMP}'.h5}
-export LOGO=${LOGO:-'${memdir}'/$CDUMP.${cyc}z.logf'${FHIAU}''${MN}'$SUFOUT}
-export D3DO=${D3DO:-'${memdir}'/$CDUMP.${cyc}z.d3df'${FHIAU}''${MN}'$SUFOUT}
-export NSTO=${NSTO:-'${memdir}'/$CDUMP.${cyc}z.${NSTOSUF}f'${FHIAU}''${MN}'$SUFOUT}
-export AERO=${AERO:-'${memdir}'/$CDUMP.${cyc}z.aerf'${FH}''${MN}'$SUFOUT}
 
 export INISCRIPT=${INISCRIPT}
 export ERRSCRIPT=${ERRSCRIPT:-'eval [[ $err = 0 ]]'}
@@ -803,34 +847,6 @@ $LOGSCRIPT
 ${NCP:-cp} $FCSTEXECDIR/$FCSTEXEC $DATA
 
 #------------------------------------------------------------
-if [[ $NEMS = .true. ]] ; then
-  if [ $NEMSIO_IN = .true. ]; then
-    idate=` $NEMSIOGET $GRDI idate  | tr -s ' ' | cut -d' ' -f 3-7`
-    iyear=` echo $idate | cut -d' ' -f 1`
-    imonth=`printf "%02d" $(echo $idate | cut -d' ' -f 2)`
-    iday=`  printf "%02d" $(echo $idate | cut -d' ' -f 3)`
-    ihour=` printf "%02d" $(echo $idate | cut -d' ' -f 4)`
-    export CDATE=${iyear}${imonth}${iday}${ihour}
-    nfhour=`$NEMSIOGET $GRDI nfhour | tr -s ' ' | cut -d' ' -f 3`
-    export FDATE=`$NDATE $nfhour $CDATE`
-  else
-    export CDATE=`$SIGHDR $SIGI idate`
-    export FDATE=`$NDATE \`$SIGHDR $SIGI fhour | cut -d'.' -f 1\` $CDATE`
-  fi
-else
-  FDATE=$(echo $CIPEDATE | cut -c1-10)
-fi
-INI_YEAR=$(echo $FDATE   | cut -c1-4)
-INI_MONTH=$(echo $FDATE  | cut -c5-6)
-INI_DAY=$(echo $FDATE    | cut -c7-8)
-INI_HOUR=$(echo $FDATE   | cut -c9-10)
-CIPEDATE=${FDATE}00
-
-C_YEAR=$(echo $CDATE     | cut -c1-4)
-C_MONTH=$(echo $CDATE    | cut -c5-6)
-C_DAY=$(echo $CDATE      | cut -c7-8)
-C_HOUR=$(echo $CDATE     | cut -c9-10)
-
 if [ $FHROT -gt 0 ] ; then export RESTART=.true. ; fi
 export RESTART=${RESTART:-.false.}
 if [ $RESTART = .false. ] ; then # when restarting should not remove - Weiyu
@@ -951,18 +967,6 @@ secs=$((DELTIM-(DELTIM/60)*60))
 export FHINI=$((FHINI+0))
 export FHROT=$((FHROT+0))
 
-if [ $MEMBER -lt 0 ]; then
-  prefix=$CDUMP
-  rprefix=$rCDUMP
-  memchar=""
-else
-  prefix=enkf$CDUMP
-  rprefix=enkf$rCDUMP
-  memchar=mem$(printf %03i $MEMBER)
-fi
-memdir=$ROTDIR/${prefix}.$PDY/$cyc/$memchar
-if [ ! -d $memdir ]; then mkdir -p $memdir; fi
-
 if [[ $MEMBER -lt 0 ]] ; then
   FH=$((10#$FHINI))
   [[ $FH -lt 10 ]]&&FH=0$FH
@@ -978,37 +982,37 @@ if [[ $MEMBER -lt 0 ]] ; then
 #        ----------------------
   if [ $FHINI -eq  $FHROT ]; then
     if [ $NEMSIO_IN = .true. ]; then
-      ln -fs $GRDI  grid_ini
-      ln -fs $SIGI  sig_ini
+      eval $NLN $GRDI  grid_ini
+      eval $NLN $SIGI  sig_ini
     else
-      ln -fs $SIGI  sig_ini
+      eval $NLN $SIGI  sig_ini
     fi
-    ln -fs $SFCI  sfc_ini
-    ln -fs $NSTI  nst_ini
-    ln -fs $PLASI $PLAS.${CIPEDATE}.h5
+    eval $NLN $SFCI  sfc_ini
+    eval $NLN $NSTI  nst_ini
+    eval $NLN $PLASI $PLAS.${CIPEDATE}.h5
     if [ $FHROT -gt 0 ] ; then
       export RESTART=.true.
-      ln -fs $GRDI  grid_ini
-      ln -fs $GRDI2 grid_ini2
-      ln -fs $SIGI2 sig_ini2
+      eval $NLN $GRDI  grid_ini
+      eval $NLN $GRDI2 grid_ini2
+      eval $NLN $SIGI2 sig_ini2
       if [ $WAM_IPE_COUPLING = .true. ];then
         export RESTART_AND_COUPLED=.true.
-        ln -fs $RSTR  WAM_IPE_RST_rd
+        eval $NLN $RSTR  WAM_IPE_RST_rd
       fi
     else
       export RESTART=.false.
     fi
   else
-    ln -fs $GRDI  grid_ini
-    ln -fs $GRDI2 grid_ini2
-    ln -fs $SIGI  sig_ini
-    ln -fs $SIGI2 sig_ini2
-    ln -fs $SFCI  sfc_ini
-    ln -fs $NSTI  nst_ini
-    ln -fs $PLASI .
+    eval $NLN $GRDI  grid_ini
+    eval $NLN $GRDI2 grid_ini2
+    eval $NLN $SIGI  sig_ini
+    eval $NLN $SIGI2 sig_ini2
+    eval $NLN $SFCI  sfc_ini
+    eval $NLN $NSTI  nst_ini
+    eval $NLN $PLASI .
     if [ $WAM_IPE_COUPLING = .true. ];then
       export RESTART_AND_COUPLED=.true.
-      ln -fs $RSTR  WAM_IPE_RST_rd
+      eval $NLN $RSTR  WAM_IPE_RST_rd
     fi
     export RESTART=.true.
   fi
@@ -1036,13 +1040,13 @@ if [[ $MEMBER -lt 0 ]] ; then
     else
       SUF2=""
     fi
-    eval ln -fs ${SIGO}$FNSUB SIG.F${FH}$SUF2
-    eval ln -fs ${SFCO}$FNSUB SFC.F${FH}$SUF2
-    eval ln -fs ${FLXO}$FNSUB FLX.F${FH}$SUF2
-    eval ln -fs ${LOGO}$FNSUB LOG.F${FH}$SUF2
-    eval ln -fs ${D3DO}$FNSUB D3D.F${FH}$SUF2
-    eval ln -fs ${NSTO}$FNSUB NST.F${FH}$SUF2
-    eval ln -fs ${AERO}$FNSUB AER.F${FH}$SUF2
+    eval $NLN ${SIGO}$FNSUB SIG.F${FH}$SUF2
+    eval $NLN ${SFCO}$FNSUB SFC.F${FH}$SUF2
+    eval $NLN ${FLXO}$FNSUB FLX.F${FH}$SUF2
+    eval $NLN ${LOGO}$FNSUB LOG.F${FH}$SUF2
+    eval $NLN ${D3DO}$FNSUB D3D.F${FH}$SUF2
+    eval $NLN ${NSTO}$FNSUB NST.F${FH}$SUF2
+    eval $NLN ${AERO}$FNSUB AER.F${FH}$SUF2
 
     if [ $FHOUT_HF -ne $FHOUT -a $FH -lt $FHMAX_HF ] ; then
      ((FH=10#$FH+10#$FHOUT_HF))
@@ -1214,11 +1218,11 @@ ${NCP} ${CHEM_REGISTRY:-$PARM_NGAC/Chem_Registry.rc}  Chem_Registry.rc
 # Mostly IDEA-related stuff in this section
 #--------------------------------------------------------------
 if [ $NEMS = .true. ] ; then # grids for mediator
-  [[ $IPE = .true. ]] && $NCP ${FIXgfs}/MED_SPACEWX/gsm%wam%T62_ipe%80x170/ipe3dgrid2.nc .
-  $NCP ${FIXgfs}/MED_SPACEWX/gsm%wam%T62_ipe%80x170/wam3dgridnew2.nc .
+  [[ $IPE = .true. ]] && $NCP ${FIXwfs}/MED_SPACEWX/gsm%wam%T62_ipe%80x170/ipe3dgrid2.nc .
+  $NCP ${FIXwfs}/MED_SPACEWX/gsm%wam%T62_ipe%80x170/wam3dgridnew2.nc .
   # Copy both for now, when fully switched get rid of wam3dgridnew_20160427.nc
-  $NCP ${FIXgfs}/MED_SPACEWX/gsm%wam%T62_ipe%80x170/wam3dgridnew_20160427.nc .
-  $NCP ${FIXgfs}/MED_SPACEWX/gsm%wam%T62_ipe%80x170/WAMFixedHgtGrid_20180312.nc .
+  $NCP ${FIXwfs}/MED_SPACEWX/gsm%wam%T62_ipe%80x170/wam3dgridnew_20160427.nc .
+  $NCP ${FIXwfs}/MED_SPACEWX/gsm%wam%T62_ipe%80x170/WAMFixedHgtGrid_20180312.nc .
 fi
 
 if [ $IDEA = .true. ]; then
@@ -1916,7 +1920,7 @@ $NLN atm_namelist.rc ./model_configure
 
 fi # NEMS
 
-eval $FCSTENV $PGM $REDOUT$PGMOUT $REDERR$PGMERR
+eval LD_LIBRARY_PATH=$LD_LIBRARY_PATH $FCSTENV $PGM $REDOUT$PGMOUT $REDERR$PGMERR
 
 export ERR=$?
 export err=$ERR

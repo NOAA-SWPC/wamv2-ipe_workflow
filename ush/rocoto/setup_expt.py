@@ -8,6 +8,9 @@
 # $Id$
 ###############################################################
 
+from __future__ import print_function
+from builtins import input
+from builtins import range
 import os
 import sys
 import glob
@@ -79,7 +82,7 @@ def edit_baseconfig():
     # make a copy of the default before editing
     shutil.copy(base_config, base_config + '.default')
 
-    print '\nSDATE = %s\nEDATE = %s' % (idate, edate)
+    print('\nSDATE = %s\nEDATE = %s' % (idate, edate))
     with open(base_config + '.default', 'rt') as fi:
         with open(base_config + '.new', 'wt') as fo:
             for line in fi:
@@ -102,11 +105,11 @@ def edit_baseconfig():
     os.unlink(base_config)
     os.rename(base_config + '.new', base_config)
 
-    print ''
-    print 'EDITED:  %s/config.base as per user input.' % expdir
-    print 'DEFAULT: %s/config.base.default is for reference only.' % expdir
-    print 'Please verify and delete the default file before proceeding.'
-    print ''
+    print('')
+    print('EDITED:  %s/config.base as per user input.' % expdir)
+    print('DEFAULT: %s/config.base.default is for reference only.' % expdir)
+    print('Please verify and delete the default file before proceeding.')
+    print('')
 
     return
 
@@ -162,10 +165,10 @@ link initial condition files from $ICSDIR to $COMROT'''
     else:
        create_comrot = True
        if os.path.exists(comrot):
-           print
-           print 'COMROT already exists in %s' % comrot
-           print
-           overwrite_comrot = raw_input('Do you wish to over-write COMROT [y/N]: ')
+           print()
+           print('COMROT already exists in %s' % comrot)
+           print()
+           overwrite_comrot = input('Do you wish to over-write COMROT [y/N]: ')
            create_comrot = True if overwrite_comrot in ['y', 'yes', 'Y', 'YES'] else False
            if create_comrot:
               shutil.rmtree(comrot)
@@ -176,10 +179,10 @@ link initial condition files from $ICSDIR to $COMROT'''
     # EXP directory
     create_expdir = True
     if os.path.exists(expdir):
-        print
-        print 'EXPDIR already exists in %s' % expdir
-        print
-        overwrite_expdir = raw_input('Do you wish to over-write EXPDIR [y/N]: ')
+        print()
+        print('EXPDIR already exists in %s' % expdir)
+        print()
+        overwrite_expdir = input('Do you wish to over-write EXPDIR [y/N]: ')
         create_expdir = True if overwrite_expdir in ['y', 'yes', 'Y', 'YES'] else False
         if create_expdir:
             shutil.rmtree(expdir)

@@ -12,6 +12,7 @@
         rahul.mahajan@noaa.gov
 '''
 
+from builtins import str
 def create_metatask(task_dict, metatask_dict):
     '''
     create a Rocoto metatask given a dictionary containing task and metatask information
@@ -35,7 +36,7 @@ def create_metatask(task_dict, metatask_dict):
     strings.append('\n')
     strings.append('\t<var name="%s">%s</var>\n' % (varname, str(varval)))
     if vardict is not None:
-        for key in vardict.keys():
+        for key in list(vardict.keys()):
             value = str(vardict[key])
             strings.append('\t<var name="%s">%s</var>\n' % (key, value))
     strings.append('\n')

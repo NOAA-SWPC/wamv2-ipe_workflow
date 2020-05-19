@@ -3,6 +3,11 @@
 '''
     Module containing functions all workflow setups require
 '''
+from __future__ import division
+from __future__ import print_function
+from builtins import str
+from past.builtins import basestring
+from past.utils import old_div
 import random
 import re
 import os, sys, stat
@@ -37,10 +42,11 @@ def get_shell_env(scripts):
     runme=''.join([ 'source %s ; '%(s,) for s in scripts ])
     magic='--- ENVIRONMENT BEGIN %d ---'%random.randint(0,64**5)
     runme+='/bin/echo -n "%s" ; /usr/bin/env -0'%(magic,)
-    with open('/dev/null','wb+') as null:
+    with open('/dev/null','w+') as null:
         env=subprocess.Popen(runme,shell=True,stdin=null.fileno(),
                        stdout=subprocess.PIPE)
         (out,err)=env.communicate()
+    out = out.decode()
     begin=out.find(magic)
     if begin<0:
         raise ShellScriptException(scripts,'Cannot find magic string; '
@@ -115,7 +121,7 @@ def source_configs(configs, tasks):
         else:
             files.append(find_config('config.%s' % task, configs))
 
-        print 'sourcing config.%s' % task
+        print('sourcing config.%s' % task)
         dict_configs[task] = config_parser(files)
 
     return dict_configs
@@ -133,7 +139,7 @@ def config_parser(files):
     if isinstance(files,basestring):
         files=[files]
     varbles=dict()
-    for key,value in get_script_env(files).iteritems():
+    for key,value in get_script_env(files).items():
         if key in DATE_ENV_VARS: # likely a date, convert to datetime
             varbles[key] = datetime.strptime(value,'%Y%m%d%H')
         elif '.' in value: # Likely a number and that too a float
@@ -156,7 +162,7 @@ def detectMachine():
     elif os.path.exists('/gpfs/dell2'):
         return 'WCOSS_DELL_P3'
     else:
-        print 'workflow is currently only supported on: %s' % ' '.join(machines)
+        print('workflow is currently only supported on: %s' % ' '.join(machines))
         raise NotImplementedError('Cannot auto-detect platform, ABORT!')
 
 def get_scheduler(machine):
@@ -272,7 +278,7 @@ def get_resources(machine, cfg, task, cdump='wdas'):
 
     scheduler = get_scheduler(machine)
 
-    if cdump in ['wfs'] and 'wtime_%s_wfs' % task in cfg.keys():
+    if cdump in ['wfs'] and 'wtime_%s_wfs' % task in list(cfg.keys()):
         wtimestr = cfg['wtime_%s_wfs' % task]
     else:
         wtimestr = cfg['wtime_%s' % task]
@@ -280,12 +286,12 @@ def get_resources(machine, cfg, task, cdump='wdas'):
     ltask = 'eobs' if task in ['eomg'] else task
 
     memory = cfg.get('memory_%s' % ltask, None)
-    if cdump in ['wfs'] and 'npe_%s_wfs' % ltask in cfg.keys():
+    if cdump in ['wfs'] and 'npe_%s_wfs' % ltask in list(cfg.keys()):
         tasks = cfg['npe_%s_wfs' % ltask]
     else:
         tasks = cfg['npe_%s' % ltask]
 
-    if cdump in ['wfs'] and 'npe_node_%s_wfs' % ltask in cfg.keys():
+    if cdump in ['wfs'] and 'npe_node_%s_wfs' % ltask in list(cfg.keys()):
         ppn = cfg['npe_node_%s_wfs' % ltask]
     else:
         ppn = cfg['npe_node_%s' % ltask]
@@ -293,7 +299,8 @@ def get_resources(machine, cfg, task, cdump='wdas'):
     if machine in [ 'WCOSS_DELL_P3', 'HERA']:
         threads = cfg['nth_%s' % ltask]
 
-    nodes = np.int(np.ceil(np.float(tasks) / np.float(ppn)))
+    nodes = np.int(np.ceil(old_div(np.float(tasks), np.float(ppn))))
+    if nodes == 1: ppn = tasks
 
     memstr = '' if memory is None else str(memory)
     natstr = ''
@@ -337,7 +344,7 @@ def create_crontab(base, cronint=5):
     # No point creating a crontab if rocotorun is not available.
     rocotoruncmd = find_executable('rocotorun')
     if rocotoruncmd is None:
-        print 'Failed to find rocotorun, crontab will not be created'
+        print('Failed to find rocotorun, crontab will not be created')
         return
 
 # Leaving the code for a wrapper around crontab file if needed again later

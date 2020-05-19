@@ -17,7 +17,9 @@
         2. PSLOT.crontab: crontab for ROCOTO run command
 
 '''
+from __future__ import print_function
 
+from builtins import range
 import os
 import sys
 import re
@@ -42,9 +44,9 @@ def main():
     _base = wfu.config_parser([wfu.find_config('config.base', configs)])
 
     if not os.path.samefile(args.expdir,_base['EXPDIR']):
-        print 'MISMATCH in experiment directories!'
-        print 'config.base: EXPDIR = %s' % repr(_base['EXPDIR'])
-        print 'input arg:     --expdir = %s' % repr(args.expdir)
+        print('MISMATCH in experiment directories!')
+        print('config.base: EXPDIR = %s' % repr(_base['EXPDIR']))
+        print('input arg:     --expdir = %s' % repr(args.expdir))
         sys.exit(1)
 
     dict_configs = wfu.source_configs(configs, taskplan)
@@ -105,7 +107,7 @@ def get_definitions(base):
     strings.append('\t<!ENTITY SDATE    "%s">\n' % base['SDATE'].strftime('%Y%m%d%H%M'))
     strings.append('\t<!ENTITY EDATE    "%s">\n' % base['EDATE'].strftime('%Y%m%d%H%M'))
     if base['INTERVAL'] is None:
-        print 'cycle INTERVAL cannot be None'
+        print('cycle INTERVAL cannot be None')
         sys.exit(1)
     strings.append('\t<!ENTITY INTERVAL "%s">\n' % base['INTERVAL'])
     strings.append('\n')
@@ -187,14 +189,14 @@ def get_postgroups(post, cdump='wdas'):
 
     # Get a list of all forecast hours
     if cdump in ['wdas']:
-        fhrs = range(fhmin, fhmax+fhout, fhout)
+        fhrs = list(range(fhmin, fhmax+fhout, fhout))
     elif cdump in ['wfs']:
         fhmax = np.max([post['FHMAX_WFS_00'],post['FHMAX_WFS_06'],post['FHMAX_WFS_12'],post['FHMAX_WFS_18']])
         fhout = post['FHOUT_WFS']
         fhmax_hf = post['FHMAX_HF_WFS']
         fhout_hf = post['FHOUT_HF_WFS']
-        fhrs_hf = range(fhmin, fhmax_hf+fhout_hf, fhout_hf)
-        fhrs = fhrs_hf + range(fhrs_hf[-1]+fhout, fhmax+fhout, fhout)
+        fhrs_hf = list(range(fhmin, fhmax_hf+fhout_hf, fhout_hf))
+        fhrs = fhrs_hf + list(range(fhrs_hf[-1]+fhout, fhmax+fhout, fhout))
 
     npostgrp = post['NPOSTGRP']
     ngrps = npostgrp if len(fhrs) > npostgrp else len(fhrs)
@@ -237,7 +239,7 @@ def get_workflow(dict_configs, cdump='wdas'):
     data = '&ICSDIR;/@Y@m@d@H/&CDUMP;/&CDUMP;.@Y@m@d/@H/gfnanl.&CDUMP;.@Y@m@d@H'
     dep_dict = {'type':'data', 'data':data}
     deps.append(rocoto.add_dependency(dep_dict))
-    data = '&ICSDIR;/@Y@m@d@H/&CDUMP;/&CDUMP;.@Y@m@d/@H/&CDUMP;.t@Hz.atmanl.nemsio'
+    data = '&ICSDIR;/@Y@m@d@H/&CDUMP;/&CDUMP;.@Y@m@d/@H/&CDUMP;.t@Hz.atmanl'
     dep_dict = {'type':'data', 'data':data}
     deps.append(rocoto.add_dependency(dep_dict))
     deps = rocoto.create_dependency(dep_condition='or', dep=deps)
@@ -261,7 +263,7 @@ def get_workflow(dict_configs, cdump='wdas'):
 
     # post
     deps = []
-    data = '&ROTDIR;/%s.@Y@m@d/@H/%s.t@Hz.log#dep#.nemsio' % (cdump, cdump)
+    data = '&ROTDIR;/%s.@Y@m@d/@H/%s.t@Hz.log#dep#' % (cdump, cdump)
     dep_dict = {'type': 'data', 'data': data}
     deps.append(rocoto.add_dependency(dep_dict))
     dependencies = rocoto.create_dependency(dep=deps)

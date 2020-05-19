@@ -16,7 +16,13 @@
         1. PSLOT.xml: XML workflow
         2. PSLOT.crontab: crontab for ROCOTO run command
 '''
+from __future__ import division
+from __future__ import print_function
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
+from past.utils import old_div
 import os
 import sys
 import re
@@ -37,9 +43,9 @@ def main():
     _base = wfu.config_parser([wfu.find_config('config.base', configs)])
 
     if not os.path.samefile(args.expdir, _base['EXPDIR']):
-        print 'MISMATCH in experiment directories!'
-        print 'config.base: EXPDIR = %s' % repr(_base['EXPDIR'])
-        print 'input arg:     --expdir = %s' % repr(args.expdir)
+        print('MISMATCH in experiment directories!')
+        print('config.base: EXPDIR = %s' % repr(_base['EXPDIR']))
+        print('input arg:     --expdir = %s' % repr(args.expdir))
         sys.exit(1)
 
     wfs_steps = ['prep', 'anal', 'fcst', 'arch']
@@ -92,10 +98,10 @@ def get_wfs_cyc_dates(base):
     sdate_wfs = sdate + timedelta(hours=hrinc)
     edate_wfs = edate - timedelta(hours=hrdet)
     if sdate_wfs > edate:
-        print 'W A R N I N G!'
-        print 'Starting date for WFS cycles is after Ending date of experiment'
-        print 'SDATE = %s,     EDATE = %s' % (sdate.strftime('%Y%m%d%H'), edate.strftime('%Y%m%d%H'))
-        print 'SDATE_WFS = %s, EDATE_WFS = %s' % (sdate_wfs.strftime('%Y%m%d%H'), edate_wfs.strftime('%Y%m%d%H'))
+        print('W A R N I N G!')
+        print('Starting date for WFS cycles is after Ending date of experiment')
+        print('SDATE = %s,     EDATE = %s' % (sdate.strftime('%Y%m%d%H'), edate.strftime('%Y%m%d%H')))
+        print('SDATE_WFS = %s, EDATE_WFS = %s' % (sdate_wfs.strftime('%Y%m%d%H'), edate_wfs.strftime('%Y%m%d%H')))
         wfs_cyc = 0
 
     base_out['wfs_cyc'] = wfs_cyc
@@ -346,7 +352,7 @@ def get_wdaswfs_tasks(dict_configs, cdump='wdas'):
     deps = []
     dep_dict = {'type': 'task', 'name': '%sfcst' % 'wdas', 'offset': '-06:00:00'}
     deps.append(rocoto.add_dependency(dep_dict))
-    data = '&ROTDIR;/wdas.@Y@m@d/@H/wdas.t@Hz.atmf009.nemsio'
+    data = '&ROTDIR;/wdas.@Y@m@d/@H/wdas.t@Hz.atmf009'
     dep_dict = {'type': 'data', 'data': data, 'offset': '-06:00:00'}
     deps.append(rocoto.add_dependency(dep_dict))
     data = '&DMPDIR;/%s%s.@Y@m@d/@H/%s.t@Hz.updated.status.tm00.bufr_d' % (cdump, dumpsuffix, cdump)
@@ -422,17 +428,17 @@ def get_hyb_tasks(dict_configs, cycledef='enkf'):
 
     eobs = dict_configs['eobs']
     nens_eomg = eobs['NMEM_EOMGGRP']
-    neomg_grps = nens / nens_eomg
+    neomg_grps = old_div(nens, nens_eomg)
     EOMGGROUPS = ' '.join(['%02d' % x for x in range(1, neomg_grps + 1)])
 
     efcs = dict_configs['efcs']
     nens_efcs = efcs['NMEM_EFCSGRP']
-    nefcs_grps = nens / nens_efcs
+    nefcs_grps = old_div(nens, nens_efcs)
     EFCSGROUPS = ' '.join(['%02d' % x for x in range(1, nefcs_grps + 1)])
 
     earc = dict_configs['earc']
     nens_earc = earc['NMEM_EARCGRP']
-    nearc_grps = nens / nens_earc
+    nearc_grps = old_div(nens, nens_earc)
     EARCGROUPS = ' '.join(['%02d' % x for x in range(0, nearc_grps + 1)])
 
     envars = []
@@ -602,14 +608,14 @@ def get_postgroups(post, cdump='wdas'):
 
     # Get a list of all forecast hours
     if cdump in ['wdas']:
-        fhrs = range(fhmin, fhmax+fhout, fhout)
+        fhrs = list(range(fhmin, fhmax+fhout, fhout))
     elif cdump in ['wfs']:
         fhmax = np.max([post['FHMAX_WFS_00'],post['FHMAX_WFS_06'],post['FHMAX_WFS_12'],post['FHMAX_WFS_18']])
         fhout = post['FHOUT_WFS']
         fhmax_hf = post['FHMAX_HF_WFS']
         fhout_hf = post['FHOUT_HF_WFS']
-        fhrs_hf = range(fhmin, fhmax_hf+fhout_hf, fhout_hf)
-        fhrs = fhrs_hf + range(fhrs_hf[-1]+fhout, fhmax+fhout, fhout)
+        fhrs_hf = list(range(fhmin, fhmax_hf+fhout_hf, fhout_hf))
+        fhrs = fhrs_hf + list(range(fhrs_hf[-1]+fhout, fhmax+fhout, fhout))
 
     npostgrp = post['NPOSTGRP']
     ngrps = npostgrp if len(fhrs) > npostgrp else len(fhrs)
@@ -632,7 +638,7 @@ def get_awipsgroups(awips, cdump='wdas'):
 
     # Get a list of all forecast hours
     if cdump in ['wdas']:
-        fhrs = range(fhmin, fhmax+fhout, fhout)
+        fhrs = list(range(fhmin, fhmax+fhout, fhout))
     elif cdump in ['wfs']:
         fhmax = np.max([awips['FHMAX_WFS_00'],awips['FHMAX_WFS_06'],awips['FHMAX_WFS_12'],awips['FHMAX_WFS_18']])
         fhout = awips['FHOUT_WFS']
@@ -642,8 +648,8 @@ def get_awipsgroups(awips, cdump='wdas'):
             fhmax = 240
         if fhmax_hf > 240:
             fhmax_hf = 240
-        fhrs_hf = range(fhmin, fhmax_hf+fhout_hf, fhout_hf)
-        fhrs = fhrs_hf + range(fhrs_hf[-1]+fhout, fhmax+fhout, fhout)
+        fhrs_hf = list(range(fhmin, fhmax_hf+fhout_hf, fhout_hf))
+        fhrs = fhrs_hf + list(range(fhrs_hf[-1]+fhout, fhmax+fhout, fhout))
 
     nawipsgrp = awips['NAWIPSGRP']
     ngrps = nawipsgrp if len(fhrs) > nawipsgrp else len(fhrs)
@@ -663,7 +669,7 @@ def get_eposgroups(epos, cdump='wdas'):
     fhmin = epos['FHMIN_ENKF']
     fhmax = epos['FHMAX_ENKF']
     fhout = epos['FHOUT_ENKF']
-    fhrs = range(fhmin, fhmax+fhout, fhout)
+    fhrs = list(range(fhmin, fhmax+fhout, fhout))
 
     neposgrp = epos['NEPOSGRP']
     ngrps = neposgrp if len(fhrs) > neposgrp else len(fhrs)
@@ -682,7 +688,7 @@ def get_eposgroups(epos, cdump='wdas'):
 def dict_to_strings(dict_in):
 
     strings = []
-    for key in dict_in.keys():
+    for key in list(dict_in.keys()):
         strings.append(dict_in[key])
         strings.append('\n')
 
@@ -695,7 +701,7 @@ def create_xml(dict_configs):
         create the workflow XML
     '''
 
-    from  __builtin__ import any as b_any
+    from  builtins import any as b_any
 
     base = dict_configs['base']
     dohybvar = base.get('DOHYBVAR', 'NO').upper()
@@ -720,7 +726,7 @@ def create_xml(dict_configs):
 
         # Removes <memory>&MEMORY_JOB_DUMP</memory> post mortem from hyb tasks
         hyp_tasks = {'wdaseobs':'wdaseobs', 'wdaseomg':'wdaseomn', 'wdaseupd':'wdaseupd','wdasecen':'wdasecen','wdasefcs':'wdasefmn','wdasepos':'wdasepmn','wdasearc':'wdaseamn'}
-        for each_task, each_resource_string in dict_hyb_resources.iteritems():
+        for each_task, each_resource_string in dict_hyb_resources.items():
             #print each_task,hyp_tasks[each_task]
             #print dict_hyb_tasks[hyp_tasks[each_task]]
             if 'MEMORY' not in each_resource_string:
@@ -742,7 +748,7 @@ def create_xml(dict_configs):
     dict_wfs_tasks = get_wdaswfs_tasks(dict_configs, cdump='wfs')
 
     # Removes <memory>&MEMORY_JOB_DUMP</memory> post mortem from wdas tasks
-    for each_task, each_resource_string in dict_wdas_resources.iteritems():
+    for each_task, each_resource_string in dict_wdas_resources.items():
         if each_task not in dict_wdas_tasks:
             continue
         if 'MEMORY' not in each_resource_string:
@@ -753,7 +759,7 @@ def create_xml(dict_configs):
             dict_wdas_tasks[each_task] = ''.join(temp_task_string)
 
     # Removes <memory>&MEMORY_JOB_DUMP</memory> post mortem from wfs tasks
-    for each_task, each_resource_string in dict_wfs_resources.iteritems():
+    for each_task, each_resource_string in dict_wfs_resources.items():
         if each_task not in dict_wfs_tasks:
             continue
         if 'MEMORY' not in each_resource_string:

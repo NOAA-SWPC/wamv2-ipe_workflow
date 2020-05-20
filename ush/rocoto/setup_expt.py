@@ -115,11 +115,11 @@ def edit_baseconfig():
                     continue
                 fo.write(line)
 
-    print ''
-    print 'EDITED:  %s/config.base as per user input.' % expdir
-    print 'DEFAULT: %s/config.base.emc.dyn is for reference only.' % expdir
-    print 'Please verify and delete the default file before proceeding.'
-    print ''
+    print('')
+    print('EDITED:  %s/config.base as per user input.' % expdir)
+    print('DEFAULT: %s/config.base.emc.dyn is for reference only.' % expdir)
+    print('Please verify and delete the default file before proceeding.')
+    print('')
 
     return
 

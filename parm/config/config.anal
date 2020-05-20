@@ -20,6 +20,8 @@ if [[ "$CDUMP" = "wfs" ]] ; then
 fi
 
 export ANALYSISSH="$HOMEgsi/scripts/exglobal_analysis_fv3gfs.sh.ecf"
+export BERROR=${BERROR:-$FIXgsi/Big_Endian/global_berror_wdasf070.l150y96.f77}
+# need anavinfo
 export npe_gsi=$npe_anal
 export LEVS_ENKF=$((LEVS-1))
 
@@ -30,7 +32,7 @@ export SSMITBF=${SSMITBF:-/dev/null}
 export AMSR2BF=${AMSR2BF:-/dev/null}
 
 # Set directory and structure for COMIN_OBS
-export COMIN_OBS="$DMPDIR/${CDUMP}${DUMP_SUFFIX}.${PDY}/${cyc}"
+export COMIN_OBS="$DMPDIR/${PDUMP}${DUMP_SUFFIX}.${PDY}/${cyc}"
 
 # Set CONVINFO and SATINFO for retrospective parallels
 if [ $REALTIME = "NO" ]; then

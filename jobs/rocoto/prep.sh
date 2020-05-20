@@ -23,7 +23,7 @@ status=$?
 
 ###############################################################
 # Set script and dependency variables
-export OPREFIX="${PDUMP}.t${cyc}z."
+export OPREFIX="${CDUMP}.t${cyc}z."
 export COMOUT="$ROTDIR/$CDUMP.$PDY/$cyc"
 [[ ! -d $COMOUT ]] && mkdir -p $COMOUT
 

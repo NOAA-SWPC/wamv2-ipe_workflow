@@ -16,6 +16,7 @@ if [[ "$CDUMP" = "wfs" ]] ; then
     export USE_RADSTAT="NO" # This can be only used when bias correction is not-zero.
     export GENDIAG="NO"
     export SETUP='diag_rad=.false.,diag_pcp=.false.,diag_conv=.false.,diag_ozone=.false.,write_diag(3)=.false.,'
+    export binary_diag=.false.
     export DIAG_TARBALL="NO"
 fi
 

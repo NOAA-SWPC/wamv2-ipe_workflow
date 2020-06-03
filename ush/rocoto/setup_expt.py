@@ -106,7 +106,9 @@ def edit_baseconfig():
                     .replace('@NOSCRUB@', noscrub) \
                     .replace('@ACCOUNT@', account) \
                     .replace('@QUEUE@', queue) \
-                    .replace('@QUEUE_ARCH@', queue_arch)
+                    .replace('@QUEUE_ARCH@', queue_arch) \
+                    .replace('@PARAMETER_PATH@', parameter_path) \
+                    .replace('@IPE_IC_DIR@', ipe_ic_dir)
                 if expdir is not None:
                     line = line.replace('@EXPDIR@', os.path.dirname(expdir))
                 if comrot is not None:
@@ -133,17 +135,17 @@ link initial condition files from $ICSDIR to $COMROT'''
 
     parser = ArgumentParser(description=description, formatter_class=ArgumentDefaultsHelpFormatter)
     parser.add_argument('--pslot', help='parallel experiment name', type=str, required=False, default='test')
-    parser.add_argument('--resdet', help='resolution of the deterministic model forecast', type=int, required=False, default=384)
+    parser.add_argument('--resdet', help='resolution of the deterministic model forecast', type=int, required=False, default=62)
     parser.add_argument('--resens', help='resolution of the ensemble model forecast', type=int, required=False, default=192)
-    parser.add_argument('--comrot', help='full path to COMROT', type=str, required=False, default=None)
-    parser.add_argument('--expdir', help='full path to EXPDIR', type=str, required=False, default=None)
+    parser.add_argument('--comrot', help='full path to COMROT', type=str, required=False, default='/scratch1/NCEPDEV/stmp2/{}'.format(os.environ['USER']))
+    parser.add_argument('--expdir', help='full path to EXPDIR', type=str, required=False, default='/scratch1/NCEPDEV/swpc/{}/exp'.format(os.environ['USER']))
     parser.add_argument('--idate', help='starting date of experiment, initial conditions must exist!', type=str, required=True)
     parser.add_argument('--edate', help='end date experiment', type=str, required=True)
     parser.add_argument('--icsdir', help='full path to initial condition directory', type=str, required=False)
-    parser.add_argument('--configdir', help='full path to directory containing the config files', type=str, required=False, default=None)
-    parser.add_argument('--nens', help='number of ensemble members', type=int, required=False, default=20)
+    parser.add_argument('--configdir', help='full path to directory containing the config files', type=str, required=False, default='../../parm/config')
+    parser.add_argument('--nens', help='number of ensemble members', type=int, required=False, default=0)
     parser.add_argument('--cdump', help='CDUMP to start the experiment', type=str, required=False, default='wdas')
-    parser.add_argument('--wfs_cyc', help='WFS cycles to run', type=int, choices=[0, 1, 2, 4], default=1, required=False)
+    parser.add_argument('--wfs_cyc', help='WFS cycles to run', type=int, choices=[0, 1, 2, 4], default=4, required=False)
     parser.add_argument('--partition', help='partition on machine', type=str, required=False, default=None)
 
     args = parser.parse_args()
@@ -181,6 +183,9 @@ link initial condition files from $ICSDIR to $COMROT'''
       account = 'GFS-DEV'
       queue = 'dev'
       queue_arch = 'dev_transfer'
+      ipe_ic_dir = '/gpfs/dell2/swpc/noscrub/Adam.Kubaryk/refactored_ipe_input_decks'
+      parameter_path = '/gpfs/dell2/swpc/noscrub/Adam.Kubaryk/WAM-IPE_INPUT_PARAMETERS'
+
       if partition in ['3p5']:
         queue = 'dev2'
         queue_arch = 'dev2_transfer'
@@ -210,6 +215,8 @@ link initial condition files from $ICSDIR to $COMROT'''
       account = 'swpc'
       queue = 'batch'
       queue_arch = 'service'
+      ipe_ic_dir = '/scratch1/NCEPDEV/swpc/WAM-IPE_DATA/IPE_FIX'
+      parameter_path = '/scratch1/NCEPDEV/swpc/WAM-IPE_DATA/INPUT_PARAMETERS'
 
     if args.icsdir is not None and not os.path.exists(icsdir):
         msg = 'Initial conditions do not exist in %s' % icsdir

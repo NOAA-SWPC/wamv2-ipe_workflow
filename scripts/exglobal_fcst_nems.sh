@@ -418,7 +418,7 @@ export FM=${FM}
 # export SIGI=${1:-${GRDI:-?}}
 #fi
 
-export SFCI=${2:-${SFCI:-?}}
+# export SFCI=${2:-${SFCI:-?}}
 export SIGO=${3:-${SIGO}}
 export FLXO=${4:-${FLXO}}
 export FHOUT=${5:-${FHOUT:-3}}
@@ -448,58 +448,59 @@ export SPS_PARM3=${SPS_PARM3:-"0.2 0.34 -0.34 3.0 0.0 0.0 0.0 0.0 0.0 0.0"}
 if [ $ENS_SPS = .false. ] ; then export FH_INC=$FHMAX ; fi
 
 #  Directories.
-export gsm_ver=${gsm_ver:-v14.0.0}
-export BASEDIR=${BASEDIR:-/nwprod}
-export NWPROD=${NWPROD:-$BASEDIR}
-export FIXSUBDA=${FIXSUBDA:-fix/fix_am}
-export FIXGLOBAL=${FIXGLOBAL:-$NWPROD/gsm.$gsm_ver/$FIXSUBDA}
-export FIX_RAD=${FIX_RAD:-$FIXGLOBAL}
-export FIX_IDEA=${FIX_IDEA:-$FIXGLOBAL}
-export FIX_NGAC=${FIX_NGAC:-$NWPROD/fix/fix_ngac}
-export PARMSUBDA=${PARMSUBDA:-parm/parm_am}
-export PARMGLOBAL=${PARMGLOBAL:-$NWPROD/gsm.$gsm_ver/$PARMSUBDA}
-export PARM_NGAC=${PARM_NGAC:-$NWPROD/parm/parm_ngac}
-export EXECGLOBAL=${EXECGLOBAL:-$NWPROD/exec}
-export DATA=${DATA:-$(pwd)}
+gsm_ver=${gsm_ver:-v14.0.0}
+BASEDIR=${BASEDIR:-/nwprod}
+NWPROD=${NWPROD:-$BASEDIR}
+FIXSUBDA=${FIXSUBDA:-fix/fix_am}
+FIXGLOBAL=${FIXGLOBAL:-$NWPROD/gsm.$gsm_ver/$FIXSUBDA}
+FIX_RAD=${FIX_RAD:-$FIXGLOBAL}
+FIX_IDEA=${FIX_IDEA:-$FIXGLOBAL}
+FIX_NGAC=${FIX_NGAC:-$NWPROD/fix/fix_ngac}
+PARMSUBDA=${PARMSUBDA:-parm/parm_am}
+PARMGLOBAL=${PARMGLOBAL:-$NWPROD/gsm.$gsm_ver/$PARMSUBDA}
+PARM_NGAC=${PARM_NGAC:-$NWPROD/parm/parm_ngac}
+EXECGLOBAL=${EXECGLOBAL:-$NWPROD/exec}
+DATA=${DATA:-$(pwd)}
 
 #  Filenames.
-export GRDR1='${memdir}'/RESTART/grdr1
-export GRDR2='${memdir}'/RESTART/grdr2
-export SIGR1='${memdir}'/RESTART/sigr1
-export SIGR2='${memdir}'/RESTART/sigr2
-export SFCR='${memdir}'/RESTART/sfcr
-export NSTR='${memdir}'/RESTART/nstr
-export IPER='${memdir}'/RESTART/iper
+GRDR1='${memdir}'/RESTART/grdr1
+GRDR2='${memdir}'/RESTART/grdr2
+SIGR1='${memdir}'/RESTART/sigr1
+SIGR2='${memdir}'/RESTART/sigr2
+SFCR='${memdir}'/RESTART/sfcr
+NSTR='${memdir}'/RESTART/nstr
+IPER='${memdir}'/RESTART/iper
+FORT1051='${memdir}'/RESTART/fort.1051
 
 ## Input Files
-export SIGI='${memdir}'/$CDUMP.t${cyc}z.$ATM$SUFOUT
-export SFCI='${memdir}'/$CDUMP.t${cyc}z.$SFC$SUFOUT
-export PLASI='${memdir}'/$CDUMP.t${cyc}z.$PLAS.'${CIPEDATE}'
+SIGI=${SIGI:-'${memdir}'/$CDUMP.t${cyc}z.$ATM$SUFOUT}
+SFCI=${SFCI:-'${memdir}'/$CDUMP.t${cyc}z.$SFC$SUFOUT}
+PLASI=${PLASI:-'${memdir}'/$CDUMP.t${cyc}z.$PLAS.'${CIPEDATE}'}
 
 ## History Files
-export SIGO=${SIGO:-'${memdir}'/$CDUMP.t${cyc}z.${SIGOSUF}f'${FHIAU}''${MN}'$SUFOUT}
-export SFCO=${SFCO:-'${memdir}'/$CDUMP.t${cyc}z.${SFCOSUF}f'${FHIAU}''${MN}'$SUFOUT}
-export FLXO=${FLXO:-'${memdir}'/$CDUMP.t${cyc}z.${FLXOSUF}f'${FHIAU}''${MN}'$SUFOUT}
-export PLASO=${PLASO:-'$(memdir}'/$CDUMP.t${cyc}z.$PLAS.'${TIMESTAMP}'.h5}
-export LOGO=${LOGO:-'${memdir}'/$CDUMP.t${cyc}z.logf'${FHIAU}''${MN}'$SUFOUT}
-export D3DO=${D3DO:-'${memdir}'/$CDUMP.t${cyc}z.d3df'${FHIAU}''${MN}'$SUFOUT}
-export NSTO=${NSTO:-'${memdir}'/$CDUMP.t${cyc}z.${NSTOSUF}f'${FHIAU}''${MN}'$SUFOUT}
-export AERO=${AERO:-'${memdir}'/$CDUMP.t${cyc}z.aerf'${FH}''${MN}'$SUFOUT}
+SIGO=${SIGO:-'${memdir}'/$CDUMP.t${cyc}z.${SIGOSUF}f'${FHIAU}''${MN}'$SUFOUT}
+SFCO=${SFCO:-'${memdir}'/$CDUMP.t${cyc}z.${SFCOSUF}f'${FHIAU}''${MN}'$SUFOUT}
+FLXO=${FLXO:-'${memdir}'/$CDUMP.t${cyc}z.${FLXOSUF}f'${FHIAU}''${MN}'$SUFOUT}
+PLASO=${PLASO:-'$(memdir}'/$CDUMP.t${cyc}z.$PLAS.'${TIMESTAMP}'.h5}
+LOGO=${LOGO:-'${memdir}'/$CDUMP.t${cyc}z.logf'${FHIAU}''${MN}'$SUFOUT}
+D3DO=${D3DO:-'${memdir}'/$CDUMP.t${cyc}z.d3df'${FHIAU}''${MN}'$SUFOUT}
+NSTO=${NSTO:-'${memdir}'/$CDUMP.t${cyc}z.${NSTOSUF}f'${FHIAU}''${MN}'$SUFOUT}
+AERO=${AERO:-'${memdir}'/$CDUMP.t${cyc}z.aerf'${FH}''${MN}'$SUFOUT}
 
 #  Executables.
-export NCP=${NCP:-"/bin/cp -p"}
-export NDATE=${NDATE:-$NWPROD/util/exec/ndate}
-export MDATE=${MDATE:-$NWPROD/util/exec/mdate}
+NCP=${NCP:-"/bin/cp -p"}
+NDATE=${NDATE:-$NWPROD/util/exec/ndate}
+MDATE=${MDATE:-$NWPROD/util/exec/mdate}
 
-export NEMSIOGET=${NEMSIOGET:-/nwprod/ngac.v1.0.0/exec/nemsio_get}
-export SFCHDR=${SFCHDR:-${EXECGLOBAL}/global_sfchdr$XC}
-export CHGSFCFHREXEC=${CHGSFCFHREXEC:-/swpc/save/swpc.spacepara/util/chgsfcfhr/chgsfcfhr}
-export SIGHDR=${SIGHDR:-${EXECGLOBAL}/global_sighdr$XC}
+NEMSIOGET=${NEMSIOGET:-/nwprod/ngac.v1.0.0/exec/nemsio_get}
+SFCHDR=${SFCHDR:-${EXECGLOBAL}/global_sfchdr$XC}
+#export CHGSFCFHREXEC=${CHGSFCFHREXEC:-/swpc/save/swpc.spacepara/util/chgsfcfhr/chgsfcfhr}
+SIGHDR=${SIGHDR:-${EXECGLOBAL}/global_sighdr$XC}
 
 ## File Metadata
 MN=${MN:-""}
-export XC=${XC}
-export SUFOUT=${SUFOUT}
+XC=${XC}
+SUFOUT=${SUFOUT}
 if [ $MEMBER -lt 0 ]; then
   prefix=$CDUMP
   rprefix=$rCDUMP
@@ -510,6 +511,7 @@ else
   memchar=mem$(printf %03i $MEMBER)
 fi
 memdir=$ROTDIR/${prefix}.$PDY/$cyc/$memchar
+mkdir -p $memdir/RESTART
 if [[ $NEMS = .true. ]] ; then
   if [ $NEMSIO_IN = .true. ]; then
     idate=` $NEMSIOGET $GRDI idate  | tr -s ' ' | cut -d' ' -f 3-7`
@@ -678,7 +680,7 @@ export ENDSCRIPT=${ENDSCRIPT}
 export FHSEG=${FHSEG:-0}
 export FHMAX=${FHMAX:-$((10#$FHINI+10#$FHSEG))}
 export DELTIM=${DELTIM:-$((3600/(JCAP/20)))}
-export DTPHYS=${DTPHYS:-$((DELTIM/2))}
+export DTPHYS=${DTPHYS:-$DELTIM}
 export FHRES=${FHRES:-24}
 export FHZER=${FHZER:-6}
 export FHLWR=${FHLWR:-3600}
@@ -1912,11 +1914,11 @@ EOF
 
 $NLN atm_namelist.rc ./model_configure
 
- if [ $DOIAU = YES ]; then
-    export CDATE_SFC=${CDATE_SFC:-$(echo idate|$SFCHDR ${SFCI}$FM)}
-    export FHINI_SFC=${FHINI_SFC:-$(echo fhour|$SFCHDR ${SFCI}$FM)}
-    eval $CHGSFCFHREXEC $SFCI $CDATE_SIG $FHINI
- fi
+# if [ $DOIAU = YES ]; then
+#    export CDATE_SFC=${CDATE_SFC:-$(echo idate|$SFCHDR ${SFCI}$FM)}
+#    export FHINI_SFC=${FHINI_SFC:-$(echo fhour|$SFCHDR ${SFCI}$FM)}
+#    eval $CHGSFCFHREXEC $SFCI $CDATE_SIG $FHINI
+# fi
 
 fi # NEMS
 
@@ -1926,9 +1928,9 @@ export ERR=$?
 export err=$ERR
 $ERRSCRIPT||exit 2
 
- if [ $DOIAU = YES ]; then
-    eval $CHGSFCFHREXEC $SFCI $CDATE_SFC $FHINI_SFC
- fi
+# if [ $DOIAU = YES ]; then
+#    eval $CHGSFCFHREXEC $SFCI $CDATE_SFC $FHINI_SFC
+# fi
 
 [[ -f $memdir/`eval echo "$PLASO"` ]] && eval ln -fs ${memdir}/${PLASO} $IPER
 

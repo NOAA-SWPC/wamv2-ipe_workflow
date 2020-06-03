@@ -365,10 +365,10 @@ def get_wdaswfs_tasks(dict_configs, cdump='wdas'):
     deps = []
     dep_dict = {'type': 'task', 'name': '%sfcst' % 'wdas', 'offset': '-06:00:00'}
     deps.append(rocoto.add_dependency(dep_dict))
-    data = '&ROTDIR;/wdas.@Y@m@d/@H/wdas.t@Hz.atmf009'
+    data = '&ROTDIR;/wdas.@Y@m@d/@H/wdas.t@Hz.atmf09'
     dep_dict = {'type': 'data', 'data': data, 'offset': '-06:00:00'}
     deps.append(rocoto.add_dependency(dep_dict))
-    data = '&DMPDIR;/%s%s.@Y@m@d/@H/%s.t@Hz.updated.status.tm00.bufr_d' % (cdump, dumpsuffix, cdump)
+    data = '&DMPDIR;/%s%s.@Y@m@d/@H/%s.t@Hz.updated.status.tm00.bufr_d' % ("g{}".format(cdump[1:]), dumpsuffix, "g{}".format(cdump[1:]))
     dep_dict = {'type': 'data', 'data': data}
     deps.append(rocoto.add_dependency(dep_dict))
     dependencies = rocoto.create_dependency(dep_condition='and', dep=deps)

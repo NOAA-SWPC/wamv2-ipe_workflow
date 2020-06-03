@@ -66,6 +66,10 @@ fi
 ##############################################
 # Begin JOB SPECIFIC work
 ##############################################
+GDATE=$($NDATE -$assim_freq $CDATE)
+gPDY=$(echo $GDATE | cut -c1-8)
+gcyc=$(echo $GDATE | cut -c9-10)
+GDUMP=${GDUMP:-"wdas"}
 
 # Restart conditions for WFS cycle come from GDAS
 rCDUMP=$CDUMP
@@ -82,6 +86,21 @@ else
     export FHOUT_HF=1
 fi
 
+# IAU handling
+if [ $DOIAU = "YES" ] ; then
+    export SFCI=$ROTDIR/$CDUMP.$PDY/$cyc/$CDUMP.t${cyc}z.${SFC:0:3}a03
+    export SIGI=$ROTDIR/$GDUMP.$gPDY/$gcyc/$GDUMP.t${gcyc}z.${ATM:0:3}f03
+    IAU_FG=$ROTDIR/$rCDUMP.$gPDY/$gcyc/$rCDUMP.t${gcyc}z.${ATM:0:3}f06
+    IAU_ANL=$ROTDIR/$CDUMP.$PDY/$cyc/$CDUMP.t${cyc}z.${ATM}
+
+    export FHINI=3
+    export FHROT=3
+    export FHMAX=$((FHMAX+6))
+
+    IAUVARS="iau=.true.,iaufiles_fg='${IAU_FG}',iaufiles_anl='${IAU_ANL}',iaufhrs=6,iau_delthrs=6,"
+    export DYNVARS=$DYNVARS$IAUVARS
+    export PHYVARS=$PHYVARS$IAUVARS
+fi
 
 ###############################################################
 # Run relevant exglobal script

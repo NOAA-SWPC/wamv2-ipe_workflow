@@ -38,10 +38,10 @@ if [ $ROTDIR_DUMP = "YES" ]; then
     GDATE=$($NDATE -$assim_freq $CDATE)
     gPDY=$(echo $GDATE | cut -c1-8)
     gcyc=$(echo $GDATE | cut -c9-10)
-    GDUMP=gdas
+    GDUMP=wdas
     gCOMOUT="$ROTDIR/$GDUMP.$gPDY/$gcyc"
     if [ ! -s $gCOMOUT/$GDUMP.t${gcyc}z.updated.status.tm00.bufr_d ]; then
-     $HOMEwfs/ush/getdump.sh $GDATE $GDUMP $DMPDIR/${GDUMP}${DUMP_SUFFIX}.${gPDY}/${gcyc} $gCOMOUT
+     $HOMEwfs/ush/getdump.sh $GDATE gdas $DMPDIR/${GDUMP}${DUMP_SUFFIX}.${gPDY}/${gcyc} $gCOMOUT
      status=$?
      [[ $status -ne 0 ]] && exit $status
     fi

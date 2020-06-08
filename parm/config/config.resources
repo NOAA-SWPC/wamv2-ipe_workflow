@@ -38,6 +38,12 @@ if [ $step = "prep" -o $step = "prepbufr" ]; then
     eval "export npe_$step=4"
     eval "export npe_node_$step=4"
     eval "export nth_$step=1"
+    if [ $NODA = "YES" ] ; then
+      eval "export npe_$step=1"
+      eval "export nth_$step=1"
+      eval "export npe_node_$step=1"
+      eval "export wtime_$step='00:01:00'"
+    fi
 
 elif [ $step = "anal" ]; then
 
@@ -61,6 +67,12 @@ elif [ $step = "anal" ]; then
     fi
     if [[ "$machine" == "WCOSS_C" ]]; then
         export memory_anal="3072M"
+    fi
+    if [ $NODA = "YES" ] ; then
+      export npe_anal=1
+      export nth_anal=1
+      export npe_node_anal=1
+      export wtime_anal="00:01:00"
     fi
 
 elif [ $step = "fcst" ]; then

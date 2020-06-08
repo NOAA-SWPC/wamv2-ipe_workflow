@@ -2,15 +2,10 @@
 # define the array of the name of build program
 #
  declare -a Build_prg=("Build_libs" "Build_gsmwam_ipe" \
-                       "Build_gsi" "Build_ncep_post" \
-                       "Build_ufs_utils" \
-                       "Build_gfs_wafs" \
-                       "Build_gdas" \
-                       "Build_tropcy" \
-                       "Build_gfs_fbwndgfs" "Build_gfs_overpdtg2" \
-                       "Build_gfs_wintemv" \
-                       "Build_gfs_bufrsnd" \
-                       "Build_gfs_util")
+                       "Build_gsi" 
+                       "Build_gdas")
+# need to add swpc_utils (sighdr/sfchdr/chgsfcfhr/chgsigfhr/global_chgres/global_cycle)
+# and then also a build script!
 
 #
 # function parse_cfg: read config file and retrieve the values

@@ -73,24 +73,6 @@ cd ${pwd}/../util               ||exit 8
     done
 
 
-#-----------------------------------
-#--add gfs_wafs link if checked out
-if [ -d ${pwd}/gfs_wafs.fd ]; then 
-#-----------------------------------
- cd ${pwd}/../jobs               ||exit 8
-     $LINK ../sorc/gfs_wafs.fd/jobs/*                         .
- cd ${pwd}/../parm               ||exit 8
-     [[ -d wafs ]] && rm -rf wafs
-    $LINK ../sorc/gfs_wafs.fd/parm/wafs                      wafs
- cd ${pwd}/../scripts            ||exit 8
-    $LINK ../sorc/gfs_wafs.fd/scripts/*                      .
- cd ${pwd}/../ush                ||exit 8
-    $LINK ../sorc/gfs_wafs.fd/ush/*                          .
- cd ${pwd}/../fix                ||exit 8
-    $LINK ../sorc/gfs_wafs.fd/fix/*                          .
-fi
-
-
 #------------------------------
 #--add GSI/EnKF file
 #------------------------------

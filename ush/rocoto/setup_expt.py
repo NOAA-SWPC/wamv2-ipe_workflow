@@ -108,7 +108,10 @@ def edit_baseconfig():
                     .replace('@QUEUE@', queue) \
                     .replace('@QUEUE_ARCH@', queue_arch) \
                     .replace('@PARAMETER_PATH@', parameter_path) \
-                    .replace('@IPE_IC_DIR@', ipe_ic_dir)
+                    .replace('@IPE_IC_DIR@', ipe_ic_dir) \
+                    .replace('@HOMEobsproc_global@', obsproc_global) \
+                    .replace('@HOMEobsproc_prep@', obsproc_prep) \
+                    .replace('@UTILDIR@', utildir)
                 if expdir is not None:
                     line = line.replace('@EXPDIR@', os.path.dirname(expdir))
                 if comrot is not None:
@@ -185,6 +188,9 @@ link initial condition files from $ICSDIR to $COMROT'''
       queue_arch = 'dev_transfer'
       ipe_ic_dir = '/gpfs/dell2/swpc/noscrub/Adam.Kubaryk/refactored_ipe_input_decks'
       parameter_path = '/gpfs/dell2/swpc/noscrub/Adam.Kubaryk/WAM-IPE_INPUT_PARAMETERS'
+      obsproc_global = '/gpfs/dell2/swpc/noscrub/Adam.Kubaryk/obsproc/obsproc_global.v3.2.6'
+      obsproc_prep = '/gpfs/dell2/swpc/noscrub/Adam.Kubaryk/obsproc/obsproc_prep_RB-5.2.0'
+      utildir =  '/gpfs/dell2/swpc/noscrub/Adam.Kubaryk/util/exec'
 
       if partition in ['3p5']:
         queue = 'dev2'
@@ -217,6 +223,9 @@ link initial condition files from $ICSDIR to $COMROT'''
       queue_arch = 'service'
       ipe_ic_dir = '/scratch1/NCEPDEV/swpc/WAM-IPE_DATA/IPE_FIX'
       parameter_path = '/scratch1/NCEPDEV/swpc/WAM-IPE_DATA/INPUT_PARAMETERS'
+      obsproc_global = '/scratch1/NCEPDEV/swpc/Adam.Kubaryk/obsproc/obsproc_global.v3.2.6'
+      obsproc_prep = '/scratch1/NCEPDEV/swpc/Adam.Kubaryk/obsproc/obsproc_prep_RB-5.2.0'
+      utildir =  '/scratch1/NCEPDEV/swpc/Adam.Kubaryk/util/exec'
 
     if args.icsdir is not None and not os.path.exists(icsdir):
         msg = 'Initial conditions do not exist in %s' % icsdir

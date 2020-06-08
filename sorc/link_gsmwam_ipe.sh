@@ -33,7 +33,7 @@ pwd=$(pwd -P)
 if [ $machine == "cray" ]; then
     FIX_DIR="/gpfs/hps3/emc/global/noscrub/emc.glopara/git/fv3gfs/fix"
 elif [ $machine = "dell" ]; then
-    FIX_DIR="/gpfs/dell2/emc/modeling/noscrub/emc.glopara/git/fv3gfs/fix"
+    FIX_DIR="/gpfs/dell2/swpc/noscrub/Adam.Kubaryk/WAM_FIX"
 elif [ $machine = "hera" ]; then
     FIX_DIR="/scratch1/NCEPDEV/swpc/WAM-IPE_DATA/WAM_FIX"
 fi
@@ -103,7 +103,7 @@ cd ${pwd}/../jobs               ||exit 8
     $LINK ../sorc/gsi.fd/jobs/JGDAS_ENKF_FCST            .
     $LINK ../sorc/gsi.fd/jobs/JGDAS_ENKF_POST            .
 cd ${pwd}/../scripts            ||exit 8
-    $LINK ../sorc/gsi.fd/scripts/exglobal_analysis.sh.ecf           .
+    $LINK ../sorc/gsi.fd/scripts/exglobal_analysis_fv3gfs.sh.ecf    .
     $LINK ../sorc/gsi.fd/scripts/exglobal_innovate_obs.sh.ecf       .
     $LINK ../sorc/gsi.fd/scripts/exglobal_enkf_innovate_obs.sh.ecf  .
     $LINK ../sorc/gsi.fd/scripts/exglobal_enkf_update.sh.ecf        .

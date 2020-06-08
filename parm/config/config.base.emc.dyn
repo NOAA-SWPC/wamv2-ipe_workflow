@@ -4,6 +4,7 @@
 # Common to all steps
 
 echo "BEGIN: config.base"
+export NODA=YES
 
 # Machine environment
 export machine="@MACHINE@"
@@ -22,6 +23,7 @@ HPSS_PROJECT=swpc-para
 # Directories relative to installation areas:
 export HOMEwfs=@HOMEwfs@
 export PARMwfs=$HOMEwfs/parm
+export PARMDIR=$PARMwfs/parm_wamipe
 export FIXwfs=$HOMEwfs/fix
 export USHwfs=$HOMEwfs/ush
 export UTILwfs=$HOMEwfs/util
@@ -70,8 +72,8 @@ export HOMEgsi="$HOMEwfs"
 export FIXgsi="$HOMEwfs/fix/fix_gsi"
 export HOMEgsmwam_ipe="$HOMEwfs/sorc/gsmwam_ipe.fd"
 export HOMEpost="$HOMEwfs"
-export HOMEobsproc_prep="/scratch1/NCEPDEV/swpc/Adam.Kubaryk/obsproc/obsproc_prep_RB-5.2.0"
-export HOMEobsproc_network="/scratch1/NCEPDEV/swpc/Adam.Kubaryk/obsproc/obsproc_global.v3.2.6"
+export HOMEobsproc_prep="@HOMEobsproc_prep@"
+export HOMEobsproc_network="@HOMEobsproc_global@"
 export HOMEobsproc_global=$HOMEobsproc_network
 export BASE_VERIF="$BASE_SVN/verif/global/tags/vsdb"
 
@@ -83,10 +85,11 @@ export VERBOSE="YES"
 export KEEPDATA="NO"
 export CHGRP_CMD="chgrp rstprod"
 export NEMSIOGET="$HOMEwfs/exec/nemsio_get"
-export UTILDIR=/scratch1/NCEPDEV/swpc/Adam.Kubaryk/util/exec
+export UTILDIR="@UTILDIR@"
 export SIGHDR=$UTILDIR/global_sighdr
 export SFCHDR=$UTILDIR/global_sfchdr
 export CHGSFCFHREXEC=$UTILDIR/chgsfcfhr
+export CHGSIGFHREXEC=$UTILDIR/chgsigfhr
 
 # Machine environment, jobs, and other utility scripts
 export BASE_ENV="$HOMEwfs/env"
@@ -139,8 +142,8 @@ export SENDSDM="NO"
 # Resolution specific parameters
 export IDEA=${IDEA:-.true.}
 export NEMS=${NEMS:-.true.}
-export WAM_IPE_COUPLING=${WAM_IPE_COUPLING:-.false.}
-export IPE=${IPE:-.false.}
+export WAM_IPE_COUPLING=${WAM_IPE_COUPLING:-.true.}
+export IPE=${WAM_IPE_COUPLING:-.true.}
 
 export LEVS=150
 export LEVR=90
@@ -159,7 +162,7 @@ export DOIAU=${DOIAU:-NO}
 
 # Output frequency of the forecast model (for cycling)
 export FHMIN=0
-export FHMAX=9
+export FHMAX=6
 export FHOUT=3
 export IPEFREQ=${IPEFREQ:-3600}
 export FHOUT_HF=${FHOUT_HF:-$FHOUT}
@@ -173,14 +176,12 @@ if [[ $NEMSIO_IN = .true. ]] ; then
         export SFCOSUF=${SFCOSUF:-sfn}
         export NSTOSUF=${NSTOSUF:-nsn}
         export FLXOSUF=${FLXOSUF:-fln}
-        export SEARCH=*nanl* # used in checks.sh
 else
         export SIGIO_IN=${SIGIO_IN:-.true.}
         export SIGOSUF=${SIGOSUF:-atm}
         export SFCOSUF=${SFCOSUF:-sfc}
         export NSTOSUF=${NSTOSUF:-nst}
         export FLXOSUF=${FLXOSUF:-flx}
-        export SEARCH=s*anl* # used in checks.sh
 fi
 if [[ $NEMSIO_OUT = .true. ]] ; then
         export SIGIO_OUT=${SIGIO_OUT:-.false.}
@@ -188,6 +189,28 @@ else
         export SIGIO_OUT=${SIGIO_OUT:-.true.}
 fi
 export SUFOUT="" # ${SUFOUT:-".$CDATE"}
+
+[ "$CDUMP" = "wfs" ] && SWIO=.true.
+export SWIO=${SWIO:-.false.}
+if [[ $SWIO = .true. ]] ; then
+  if [[ $WAM_IPE_COUPLING = .true. ]] ; then
+    export SWIO_MODELS=${SWIO_MODELS:-"IIO03 IIO15 IIO60 AIO15 AIO60"}
+    export IIO03_PREFIX=${IIO03_PREFIX:-"ipe03"}
+    export IIO03_CADENCE=${IIO03_CADENCE:-"180"}
+    export IIO15_PREFIX=${IIO15_PREFIX:-"ipe15"}
+    export IIO15_CADENCE=${IIO15_CADENCE:-"900"}
+    export IIO60_PREFIX=${IIO60_PREFIX:-"ipe60"}
+    export IIO60_CADENCE=${IIO60_CADENCE:-"3600"}
+    export AIO15_PREFIX=${AIO15_PREFIX:-"gsm15"}
+    export AIO15_CADENCE=${AIO15_CADENCE:-"900"}
+    export AIO60_PREFIX=${AIO60_PREFIX:-"gsm60"}
+    export AIO60_CADENCE=${AIO60_CADENCE:-"3600"}
+  else
+    export SWIO_MODELS=${SWIO_MODELS:-"AIO"}
+    export AIO_PREFIX=${AIO_PREFIX:-"gsm"}
+    export AIO_CADENCE=${AIO_CADENCE:-"3600"}
+  fi
+fi
 
 ## filename settings used for checks.sh
 export ATM=${SIGOSUF}anl
@@ -232,7 +255,7 @@ export IAU_DELTHRS=6
 export DOIAU_ENKF="NO"
 export IAUFHRS_ENKF=6
 export IAU_DELTHRS_ENKF=6
-[[ "$SDATE" = "$CDATE" ]] && ( export DOIAU="NO"; export DOIAU_ENKF="NO" )
+[[ "$SDATE" = "$CDATE" ]] && export DOIAU="NO" && export DOIAU_ENKF="NO"
 
 # Microphysics Options: 99-ZhaoCarr, 8-Thompson; 6-WSM6, 10-MG, 11-GFDL
 export imp_physics=11

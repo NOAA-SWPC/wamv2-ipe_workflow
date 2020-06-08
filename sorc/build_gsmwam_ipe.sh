@@ -19,4 +19,4 @@ fi
 if [ $target = hera ]; then target=hera.intel ; fi
 
 cd gsmwam_ipe.fd/NEMS
-gmake -j app=coupledWAM_IPE build
+gmake -j app=coupledWAM_IPE_SWIO build

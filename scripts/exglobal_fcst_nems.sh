@@ -1257,12 +1257,6 @@ if [[ $NEMS = .true. ]] ; then
 
   $NLN atm_namelist.rc ./model_configure
 
-  # special IAU handling for surface analysis
-  if [ $DOIAU = YES ]; then
-    export CDATE_SFC=${CDATE_SFC:-$(echo idate|$SFCHDR ${SFCI}$FM)}
-    export FHINI_SFC=${FHINI_SFC:-$(echo fhour|$SFCHDR ${SFCI}$FM)}
-    eval $CHGSFCFHREXEC $SFCI $CDATE_SIG $FHINI
-  fi
   # link in the appropriate SWIO rc files
   if [[ $SWIO = .true. ]] ; then
     for iomodel in $SWIO_MODELS; do

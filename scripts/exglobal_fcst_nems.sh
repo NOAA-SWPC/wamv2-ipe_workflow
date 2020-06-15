@@ -581,7 +581,7 @@ export LSOIL=${LSOIL:-4}
 export NTOZ=${NTOZ:-2}
 export NTCW=${NTCW:-3}
 export NCLD=${NCLD:-1}
-export NGPTC=${NGPTC:-30}
+export NGPTC=${NGPTC:-8}
 
 export ADIAB=${ADIAB:-.false.}
 export nsout=${nsout:-0}
@@ -695,7 +695,7 @@ if [ $gfsio_in = .true. ] ; then export GB=1 ; fi
 #        ------------------------------
 export IDEA=${IDEA:-.false.}
 export WAM_IPE_COUPLING=${WAM_IPE_COUPLING:-.false.}
-export HEIGHT_DEPENDENT_G=${HEIGHT_DEPENDENT_G:-.false.}
+export HEIGHT_DEPENDENT_G=${HEIGHT_DEPENDENT_G:-.true.}
 export INPUT_PARAMETERS=${INPUT_PARAMETERS:-fixderive}
 export FIX_F107=${FIX_F107:-120.0}
 export FIX_KP=${FIX_KP:-3.0}
@@ -1093,7 +1093,17 @@ if [ $DOIAU = YES ]; then
   #export FHOUT=1 # ???
   export FHZER=3
   export IAU=.true.
+  SWIO_IDATE=$($NDATE +6 $CDATE)0000
 fi
+
+SWIO_IDATE=${SWIO_IDATE:-${CDATE}0000}
+SWIO_SDATE=${FDATE}0000
+SWIO_EDATE=$($NDATE $((FHMAX-$FHROT)) $FDATE)0000
+
+export CDUMP=${CDUMP:-"compset_run"}
+export SWIO_IDATE=${SWIO_IDATE:0:8}_${SWIO_IDATE:8}
+export SWIO_SDATE=${SWIO_SDATE:0:8}_${SWIO_SDATE:8}
+export SWIO_EDATE=${SWIO_EDATE:0:8}_${SWIO_EDATE:8}
 
 # Mostly IDEA-related stuff in this section
 #--------------------------------------------------------------
@@ -1257,17 +1267,11 @@ if [[ $NEMS = .true. ]] ; then
 
   $NLN atm_namelist.rc ./model_configure
 
-  # special IAU handling for surface analysis
-  if [ $DOIAU = YES ]; then
-    export CDATE_SFC=${CDATE_SFC:-$(echo idate|$SFCHDR ${SFCI}$FM)}
-    export FHINI_SFC=${FHINI_SFC:-$(echo fhour|$SFCHDR ${SFCI}$FM)}
-    eval $CHGSFCFHREXEC $SFCI $CDATE_SIG $FHINI
-  fi
-  # link in the appropriate SWIO rc files
+  # envsubst in the appropriate SWIO rc files
   if [[ $SWIO = .true. ]] ; then
     for iomodel in $SWIO_MODELS; do
       infile=`sed -n -e '/^'"$iomodel"'_attributes/,/ConfigFile/ p' nems.configure | tail -n 1 | sed 's/^[ \t]*//' | cut -d' ' -f3`
-      $NLN $PARMDIR/$infile .
+      envsubst < $PARMDIR/$infile > $infile
     done
   fi
 fi # NEMS
@@ -1281,7 +1285,7 @@ $ERRSCRIPT||exit 2
 ################################################################################
 #  Postprocessing
 cd $pwd
-[[ $mkdata = YES ]]&&rmdir $DATA
+#[[ $mkdata = YES ]]&&rmdir $DATA
 $ENDSCRIPT
 
 if [[ "$VERBOSE" = "YES" ]] ; then

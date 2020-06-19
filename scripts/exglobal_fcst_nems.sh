@@ -706,6 +706,20 @@ export F107_KP_INTERVAL=${F107_KP_INTERVAL:-10800}
 export IPEFREQ=${IPEFREQ:-3600}
 export IPEFMAX=${IPEFMAX:-$((FHMAX*3600))}
 
+## wam_control_in
+export JH0=${JH0:-1.75}
+export JH_tanh=${JH_tanh:-0.5}
+export JH_semiann=${JH_semiann:-0.5}
+export JH_ann=${JH_ann:-0.0}
+
+export skeddy0=${skeddy0:-140.0}
+export skeddy_semiann=${skeddy_semiann:-60.0}
+export skeddy_ann=${skeddy_ann:-0.0}
+
+export tkeddy0=${tkeddy0:-280.0}
+export tkeddy_semiann=${tkeddy_semiann:-0.0}
+export tkeddy_ann=${tkeddy_ann:-0.0}
+
 ## for post
 export WRITE_DOPOST=${WRITE_DOPOST:-.false.}
 export GOCART_AER2POST=${GOCART_AER2POST:-.false.}
@@ -732,8 +746,8 @@ fi
 #
 # Total pe = WRT_GROUP*WRTPE_PER_GROUP + fcst pes
 #
-export WRT_GROUP=${WRT_GROUP:-1}
-export WRTPE_PER_GROUP=${WRTPE_PER_GROUP:-1}
+export WRT_GROUP=${WRT_GROUP:-2}
+export WRTPE_PER_GROUP=${WRTPE_PER_GROUP:-3}
 export WRITE_NEMSIOFLAG=${WRITE_NEMSIOFLAG:-.true.}
 export QUILTING=${QUILTING:-.true.}
 export GOCART_AER2POST=${GOCART_AER2POST:-.false.}
@@ -1094,6 +1108,8 @@ if [ $DOIAU = YES ]; then
   export FHZER=3
   export IAU=.true.
   SWIO_IDATE=$($NDATE +6 $CDATE)0000
+else
+  export IAU=.false.
 fi
 
 SWIO_IDATE=${SWIO_IDATE:-${CDATE}0000}
@@ -1109,10 +1125,6 @@ export SWIO_EDATE=${SWIO_EDATE:0:8}_${SWIO_EDATE:8}
 #--------------------------------------------------------------
 if [ $NEMS = .true. ] ; then # grids for mediator
   [[ $IPE = .true. ]] && $NCP ${FIXwfs}/MED_SPACEWX/gsm%wam%T62_ipe%80x170/ipe3dgrid2.nc .
-  $NCP ${FIXwfs}/MED_SPACEWX/gsm%wam%T62_ipe%80x170/wam3dgridnew2.nc .
-  # Copy both for now, when fully switched get rid of wam3dgridnew_20160427.nc
-  $NCP ${FIXwfs}/MED_SPACEWX/gsm%wam%T62_ipe%80x170/wam3dgridnew_20160427.nc .
-  $NCP ${FIXwfs}/MED_SPACEWX/gsm%wam%T62_ipe%80x170/WAMFixedHgtGrid_20180312.nc .
 fi
 
 if [ $IDEA = .true. ]; then

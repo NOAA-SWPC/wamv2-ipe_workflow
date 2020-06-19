@@ -9,7 +9,7 @@ echo "BEGIN: config.arch"
 . $EXPDIR/config.resources arch
 
 #--online archive of nemsio files for fit2obs verification
-export FITSARC="YES"
+export FITSARC="NO"
 export FHMAX_FITS=132
 [[ "$FHMAX_FITS" -gt "$FHMAX_WFS" ]] && export FHMAX_FITS=$FHMAX_WFS
 

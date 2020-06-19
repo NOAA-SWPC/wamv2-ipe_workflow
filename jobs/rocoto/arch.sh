@@ -36,7 +36,7 @@ fi
 
 # CURRENT CYCLE
 APREFIX="${CDUMP}.t${cyc}z."
-ASUFFIX=".nemsio"
+ASUFFIX=""
 
 # Realtime parallels run GFS MOS on 1 day delay
 # If realtime parallel, back up CDATE_MOS one day
@@ -54,58 +54,6 @@ COMIN="$ROTDIR/$CDUMP.$PDY/$cyc"
 cd $COMIN
 
 [[ ! -d $ARCDIR ]] && mkdir -p $ARCDIR
-$NCP ${APREFIX}gsistat $ARCDIR/gsistat.${CDUMP}.${CDATE}
-$NCP ${APREFIX}pgrb.1p00.anl $ARCDIR/pgbanl.${CDUMP}.${CDATE}
-
-# Archive 1 degree forecast GRIB1 files for verification
-if [ $CDUMP = "wfs" ]; then
-    fhmax=$FHMAX_WFS
-    fhr=0
-    while [ $fhr -le $fhmax ]; do
-        fhr2=$(printf %02i $fhr)
-        fhr3=$(printf %03i $fhr)
-        $NCP ${APREFIX}pgrb.1p00.f$fhr3 $ARCDIR/pgbf${fhr2}.${CDUMP}.${CDATE}
-        (( fhr = $fhr + $FHOUT_WFS ))
-    done
-fi
-if [ $CDUMP = "wdas" ]; then
-    flist="000 003 006 009"
-    for fhr in $flist; do
-        fname=${APREFIX}pgrb.1p00.f${fhr}
-        fhr2=$(printf %02i $fhr)
-        $NCP $fname $ARCDIR/pgbf${fhr2}.${CDUMP}.${CDATE}
-    done
-fi
-
-if [ -s avno.t${cyc}z.cyclone.trackatcfunix ]; then
-    PLSOT4=`echo $PSLOT|cut -c 1-4 |tr '[a-z]' '[A-Z]'`
-    cat avno.t${cyc}z.cyclone.trackatcfunix | sed s:AVNO:${PLSOT4}:g  > ${ARCDIR}/atcfunix.${CDUMP}.$CDATE
-    cat avnop.t${cyc}z.cyclone.trackatcfunix | sed s:AVNO:${PLSOT4}:g  > ${ARCDIR}/atcfunixp.${CDUMP}.$CDATE
-fi
-if [ $CDUMP = "wfs" ]; then
-    $NCP storms.gfso.atcf_gen.$CDATE      ${ARCDIR}/.
-    $NCP storms.gfso.atcf_gen.altg.$CDATE ${ARCDIR}/.
-    $NCP trak.gfso.atcfunix.$CDATE        ${ARCDIR}/.
-    $NCP trak.gfso.atcfunix.altg.$CDATE   ${ARCDIR}/.
-fi
-
-# Archive atmospheric nemsio wfs forecast files for fit2obs
-VFYARC=$ROTDIR/vrfyarch
-[[ ! -d $VFYARC ]] && mkdir -p $VFYARC
-if [ $CDUMP = "wfs" -a $FITSARC = "YES" ]; then
-    mkdir -p $VFYARC/${CDUMP}.$PDY/$cyc
-    fhmax=${FHMAX_FITS:-$FHMAX_WFS}
-    fhr=0
-    while [[ $fhr -le $fhmax ]]; do
-      fhr3=$(printf %03i $fhr)
-      sfcfile=${CDUMP}.t${cyc}z.sfcf${fhr3}.nemsio
-      sigfile=${CDUMP}.t${cyc}z.atmf${fhr3}.nemsio
-      $NCP $sfcfile $VFYARC/${CDUMP}.$PDY/$cyc/
-      $NCP $sigfile $VFYARC/${CDUMP}.$PDY/$cyc/
-      (( fhr = $fhr + 6 ))
-    done
-fi
-
 
 ###############################################################
 # Archive data to HPSS
@@ -152,71 +100,7 @@ fi
 
 cd $ROTDIR
 
-if [ $CDUMP = "wfs" ]; then
-
-    #for targrp in gfsa gfsb - NOTE - do not check htar error status
-    for targrp in gfsa gfsb; do
-        htar -P -cvf $ATARDIR/$CDATE/${targrp}.tar `cat $ARCH_LIST/${targrp}.txt`
-    done
-
-    #for targrp in gfs_flux gfs_nemsio gfs_pgrb2b; do
-    for targrp in gfs_flux gfs_nemsioa gfs_nemsiob; do
-        htar -P -cvf $ATARDIR/$CDATE/${targrp}.tar `cat $ARCH_LIST/${targrp}.txt`
-        status=$?
-        if [ $status -ne 0  -a $CDATE -ge $firstday ]; then
-            echo "HTAR $CDATE ${targrp}.tar failed"
-            exit $status
-        fi
-    done
-    
-    if [ $SAVEFCSTIC = "YES" ]; then
-        htar -P -cvf $ATARDIR/$CDATE/gfs_restarta.tar `cat $ARCH_LIST/gfs_restarta.txt`
-        status=$?
-        if [ $status -ne 0  -a $CDATE -ge $firstday ]; then
-            echo "HTAR $CDATE gfs_restarta.tar failed"
-            exit $status
-        fi
-    fi
-
-   #--save mdl gfsmos output from all cycles in the 18Z archive directory
-   if [ -d gfsmos.$PDY_MOS -a $cyc -eq 18 ]; then
-        htar -P -cvf $ATARDIR/$CDATE_MOS/gfsmos.tar ./gfsmos.$PDY_MOS
-        status=$?
-        if [ $status -ne 0  -a $CDATE -ge $firstday ]; then
-            echo "HTAR $CDATE gfsmos.tar failed"
-            exit $status
-        fi
-   fi
-
-fi
-
-
-if [ $CDUMP = "wdas" ]; then
-
-    htar -P -cvf $ATARDIR/$CDATE/wdas.tar `cat $ARCH_LIST/wdas.txt`
-    status=$?
-    if [ $status -ne 0  -a $CDATE -ge $firstday ]; then
-        echo "HTAR $CDATE wdas.tar failed"
-        exit $status
-    fi
-
-    if [ $SAVEWARMICA = "YES" -o $SAVEFCSTIC = "YES" ]; then
-        htar -P -cvf $ATARDIR/$CDATE/wdas_restarta.tar `cat $ARCH_LIST/wdas_restarta.txt`
-        status=$?
-        if [ $status -ne 0  -a $CDATE -ge $firstday ]; then
-            echo "HTAR $CDATE wdas_restarta.tar failed"
-            exit $status
-        fi
-    fi
-    if [ $SAVEWARMICB = "YES" -o $SAVEFCSTIC = "YES" ]; then
-        htar -P -cvf $ATARDIR/$CDATE/wdas_restartb.tar `cat $ARCH_LIST/wdas_restartb.txt`
-        status=$?
-        if [ $status -ne 0  -a $CDATE -ge $firstday ]; then
-            echo "HTAR $CDATE wdas_restartb.tar failed"
-            exit $status
-        fi
-    fi
-fi
+htar -P -cvf $ATARDIR/$CDATE/${CDUMP}.tar `cat $ARCH_LIST/${CDUMP}.txt`
 
 ###############################################################
 fi  ##end of HPSS archive
@@ -266,23 +150,8 @@ while [ $GDATE -le $GDATEEND ]; do
         [[ ! "$(ls -A $COMIN)" ]] && rm -rf $COMIN
     fi
 
-    # Remove mdl gfsmos directory
-    if [ $CDUMP = "gfs" ]; then
-	COMIN="$ROTDIR/gfsmos.$gPDY"
-	if [ -d $COMIN -a $GDATE -lt $CDATE_MOS ]; then rm -rf $COMIN ; fi
-    fi
-
     GDATE=$($NDATE +$assim_freq $GDATE)
 done
-
-# Remove archived stuff in $VFYARC that are (48+$FHMAX_WFS) hrs behind
-# 1. atmospheric nemsio files used for fit2obs
-if [ $CDUMP = "wfs" ]; then
-    GDATE=$($NDATE -$FHMAX_WFS $GDATE)
-    gPDY=$(echo $GDATE | cut -c1-8)
-    COMIN="$VFYARC/$CDUMP.$gPDY"
-    [[ -d $COMIN ]] && rm -rf $COMIN
-fi
 
 ###############################################################
 exit 0

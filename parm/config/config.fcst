@@ -53,12 +53,12 @@ export random_clds=".false."
 # Input parameter options
 export DELTIM=60      # GSM timestep
 export DELTIM_IPE=180 # IPE timestep
-export IPEFREQ=3600 # seconds between IPE output
+export IPEFREQ=$((3600*3)) # seconds between IPE output
 
 export DYNAMO_EFIELD="T"
 export INPUT_PARAMETERS=fixderive
 ## if you are using fixderive or fixall, uncomment the following and set your fixed values
-export FIX_F107=70.0     # F10.7 and F10.7d
+export FIX_F107=75.0     # F10.7 and F10.7d
 export FIX_KP=2.0         # Kp and 24hr average Kp
 # export FIX_SWVEL=400.0    # solar wind velocity
 # export FIX_SWDEN=5.0      # solar wind density

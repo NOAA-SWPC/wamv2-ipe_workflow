@@ -7,11 +7,11 @@
 import_fields::
     height
     temp_neutral
-#   eastward_wind_neutral
-#   northward_wind_neutral
-#   upward_wind_neutral
+    eastward_wind_neutral
+    northward_wind_neutral
+    upward_wind_neutral
     O_Density
-#   O2_Density
+    O2_Density
     N2_Density
     thermosphere_mass_density
     thermosphere_mean_molecular_mass

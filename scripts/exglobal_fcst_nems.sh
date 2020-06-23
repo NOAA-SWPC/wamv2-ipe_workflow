@@ -834,7 +834,7 @@ export MEMBER_NAMES=${MEMBER_NAMES:-''}
 
 export REDOUT=${REDOUT:-'1>'}
 export REDERR=${REDERR:-'2>'}
-export print_esmf=${print_esmf:-.true.}
+export print_esmf=${print_esmf:-.false.}
 
 ################################################################################
 #  Preprocessing
@@ -1288,7 +1288,7 @@ if [[ $NEMS = .true. ]] ; then
   fi
 fi # NEMS
 
-eval LD_LIBRARY_PATH=$LD_LIBRARY_PATH $FCSTENV $PGM $REDOUT$PGMOUT $REDERR$PGMERR
+eval LD_LIBRARY_PATH=$LD_LIBRARY_PATH $FCSTENV $PGM #  $REDOUT$PGMOUT $REDERR$PGMERR
 
 export ERR=$?
 export err=$ERR

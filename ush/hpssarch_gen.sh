@@ -50,6 +50,7 @@ if [ $type = "wfs" ]; then
 
   #..................
   echo  "${dirname}${head}???anl              " >>wfs.txt
+  echo  "${dirname}${head}IPE*                " >>wfs.txt
   echo  "${dirname}${head}sfca03              " >>wfs.txt
   echo  "${dirname}${head}atmf00              " >>wfs.txt
   echo  "${dirname}${head}sfcf00              " >>wfs.txt
@@ -74,6 +75,7 @@ if [ $type = "wdas" ]; then
   #..................
   echo  "${dirname}${head}atmanl              " >>wdas.txt
   echo  "${dirname}${head}sfca03              " >>wdas.txt
+  echo  "${dirname}${head}IPE*                " >>wdas.txt
   for fstep in prep anal fcst ; do
    if [ -s $ROTDIR/logs/${CDATE}/wdas${fstep}.log ]; then
      echo  "./logs/${CDATE}/wdas${fstep}.log         " >>wdas.txt
@@ -83,7 +85,6 @@ if [ $type = "wdas" ]; then
   fh=0
   while [ $fh -le 6 ]; do
     fhr=$(printf %02i $fh)
-    echo  "${dirname}${head}logf${fhr}          " >>wdas.txt
     echo  "${dirname}${head}atmf${fhr}          " >>wdas.txt
     echo  "${dirname}${head}sfcf${fhr}          " >>wdas.txt
     fh=$((fh+3))

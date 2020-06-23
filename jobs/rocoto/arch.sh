@@ -53,8 +53,6 @@ PDY_MOS=$(echo $CDATE_MOS | cut -c1-8)
 COMIN="$ROTDIR/$CDUMP.$PDY/$cyc"
 cd $COMIN
 
-[[ ! -d $ARCDIR ]] && mkdir -p $ARCDIR
-
 ###############################################################
 # Archive data to HPSS
 if [ $HPSSARCH = "YES" ]; then
@@ -69,22 +67,6 @@ mm=`echo $CDATE|cut -c 5-6`
 dd=`echo $CDATE|cut -c 7-8`
 nday=$(( (mm-1)*30+dd ))
 mod=$(($nday % $ARCH_WARMICFREQ))
-if [ $CDATE -eq $firstday -a $cyc -eq $ARCHINC_CYC ]; then SAVEWARMICA="YES" ; fi
-if [ $CDATE -eq $firstday -a $cyc -eq $ARCHICS_CYC ]; then SAVEWARMICB="YES" ; fi
-if [ $mod -eq 0 -a $cyc -eq $ARCHINC_CYC ]; then SAVEWARMICA="YES" ; fi
-if [ $mod -eq 0 -a $cyc -eq $ARCHICS_CYC ]; then SAVEWARMICB="YES" ; fi
-
-if [ $ARCHICS_CYC -eq 18 ]; then
-    nday1=$((nday+1))
-    mod1=$(($nday1 % $ARCH_WARMICFREQ))
-    if [ $mod1 -eq 0 -a $cyc -eq $ARCHICS_CYC ] ; then SAVEWARMICB="YES" ; fi
-    if [ $mod1 -ne 0 -a $cyc -eq $ARCHICS_CYC ] ; then SAVEWARMICB="NO" ; fi
-    if [ $CDATE -eq $SDATE -a $cyc -eq $ARCHICS_CYC ] ; then SAVEWARMICB="YES" ; fi
-fi
-
-mod=$(($nday % $ARCH_FCSTICFREQ))
-if [ $mod -eq 0 -o $CDATE -eq $firstday ]; then SAVEFCSTIC="YES" ; fi
-
 
 ARCH_LIST="$COMIN/archlist"
 [[ -d $ARCH_LIST ]] && rm -rf $ARCH_LIST

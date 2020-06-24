@@ -5,16 +5,16 @@
 #  Imported fields
 #
 import_fields::
-#    height
-#    temp_neutral
+    height
+    temp_neutral
     eastward_wind_neutral
     northward_wind_neutral
     upward_wind_neutral
-#    O_Density
+    O_Density
     O2_Density
-#    N2_Density
-#    thermosphere_mass_density
-#    thermosphere_mean_molecular_mass
+    N2_Density
+    thermosphere_mass_density
+    thermosphere_mean_molecular_mass
 ::
 #
 # Output file format.

@@ -111,7 +111,8 @@ def edit_baseconfig():
                     .replace('@IPE_IC_DIR@', ipe_ic_dir) \
                     .replace('@HOMEobsproc_global@', obsproc_global) \
                     .replace('@HOMEobsproc_prep@', obsproc_prep) \
-                    .replace('@UTILDIR@', utildir)
+                    .replace('@UTILDIR@', utildir) \
+                    .replace('@DCOM@', dcom) 
                 if expdir is not None:
                     line = line.replace('@EXPDIR@', os.path.dirname(expdir))
                 if comrot is not None:
@@ -191,6 +192,7 @@ link initial condition files from $ICSDIR to $COMROT'''
       obsproc_global = '/gpfs/dell2/swpc/noscrub/Adam.Kubaryk/obsproc/obsproc_global.v3.2.6'
       obsproc_prep = '/gpfs/dell2/swpc/noscrub/Adam.Kubaryk/obsproc/obsproc_prep_RB-5.2.0'
       utildir =  '/gpfs/dell2/swpc/noscrub/Adam.Kubaryk/util/exec'
+      dcom = '/gpfs/dell1/nco/ops/dcom/prod'
 
       if partition in ['3p5']:
         queue = 'dev2'
@@ -226,6 +228,7 @@ link initial condition files from $ICSDIR to $COMROT'''
       obsproc_global = '/scratch1/NCEPDEV/swpc/Adam.Kubaryk/obsproc/obsproc_global.v3.2.6'
       obsproc_prep = '/scratch1/NCEPDEV/swpc/Adam.Kubaryk/obsproc/obsproc_prep_RB-5.2.0'
       utildir =  '/scratch1/NCEPDEV/swpc/Adam.Kubaryk/util/exec'
+      dcom = '/scratch1/NCEPDEV/swpc/George.Millward/dcom'
 
     if args.icsdir is not None and not os.path.exists(icsdir):
         msg = 'Initial conditions do not exist in %s' % icsdir

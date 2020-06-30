@@ -55,6 +55,7 @@ if [ $type = "wfs" ]; then
   echo  "${dirname}${head}atmf00              " >>wfs.txt
   echo  "${dirname}${head}sfcf00              " >>wfs.txt
   echo  "${dirname}${head}?????.*.nc          " >>wfs.txt
+  echo  "${dirname}${head}input_parameters    " >>wfs.txt
 #-----------------------------------------------------
 fi   ##end of wfs
 #-----------------------------------------------------
@@ -89,6 +90,7 @@ if [ $type = "wdas" ]; then
     echo  "${dirname}${head}sfcf${fhr}          " >>wdas.txt
     fh=$((fh+3))
   done
+  echo  "${dirname}${head}input_parameters    " >>wdas.txt
 
 #-----------------------------------------------------
 fi   ##end of wdas

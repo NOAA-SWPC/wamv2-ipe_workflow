@@ -16,6 +16,18 @@ import_fields::
     thermosphere_mass_density
     thermosphere_mean_molecular_mass
 ::
+output_fields::
+    height
+    temp_neutral
+    eastward_wind_neutral
+    northward_wind_neutral
+    upward_wind_neutral
+    O_Density
+    O2_Density
+    N2_Density
+    thermosphere_mass_density
+    thermosphere_mean_molecular_mass
+::
 #
 # Output file format.
 #
@@ -47,7 +59,7 @@ output_datatype: float
 #   <suffix>   : determined from output format:
 #                'hd5' for hdf5, 'nc' for pnetcdf
 #
-output_file_prefix: gsm60
+output_file_prefix: SWIO/${CDUMP}.t${cyc}z.gsm60
 #
 # Output metadata.
 #
@@ -93,7 +105,7 @@ output_grid_type: latlon
 #
 output_grid_size: 90 91 -150
 #
-# Minimin and maximum values of vertical coordinate (km)
+# Minimum and maximum values of vertical coordinate (km)
 # Used if #levels > 0
 #
 output_grid_level_range: 90. 1000.

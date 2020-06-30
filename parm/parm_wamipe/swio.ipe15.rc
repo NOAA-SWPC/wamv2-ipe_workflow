@@ -71,7 +71,7 @@ output_datatype: float
 #   <suffix>   : determined from output format:
 #                'hd5' for hdf5, 'nc' for pnetcdf
 #
-output_file_prefix: ipe15
+output_file_prefix: SWIO/${CDUMP}.t${cyc}z.ipe15
 #
 # Output metadata.
 #

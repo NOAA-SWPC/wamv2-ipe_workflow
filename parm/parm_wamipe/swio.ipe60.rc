@@ -13,7 +13,22 @@ import_fields::
     He_plus_density
     ion_temperature
     electron_temperature
-#    electron_density
+    electron_density
+    eastward_exb_velocity
+    northward_exb_velocity
+    upward_exb_velocity
+::
+
+output_fields::
+    eastward_wind_neutral
+    northward_wind_neutral
+    upward_wind_neutral
+    O_plus_density
+    H_plus_density
+    He_plus_density
+    ion_temperature
+    electron_temperature
+    electron_density
     eastward_exb_velocity
     northward_exb_velocity
     upward_exb_velocity
@@ -71,7 +86,7 @@ output_datatype: float
 #   <suffix>   : determined from output format:
 #                'hd5' for hdf5, 'nc' for pnetcdf
 #
-output_file_prefix: ipe60
+output_file_prefix: SWIO/${CDUMP}.t${cyc}z.ipe60
 #
 # Output metadata.
 #

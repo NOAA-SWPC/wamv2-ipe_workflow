@@ -37,6 +37,7 @@ export NWPROD="@NWPROD@"
 export COMROOT="@COMROOT@"
 export DMPDIR="@DMPDIR@"
 export RTMFIX=$CRTM_FIX
+export DCOM="@DCOM@"
 
 # USER specific paths
 export HOMEDIR="@HOMEDIR@"
@@ -194,9 +195,13 @@ export SUFOUT="" # ${SUFOUT:-".$CDATE"}
 export SWIO=${SWIO:-.false.}
 if [[ $SWIO = .true. ]] ; then
   if [[ $WAM_IPE_COUPLING = .true. ]] ; then
-    export SWIO_MODELS=${SWIO_MODELS:-"IIO15 AIO15"}
-    export IIO15_PREFIX=${IIO15_PREFIX:-"ipe15"}
-    export AIO15_PREFIX=${AIO15_PREFIX:-"gsm15"}
+    export SWIO_MODELS=${SWIO_MODELS:-"IIO03 IIO60 AIO60"}
+    export IIO03_PREFIX=${IIO03_PREFIX:-"ipe03"}
+    export IIO60_PREFIX=${IIO60_PREFIX:-"ipe60"}
+    export AIO60_PREFIX=${AIO60_PREFIX:-"gsm60"}
+    export IIO03_CADENCE=${IIO03_CADENCE:-"180"}
+    export IIO60_CADENCE=${IIO60_CADENCE:-"3600"}
+    export AIO60_CADENCE=${AIO60_CADENCE:-"3600"}
   else
     export SWIO_MODELS=${SWIO_MODELS:-"AIO"}
     export AIO_PREFIX=${AIO_PREFIX:-"gsm"}
@@ -287,7 +292,7 @@ export DO_METP="NO"         # Run METPLUS jobs - set METPLUS settings in config.
 export DO_VSDB="NO"         # Run VSDB package - set VSDB settings in config.vrfy
 
 # Archiving options
-export HPSSARCH="NO"         # save data to HPSS archive
+export HPSSARCH="YES"         # save data to HPSS archive
 export ARCH_CYC=00           # Archive data at this cycle for warm_start capability
 export ARCH_WARMICFREQ=4     # Archive frequency in days for warm_start capability
 export ARCH_FCSTICFREQ=1     # Archive frequency in days for wdas and wfs forecast-only capability

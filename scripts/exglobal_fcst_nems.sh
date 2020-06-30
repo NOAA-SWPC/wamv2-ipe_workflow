@@ -1084,6 +1084,7 @@ eval ln -fs $SFCR  SFCR
 eval ln -fs $NSTR  NSTR
 eval ln -fs $RSTR  WAM_IPE_RST_wrt
 
+$NLN $memdir SWIO
 #
 # Create Configure file (i.e. .rc file) here
 # PE$n are to be imported from outside.  If PE$n are not set from outside, the
@@ -1133,16 +1134,9 @@ if [ $IDEA = .true. ]; then
   export START_UT_SEC=$((10#$INI_HOUR*3600))
   export END_TIME=$((IPEFMAX+$START_UT_SEC))
   export MSIS_TIME_STEP=${MSIS_TIME_STEP:-900}
+  ${NLN} $memdir/$CDUMP.t${cyc}z.input_parameters wam_input_f107_kp.txt
   if [ $INPUT_PARAMETERS = realtime ] ; then
-    # copy in xml kp/f107
-    XML_HOUR=`printf %02d $((10#$INI_HOUR / 3 * 3))` # 00 > 00, 01 > 00, 02 > 00, 03 > 03, etc.
-    if [ -e $WAMINDIR/wam_input_new-${INI_YEAR}${INI_MONTH}${INI_DAY}T${XML_HOUR}15.xml ] ; then # try new format
-      ${NLN} $WAMINDIR/wam_input_new-${INI_YEAR}${INI_MONTH}${INI_DAY}T${XML_HOUR}15.xml ./wam_input2.xsd
-      $HOMEgsmwam_ipe/scripts/parse_f107_xml/parse.py -s `$NDATE -36 $FDATE` -d $((36+ 10#$FHMAX - 10#$FHINI))
-      ${NLN} $DATA/wam_input.asc $DATA/wam_input_f107_kp.txt
-    else
-      echo "failed, no f107 file" ; exit 1
-    fi
+    $HOMEgsmwam_ipe/scripts/interpolate_input_parameters/parse_realtime.py -s $($MDATE -$((36*60)) ${FDATE}00) -d $((60*(36+ 10#$FHMAX - 10#$FHINI))) -p $DCOM
   else
     # work from the database
     echo "$FIX_F107"   >> temp_fix
@@ -1292,6 +1286,7 @@ eval LD_LIBRARY_PATH=$LD_LIBRARY_PATH $FCSTENV $PGM #  $REDOUT$PGMOUT $REDERR$PG
 
 export ERR=$?
 export err=$ERR
+ls -al
 $ERRSCRIPT||exit 2
 
 ################################################################################

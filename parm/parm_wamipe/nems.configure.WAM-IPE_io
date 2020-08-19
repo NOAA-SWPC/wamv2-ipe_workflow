@@ -2,7 +2,7 @@
 ####  NEMS Run-Time Configuration File  #####
 #############################################
 # EARTH #
-EARTH_component_list: MED ATM IPM IIO03 IIO60 AIO60
+EARTH_component_list: MED ATM IPM IIO05 IIO60 AIO05 AIO60
 EARTH_attributes::
   Verbosity = max
 ::
@@ -27,19 +27,12 @@ IPM_attributes::
   Verbosity = max
 ::
 # IO #
-IIO03_model:                       swio
-IIO03_petlist_bounds:              $ipm_petlist_bounds
-IIO03_attributes::
+IIO05_model:                       swio
+IIO05_petlist_bounds:              $ipm_petlist_bounds
+IIO05_attributes::
   Verbosity = max
-  ConfigFile = swio.ipe03.rc
+  ConfigFile = swio.ipe05.rc
 ::
-## IO #
-#IIO15_model:                       swio
-#IIO15_petlist_bounds:              $ipm_petlist_bounds
-#IIO15_attributes::
-#  Verbosity = max
-#  ConfigFile = swio.ipe15.rc
-#::
 # IO #
 IIO60_model:                       swio
 IIO60_petlist_bounds:              $ipm_petlist_bounds
@@ -48,12 +41,12 @@ IIO60_attributes::
   ConfigFile = swio.ipe60.rc
 ::
 # IO #
-#AIO15_model:                       swio
-#AIO15_petlist_bounds:              $atm_petlist_bounds
-#AIO15_attributes::
-#  Verbosity = max
-#  ConfigFile = swio.wam15.rc
-#::
+AIO05_model:                       swio
+AIO05_petlist_bounds:              $atm_petlist_bounds
+AIO05_attributes::
+  Verbosity = max
+  ConfigFile = swio.wam05.rc
+::
 # IO #
 AIO60_model:                       swio
 AIO60_petlist_bounds:              $atm_petlist_bounds
@@ -65,7 +58,7 @@ AIO60_attributes::
 # Run Sequence #
 runSeq::
   @3600.0
-    @180.0
+    @300.0
       ATM -> MED :remapMethod=redist
       MED
       MED -> IPM :remapMethod=redist
@@ -73,8 +66,10 @@ runSeq::
         ATM
       @
       IPM
-      IPM -> IIO03
-      IIO03
+      IPM -> IIO05
+      IIO05
+      ATM -> AIO05
+      AIO05
     @
     ATM -> AIO60
     AIO60

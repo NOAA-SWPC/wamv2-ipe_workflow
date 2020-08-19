@@ -7,9 +7,6 @@
 import_fields::
     height
     temp_neutral
-    eastward_wind_neutral
-    northward_wind_neutral
-    upward_wind_neutral
     O_Density
     O2_Density
     N2_Density
@@ -19,9 +16,6 @@ import_fields::
 output_fields::
     height
     temp_neutral
-    eastward_wind_neutral
-    northward_wind_neutral
-    upward_wind_neutral
     O_Density
     O2_Density
     N2_Density
@@ -74,6 +68,8 @@ output_metadata::
   end_date      $SWIO_EDATE
   fcst_date     __swio_field_timestamp__
   run_type      $CDUMP
+  model         wam
+  cadence       60
 ::
 #
 # Output grid type.

@@ -1060,21 +1060,21 @@ if [[ $IPE = .true. ]] ; then
   done
 fi
 # SWIO
-if [[ $SWIO = .true. ]] ; then
-  for iomodel in $SWIO_MODELS; do
-    eval prefix=\$${iomodel}_PREFIX
-    eval cadence=\$${iomodel}_CADENCE
-    if [[ -n "$cadence" ]] ; then
-      STEPS=$(((10#$FHMAX-10#$FHINI)*60*60/cadence))
-      STEP=1
-      while [ $STEP -le $STEPS ] ; do
-        TIMESTAMP=`$MDATE $((STEP*cadence/60)) ${FDATE}00`
-        $NLN ${memdir}/${CDUMP}.t${cyc}z.${prefix}.${TIMESTAMP:0:8}_${TIMESTAMP:8}00.nc ${prefix}.${TIMESTAMP:0:8}_${TIMESTAMP:8}00.nc
-        STEP=$((STEP+1))
-      done
-    fi
-  done
-fi
+#if [[ $SWIO = .true. ]] ; then
+#  for iomodel in $SWIO_MODELS; do
+#    eval prefix=\$${iomodel}_PREFIX
+#    eval cadence=\$${iomodel}_CADENCE
+#    if [[ -n "$cadence" ]] ; then
+#      STEPS=$(((10#$FHMAX-10#$FHINI)*60*60/cadence))
+#      STEP=1
+#      while [ $STEP -le $STEPS ] ; do
+#        TIMESTAMP=`$MDATE $((STEP*cadence/60)) ${FDATE}00`
+#        $NLN ${memdir}/${CDUMP}.t${cyc}z.${prefix}.${TIMESTAMP:0:8}_${TIMESTAMP:8}00.nc ${prefix}.${TIMESTAMP:0:8}_${TIMESTAMP:8}00.nc
+#        STEP=$((STEP+1))
+#      done
+#    fi
+#  done
+#fi
 eval ln -fs $FORT1051 fort.1051
 eval ln -fs $GRDR1 GRDR1
 eval ln -fs $GRDR2 GRDR2
@@ -1085,6 +1085,7 @@ eval ln -fs $NSTR  NSTR
 eval ln -fs $RSTR  WAM_IPE_RST_wrt
 
 $NLN $memdir SWIO
+
 #
 # Create Configure file (i.e. .rc file) here
 # PE$n are to be imported from outside.  If PE$n are not set from outside, the

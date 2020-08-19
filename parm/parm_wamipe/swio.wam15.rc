@@ -62,6 +62,8 @@ output_metadata::
   end_date      $SWIO_EDATE
   fcst_date     __swio_field_timestamp__
   run_type      $CDUMP
+  model         wam
+  cadence       15
 ::
 #
 # Output grid type.

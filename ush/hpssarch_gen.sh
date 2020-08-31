@@ -60,6 +60,34 @@ if [ $type = "wfs" ]; then
 fi   ##end of wfs
 #-----------------------------------------------------
 
+if [ $type = "wfr" ]; then
+
+  FHMIN_WFR=${FHMIN_WFR:-0}
+  FHMAX_WFR=${FHMAX_WFR:-9}
+  FHOUT_WFR=${FHOUT_WFR:-3}
+  FHMAX_HF_WFR=${FHMAX_HF_WFR:-0}
+  FHOUT_HF_WFR=${FHOUT_HF_WFR:-1}
+
+
+  rm -f wfr.txt
+  touch wfr.txt
+
+  dirpath="wfr.${PDY}/${cyc}/"
+  dirname="./${dirpath}"
+
+  head="wfr.t${cyc}z."
+
+  #..................
+  echo  "./logs/${CDATE}/wfr*.log                          " >>wfr.txt
+
+  fh=0
+
+  #..................
+  echo  "${dirname}${head}?????.*.nc          " >>wfr.txt
+  echo  "${dirname}${head}input_parameters    " >>wfr.txt
+#-----------------------------------------------------
+fi   ##end of wfr
+#-----------------------------------------------------
 
 
 #-----------------------------------------------------

@@ -82,7 +82,7 @@ fi
 
 cd $ROTDIR
 
-htar -P -cvf $ATARDIR/$CDATE/${CDUMP}.tar `cat $ARCH_LIST/${CDUMP}.txt`
+htar -P -cvf $ATARDIR/$CDATE/${CDUMP}.tar $(cat $ARCH_LIST/${CDUMP}.txt)
 
 ###############################################################
 fi  ##end of HPSS archive

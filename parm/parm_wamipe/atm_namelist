@@ -36,6 +36,7 @@
   f107_kp_skip_size=$F107_KP_SKIP_SIZE,
   f107_kp_data_size=$F107_KP_DATA_SIZE,
   f107_kp_read_in_start=$F107_KP_READ_IN_START,
+  f107_kp_realtime_interval=$f107_kp_realtime_interval,
   ngptc=$NGPTC, hybrid=$HYBRID, tfiltc=$TFILTC,
   gen_coord_hybrid=$GEN_COORD_HYBRID,
   thermodyn_id=$THERMODYN_ID, sfcpress_id=$SFCPRESS_ID,

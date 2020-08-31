@@ -82,12 +82,15 @@ elif [ $step = "fcst" ]; then
     fi
     export wtime_fcst="01:00:00"
     export wtime_fcst_wfs="06:00:00"
+    export wtime_fcst_wfr="08:00:00"
     if [[ $WAM_IPE_COUPLING = ".true." ]] ; then
       export npe_fcst=112
       export npe_fcst_wfs=112
+      export npe_fcst_wfr=112
     else
       export npe_fcst=32
       export npe_fcst_wfs=32
+      export npe_fcst_wfr=32
     fi
     export nth_fcst=${nth_fv3:-1}
     export npe_node_fcst=$(echo "$npe_node_max / $nth_fcst" | bc)

@@ -1138,6 +1138,9 @@ if [ $IDEA = .true. ]; then
   ${NLN} $memdir/$CDUMP.t${cyc}z.input_parameters wam_input_f107_kp.txt
   if [ $INPUT_PARAMETERS = realtime ] ; then
     $HOMEgsmwam_ipe/scripts/interpolate_input_parameters/parse_realtime.py -s $($MDATE -$((36*60)) ${FDATE}00) -d $((60*(36+ 10#$FHMAX - 10#$FHINI))) -p $DCOM
+  elif [ $INPUT_PARAMETERS = conops2 ] ; then
+    $HOMEgsmwam_ipe/scripts/interpolate_input_parameters/parse_realtime.py -s $($MDATE -$((36*60)) ${FDATE}00) -d $((2160+$data_poll_interval_min)) -p $DCOM
+    $HOMEgsmwam_ipe/scripts/interpolate_input_parameters/realtime_wrapper.py -e ${SWIO_EDATE:0:8}${SWIO_EDATE:9:4} -p $DCOM -d $data_poll_interval_min &
   else
     # work from the database
     echo "$FIX_F107"   >> temp_fix
@@ -1159,6 +1162,7 @@ if [ $IDEA = .true. ]; then
   LEN_F107=`wc -l wam_input_f107_kp.txt | cut -d' ' -f 1`
   F107_KP_SIZE=$((LEN_F107-5))
   F107_KP_DATA_SIZE=$F107_KP_SIZE
+  [[ $CDUMP = "wfr" ]] && F107_KP_SIZE=$((2160+60*9))
   F107_KP_INTERVAL=60
   F107_KP_SKIP_SIZE=$((36*60*60/$F107_KP_INTERVAL))
   [[ $NEMS = .true. ]] && F107_KP_READ_IN_START=$((FHINI*60*60/$F107_KP_INTERVAL))
@@ -1197,17 +1201,33 @@ if [ $IDEA = .true. ]; then
 
 fi # IDEA
 
-if [[ $WAM_IPE_COUPLING = .true. ]] ; then
-  if [[ $SWIO = .true. ]] ; then
-    envsubst < $PARMDIR/nems.configure.WAM-IPE_io       > $DATA/nems.configure
-  else
-    envsubst < $PARMDIR/nems.configure.WAM-IPE          > $DATA/nems.configure
+if [[ $DATAPOLL = .true. ]] ; then
+  if [[ $WAM_IPE_COUPLING = .true. ]] ; then
+    if [[ $SWIO = .true. ]] ; then
+      envsubst < $PARMDIR/nems.configure.WAM-IPE-DATAPOLL_io       > $DATA/nems.configure
+    else
+      envsubst < $PARMDIR/nems.configure.WAM-IPE-DATAPOLL          > $DATA/nems.configure
+    fi
+  else # standaloneWAM
+    if [[ $SWIO = .true. ]] ; then
+      envsubst < $PARMDIR/nems.configure.standaloneWAM-DATAPOLL_io > $DATA/nems.configure
+    else
+      envsubst < $PARMDIR/nems.configure.standaloneWAM-DATAPOLL    > $DATA/nems.configure
+    fi
   fi
-else # standaloneWAM
-  if [[ $SWIO = .true. ]] ; then
-    envsubst < $PARMDIR/nems.configure.standaloneWAM_io > $DATA/nems.configure
-  else
-    envsubst < $PARMDIR/nems.configure.standaloneWAM    > $DATA/nems.configure
+else
+  if [[ $WAM_IPE_COUPLING = .true. ]] ; then
+    if [[ $SWIO = .true. ]] ; then
+      envsubst < $PARMDIR/nems.configure.WAM-IPE_io       > $DATA/nems.configure
+    else
+      envsubst < $PARMDIR/nems.configure.WAM-IPE          > $DATA/nems.configure
+    fi
+  else # standaloneWAM
+    if [[ $SWIO = .true. ]] ; then
+      envsubst < $PARMDIR/nems.configure.standaloneWAM_io > $DATA/nems.configure
+    else
+      envsubst < $PARMDIR/nems.configure.standaloneWAM    > $DATA/nems.configure
+    fi
   fi
 fi
 

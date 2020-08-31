@@ -26,6 +26,22 @@ if [[ "$CDUMP" == "wfs" ]] ; then
    export npe_wam=$npe_fcst_wfs
 fi
 
+if [[ "$CDUMP" == "wfr" ]] ; then
+   DATAPOLL=".true."
+fi
+
+export DATAPOLL=${DATAPOLL:-".false."}
+if [[ $DATAPOLL = .true. ]] ; then
+  export INPUT_PARAMETERS=conops2
+  export data_poll_interval_min=${data_poll_interval_min:-15}
+  export data_poll_dir=${data_poll_dir:-"."} # where to look for lockfiles
+  export data_poll_interval=${data_poll_interval:-60} # polling interval
+  export data_poll_interval_sec=${data_poll_interval_sec:-$((60*$data_poll_interval_min))} # DATAPOLL cycle interval
+  export data_poll_max=${data_poll_max:-$((60*3))} # max tries
+  f107_kp_realtime_interval=${f107_kp_realtime_interval:-$data_poll_interval_min}
+fi
+export f107_kp_realtime_interval=${f107_kp_realtime_interval:-"-1"}
+
 if [ $QUILTING = ".true." ]; then
     export npe_wam=$(echo " $npe_wam + $WRITE_GROUP * $WRTTASK_PER_GROUP" | bc)
     export npe_fcst=$npe_wam
@@ -76,7 +92,7 @@ export USE_COUPLER_RES="NO"
 if [[ "$CDUMP" == "wdas" ]] ; then # WDAS cycle specific parameters
     export restart_interval=${restart_interval:-6}
     if [ $DOIAU = "YES" ]; then export restart_interval=3; fi
-elif [[ "$CDUMP" == "wfs" ]] ; then # WFS cycle specific parameters
+elif [ "$CDUMP" == "wfs" -o "$CDUMP" == "wfr" ] ; then # WFS cycle specific parameters
     # Write wfs restart files to rerun fcst from any break point
      export restart_interval=${restart_interval_wfs:-0}
 fi

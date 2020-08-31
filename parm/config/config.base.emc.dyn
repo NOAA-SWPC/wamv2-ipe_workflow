@@ -5,6 +5,7 @@
 
 echo "BEGIN: config.base"
 export NODA=YES
+[[ $CDUMP = "wfr" ]] && export NODA=YES
 
 # Machine environment
 export machine="@MACHINE@"
@@ -191,7 +192,7 @@ else
 fi
 export SUFOUT="" # ${SUFOUT:-".$CDATE"}
 
-[ "$CDUMP" = "wfs" ] && SWIO=.true.
+[ "$CDUMP" = "wfs" -o "$CDUMP" = "wfr" ] && SWIO=.true.
 export SWIO=${SWIO:-.false.}
 if [[ $SWIO = .true. ]] ; then
   if [[ $WAM_IPE_COUPLING = .true. ]] ; then
@@ -218,7 +219,7 @@ export PLAS=IPE_State.apex
 if [[ "$CDUMP" == "wdas" ]] ; then
    export FHCYC=1
    export FTSFS=10
-elif [[ "$CDUMP" == "wfs" ]] ; then
+elif [ "$CDUMP" == "wfs" -o "$CDUMP" == "wfr" ] ; then
    export FHCYC=24
 fi
 
@@ -234,9 +235,19 @@ export FHMAX_WFS_12=48
 export FHMAX_WFS_18=48
 export FHMAX_WFS=$(eval echo \${FHMAX_WFS_$cyc})
 
+export FHMAX_WFR_00=9
+export FHMAX_WFR_06=9
+export FHMAX_WFR_12=9
+export FHMAX_WFR_18=9
+export FHMAX_WFR=$(eval echo \${FHMAX_WFR_$cyc})
+
 export FHOUT_WFS=3
 export FHMAX_HF_WFS=0
 export FHOUT_HF_WFS=1
+
+export FHOUT_WFR=3
+export FHMAX_HF_WFR=0
+export FHOUT_HF_WFR=1
 
 # I/O QUILTING, true--use Write Component; false--use GFDL FMS
 # if quilting=true, choose OUTPUT_GRID as cubed_sphere_grid in netcdf or gaussian_grid
@@ -252,7 +263,7 @@ export IAU_DELTHRS=6
 export DOIAU_ENKF="NO"
 export IAUFHRS_ENKF=6
 export IAU_DELTHRS_ENKF=6
-[[ "$SDATE" = "$CDATE" ]] && export DOIAU="NO" && export DOIAU_ENKF="NO"
+[ "$SDATE" = "$CDATE" -o $CDUMP = "wfr" ] && export DOIAU="NO" && export DOIAU_ENKF="NO"
 
 # Microphysics Options: 99-ZhaoCarr, 8-Thompson; 6-WSM6, 10-MG, 11-GFDL
 export imp_physics=11

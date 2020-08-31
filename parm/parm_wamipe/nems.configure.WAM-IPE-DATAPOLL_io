@@ -1,0 +1,92 @@
+#############################################
+####  NEMS Run-Time Configuration File  #####
+#############################################
+# EARTH #
+EARTH_component_list: MED ATM IPM IIO05 IIO60 AIO05 AIO60 DAT
+EARTH_attributes::
+  Verbosity = max
+::
+# MED #
+MED_model:                      $med_model
+MED_petlist_bounds:             $med_petlist_bounds
+MED_attributes::
+  Verbosity = max
+  DumpFields = false
+  DumpRHs = false
+::
+# ATM #
+ATM_model:                      wam
+ATM_petlist_bounds:             $atm_petlist_bounds
+ATM_attributes::
+  Verbosity = max
+::
+# IPM #
+IPM_model:                      ipe
+IPM_petlist_bounds:             $ipm_petlist_bounds
+IPM_attributes::
+  Verbosity = max
+::
+# IO #
+IIO05_model:                       swio
+IIO05_petlist_bounds:              $ipm_petlist_bounds
+IIO05_attributes::
+  Verbosity = max
+  ConfigFile = swio.ipe05.rc
+::
+# IO #
+IIO60_model:                       swio
+IIO60_petlist_bounds:              $ipm_petlist_bounds
+IIO60_attributes::
+  Verbosity = max
+  ConfigFile = swio.ipe60.rc
+::
+# IO #
+AIO05_model:                       swio
+AIO05_petlist_bounds:              $atm_petlist_bounds
+AIO05_attributes::
+  Verbosity = max
+  ConfigFile = swio.wam05.rc
+::
+# IO #
+AIO60_model:                       swio
+AIO60_petlist_bounds:              $atm_petlist_bounds
+AIO60_attributes::
+  Verbosity = max
+  ConfigFile = swio.wam60.rc
+::
+
+# DAT #
+DAT_model:                      datapoll
+DAT_petlist_bounds:             $dat_petlist_bounds
+DAT_attributes::
+  Verbosity = max
+  pollDir = $data_poll_dir
+  pollSec = $data_poll_interval
+  pollMax = $data_poll_max
+::
+
+# Run Sequence #
+runSeq::
+  @3600.0
+    @900.0
+      @300.0
+        ATM -> MED :remapMethod=redist
+        MED
+        MED -> IPM :remapMethod=redist
+        @60.0
+          ATM
+        @
+        IPM
+        IPM -> IIO05
+        IIO05
+        ATM -> AIO05
+        AIO05
+      @
+      ATM -> AIO60
+      AIO60
+      IPM -> IIO60
+      IIO60
+    @
+    DAT
+  @
+::

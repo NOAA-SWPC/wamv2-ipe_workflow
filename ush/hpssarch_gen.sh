@@ -35,7 +35,7 @@ if [ $type = "wfs" ]; then
   echo  "./logs/${CDATE}/wfs*.log                          " >>wfs.txt
 
   fh=0
-  while [ $fh -le $FHMAX_wfs ]; do
+  while [ $fh -le $FHMAX_WFS ]; do
     fhr=$(printf %03i $fh)
     echo  "${dirname}${head}logf${fhr}                     " >>wfs.txt
 
@@ -50,7 +50,6 @@ if [ $type = "wfs" ]; then
 
   #..................
   echo  "${dirname}${head}???anl              " >>wfs.txt
-  echo  "${dirname}${head}IPE*                " >>wfs.txt
   echo  "${dirname}${head}sfca03              " >>wfs.txt
   echo  "${dirname}${head}atmf00              " >>wfs.txt
   echo  "${dirname}${head}sfcf00              " >>wfs.txt

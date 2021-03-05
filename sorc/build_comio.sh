@@ -7,9 +7,6 @@ cwd=`pwd`
 module use -a ../modulefiles
 module load module_base.$target
 
-if [ $target = "wcoss_dell_p3" ] ; then
-  LIBS=-lgfortran
-fi
 
 # Check final exec folder exists
 if [ ! -d "../exec" ]; then
@@ -18,7 +15,12 @@ fi
 
 cd comio.fd
 
+if [ $target = "wcoss_dell_p3" ] ; then
+LIBS=-lgfortran ./configure --prefix=`pwd`/install
+else
 ./configure --prefix=`pwd`/install
+fi
+
 make && make install
 
 exit

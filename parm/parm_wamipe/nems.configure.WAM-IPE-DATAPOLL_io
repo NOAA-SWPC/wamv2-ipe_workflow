@@ -82,11 +82,11 @@ runSeq::
         ATM -> AIO05
         AIO05
       @
-      ATM -> AIO60
-      AIO60
-      IPM -> IIO60
-      IIO60
+      DAT
     @
-    DAT
+    ATM -> AIO60
+    AIO60
+    IPM -> IIO60
+    IIO60
   @
 ::

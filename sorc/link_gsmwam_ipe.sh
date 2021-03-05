@@ -47,18 +47,10 @@ $LINK $FIX_DIR/* .
 #--add files from external repositories
 #---------------------------------------
 cd ${pwd}/../ush                ||exit 8
-    for file in gfs_nceppost.sh  \
-        gfs_transfer.sh  link_crtm_fix.sh  trim_rh.sh fix_precip.sh; do
-        $LINK ../sorc/gfs_post.fd/ush/$file                  .
-    done
-    for file in emcsfc_ice_blend.sh  global_cycle_driver.sh \
-        emcsfc_snow.sh  global_chgres_driver.sh  global_cycle.sh \
+    for file in global_cycle_driver.sh \
+        global_chgres_driver.sh  global_cycle.sh \
         global_chgres.sh ; do
-        $LINK ../sorc/ufs_utils.fd/ush/$file                  .
-    done
-cd ${pwd}/../util               ||exit 8
-    for file in sub_slurm sub_wcoss_c sub_wcoss_d ; do
-        $LINK ../sorc/ufs_utils.fd/util/$file
+        $LINK ../sorc/wamipe_utils.fd/ush/$file                  .
     done
 
 

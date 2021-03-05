@@ -16,9 +16,8 @@ if [ ! -d "../exec" ]; then
   mkdir ../exec
 fi
 
-if [ $target = hera ]; then target=hera.intel ; fi
-module use $cwd/../modulefiles
+cd wamipe_utils.fd/sorc/
+./build_all_utils.sh
 
-cd gsmwam_ipe.fd/NEMS
-gmake -j app=coupledWAM_IPE_SWIO_DATAPOLL distclean
-gmake -j app=coupledWAM_IPE_SWIO_DATAPOLL build
+exit
+

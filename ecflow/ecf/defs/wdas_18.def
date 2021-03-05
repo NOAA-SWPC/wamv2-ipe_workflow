@@ -1,0 +1,25 @@
+  family wdas
+    edit CYC '18'
+    edit ECF_FILES '/ecf/ecfnets/scripts/wdas_FV3'
+    edit PROJ 'WDAS-OPS'
+    edit NET 'wfs'
+    edit RUN 'wdas'
+    edit COM '/gpfs/dell1/nco/ops/com'
+    edit QUEUESHARED 'prod_shared'
+    edit QUEUESERV 'prod_transfer'
+    edit QUEUE 'prod'
+    family prep
+      task jwdas_prep
+        trigger ../dump/jwdas_dump == complete and ../dump/jwdas_tropcy_qc_reloc == complete
+    endfamily
+    family analysis
+      task jwdas_analysis
+        trigger ../prep/jwdas_prep == complete and ../prep/jwdas_emcsfc_sfc_prep == complete
+        event 1 release_fcst
+    endfamily
+    family forecast
+      task jwdas_forecast_high
+        trigger ../analysis/jwdas_analysis:release_fcst
+    endfamily
+  endfamily
+

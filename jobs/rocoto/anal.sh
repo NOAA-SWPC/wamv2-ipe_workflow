@@ -2,12 +2,12 @@
 
 ###############################################################
 # Source WFS workflow modules
-. $HOMEwfs/ush/load_fv3gfs_modules.sh
+. $HOMEwfs/ush/load_wamipe_modules.sh
 status=$?
 [[ $status -ne 0 ]] && exit $status
 
 ###############################################################
 # Execute the JJOB
-$HOMEwfs/jobs/JGLOBAL_ANALYSIS
+$HOMEwfs/jobs/JWAMIPE_ANALYSIS
 status=$?
 exit $status

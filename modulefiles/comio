@@ -1,0 +1,18 @@
+#%Module######################################
+# note that this is read by a Tcl interpretor
+#
+proc ModulesHelp { } {
+  global version
+  puts stderr "\tCOMIO $version - sets up the environment for the COMmon I/O layer.\n"
+}
+
+module-whatis "Enables COMmon I/O layer (COMIO)"
+
+set script_path [ file dirname [ file normalize [ info script ] ] ]
+
+set base        $script_path/../sorc/comio.fd/install
+
+conflict comio
+
+prepend-path PATH $base/bin
+

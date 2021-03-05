@@ -56,6 +56,20 @@ echo " .... Library build not currently supported .... "
 }
 
 #------------------------------------
+# build COMIO
+#------------------------------------
+$Build_comio && {
+echo " .... Building comio .... "
+./build_comio.sh > $logs_dir/build_comio.log 2>&1
+rc=$?
+if [[ $rc -ne 0 ]] ; then
+    echo "Fatal error in building COMIO."
+    echo "The log file is in $logs_dir/build_comio.log"
+fi
+((err+=$rc))
+}
+
+#------------------------------------
 # build GSMWAM-IPE
 #------------------------------------
 $Build_gsmwam_ipe && {
@@ -63,8 +77,8 @@ echo " .... Building gsmwam_ipe .... "
 ./build_gsmwam_ipe.sh > $logs_dir/build_gsmwam_ipe.log 2>&1
 rc=$?
 if [[ $rc -ne 0 ]] ; then
-    echo "Fatal error in building fv3."
-    echo "The log file is in $logs_dir/build_fv3.log"
+    echo "Fatal error in building GSMWAM-IPE."
+    echo "The log file is in $logs_dir/build_gsmwam_ipe.log"
 fi
 ((err+=$rc))
 }
@@ -84,15 +98,29 @@ fi
 }
 
 #------------------------------------
-# build gdas
+# build wam-ipe_utils
 #------------------------------------
-$Build_gdas && {
-echo " .... Building gdas .... "
-./build_gdas.sh > $logs_dir/build_gdas.log 2>&1
+$Build_wamipe_utils && {
+echo " .... Building wamipe_utils .... "
+./build_wamipe_utils.sh > $logs_dir/build_wamipe_utils.log 2>&1
 rc=$?
 if [[ $rc -ne 0 ]] ; then
-    echo "Fatal error in building gdas."
-    echo "The log file is in $logs_dir/build_gdas.log"
+    echo "Fatal error in building wamipe_utils."
+    echo "The log file is in $logs_dir/build_wamipe_utils.log"
+fi
+((err+=$rc))
+}
+
+#------------------------------------
+# build obsproc
+#------------------------------------
+$Build_obsproc && {
+echo " .... Building obsproc .... "
+./build_obsproc.sh > $logs_dir/build_obsproc.log 2>&1
+rc=$?
+if [[ $rc -ne 0 ]] ; then
+    echo "Fatal error in building obsproc."
+    echo "The log file is in $logs_dir/build_obsproc.log"
 fi
 ((err+=$rc))
 }

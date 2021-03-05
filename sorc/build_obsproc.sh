@@ -4,6 +4,10 @@ set -eux
 source ./machine-setup.sh > /dev/null 2>&1
 cwd=`pwd`
 
+if [ $target = "hera" ] ; then
+  export SITE=hera
+fi
+
 USE_PREINST_LIBS=${USE_PREINST_LIBS:-"true"}
 if [ $USE_PREINST_LIBS = true ]; then
   export MOD_PATH=/scratch3/NCEPDEV/nwprod/lib/modulefiles
@@ -16,9 +20,11 @@ if [ ! -d "../exec" ]; then
   mkdir ../exec
 fi
 
-if [ $target = hera ]; then target=hera.intel ; fi
-module use $cwd/../modulefiles
+cd obsproc_prep.fd/sorc
 
-cd gsmwam_ipe.fd/NEMS
-gmake -j app=coupledWAM_IPE_SWIO_DATAPOLL distclean
-gmake -j app=coupledWAM_IPE_SWIO_DATAPOLL build
+./build.sh
+
+./install.sh
+
+exit
+

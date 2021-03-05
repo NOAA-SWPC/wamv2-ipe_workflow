@@ -79,7 +79,7 @@ def edit_baseconfig():
                     .replace('@NOSCRUB@', noscrub) \
                     .replace('@ACCOUNT@', account) \
                     .replace('@QUEUE@', queue) \
-                    .replace('@QUEUE_ARCH@', queue_arch) \
+                    .replace('@QUEUE_ARCH@', queue_arch)
                 if expdir is not None:
                     line = line.replace('@EXPDIR@', os.path.dirname(expdir))
                 if comrot is not None:
@@ -175,7 +175,6 @@ Create COMROT experiment directory structure'''
       account = 'fv3-cpu'
       queue = 'batch'
       queue_arch = 'service'
->>>>>>> 958ec2efce774535c09009f8bbbbcdd87a74e028
 
     # COMROT directory
     create_comrot = True

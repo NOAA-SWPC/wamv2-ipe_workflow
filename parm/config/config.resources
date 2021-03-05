@@ -34,7 +34,7 @@ fi
 
 if [ $step = "prep" -o $step = "prepbufr" ]; then
 
-    eval "export wtime_$step='00:45:00'"
+    eval "export wtime_$step='00:05:00'"
     eval "export npe_$step=4"
     eval "export npe_node_$step=4"
     eval "export nth_$step=1"
@@ -47,21 +47,15 @@ if [ $step = "prep" -o $step = "prepbufr" ]; then
 
 elif [ $step = "anal" ]; then
 
-    export wtime_anal="02:30:00"
+    export wtime_anal="00:45:00"
     export nth_cycle=$npe_node_max
-    export npe_anal=160
-    export npe_node_anal=2
-    export nth_anal=12
-    if [[ "$machine" = "WCOSS_DELL_P3" ]]; then
-      export nth_anal=14
-    fi
+    export nth_anal=1
     if [[ "$machine" != "WCOSS_C" ]]; then
      if [ $CASE = "C384" -o $CASE = "C192" -o $CASE = "C96" -o $CASE = "T62" ]; then
-      export npe_anal=84
-      export nth_anal=4
+      export npe_anal=240
       export npe_node_anal=$(echo "$npe_node_max / $nth_anal" | bc)
       if [[ "$machine" = "WCOSS_DELL_P3" ]]; then
-        export npe_node_anal=7
+        export npe_anal=168
       fi
      fi
     fi

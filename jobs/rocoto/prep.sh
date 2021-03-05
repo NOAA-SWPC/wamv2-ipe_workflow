@@ -2,7 +2,7 @@
 
 ###############################################################
 # Source WFS workflow modules
-. $HOMEwfs/ush/load_fv3gfs_modules.sh
+. $HOMEwfs/ush/load_wamipe_modules.sh
 status=$?
 [[ $status -ne 0 ]] && exit $status
 
@@ -55,30 +55,7 @@ fi
 # For running real-time parallels on WCOSS_C, execute tropcy_qc and 
 # copy files from operational syndata directory to a local directory.
 # Otherwise, copy existing tcvital data from globaldump.
-
-if [ $PROCESS_TROPCY = "YES" ]; then
-
-    export COMINsyn=${COMINsyn:-$(compath.py gfs/prod/syndat)}
-    if [ $RUN_ENVIR != "nco" ]; then
-        export ARCHSYND=${ROTDIR}/syndat
-        if [ ! -d ${ARCHSYND} ]; then mkdir -p $ARCHSYND; fi
-        if [ ! -s $ARCHSYND/syndat_akavit ]; then 
-            for file in syndat_akavit syndat_dateck syndat_stmcat.scr syndat_stmcat syndat_sthisto syndat_sthista ; do
-                cp $COMINsyn/$file $ARCHSYND/.
-            done
-        fi
-    fi
-
-    [[ $ROTDIR_DUMP = "YES" ]] && rm $COMOUT${CDUMP}.t${cyc}z.syndata.tcvitals.tm00
-
-    $HOMEwfs/jobs/JGLOBAL_TROPCY_QC_RELOC
-    status=$?
-    [[ $status -ne 0 ]] && exit $status
-
-else
-    [[ $ROTDIR_DUMP = "NO" ]] && cp $DMPDIR/${CDUMP}${DUMP_SUFFIX}.${PDY}/${cyc}/${CDUMP}.t${cyc}z.syndata.tcvitals.tm00 $COMOUT/
-fi
-
+[[ $ROTDIR_DUMP = "NO" ]] && cp $DMPDIR/${CDUMP}${DUMP_SUFFIX}.${PDY}/${cyc}/${CDUMP}.t${cyc}z.syndata.tcvitals.tm00 $COMOUT/
 
 ###############################################################
 # Generate prepbufr files from dumps or copy from OPS
@@ -100,7 +77,7 @@ if [ $DO_MAKEPREPBUFR = "YES" ]; then
     export COMINwdas=${COMINwdas:-$ROTDIR/wdas.$PDY/$cyc}
     export COMINwfs=${COMINwfs:-$ROTDIR/wfs.$PDY/$cyc}
 
-    $HOMEobsproc_network/jobs/JGLOBAL_PREP
+    $HOMEobsproc_network/jobs/JWAMIPE_PREP
     status=$?
     [[ $status -ne 0 ]] && exit $status
 

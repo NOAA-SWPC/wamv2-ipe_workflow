@@ -20,5 +20,5 @@ if [ $target = hera ]; then target=hera.intel ; fi
 module use $cwd/../modulefiles
 
 cd gsmwam_ipe.fd/NEMS
-gmake -j app=coupledWAM_IPE_SWIO_DATAPOLL distclean
+# gmake -j app=coupledWAM_IPE_SWIO_DATAPOLL distclean
 gmake -j app=coupledWAM_IPE_SWIO_DATAPOLL build

@@ -7,10 +7,10 @@ ulimit_s=$( ulimit -S -s )
 ulimit -S -s 10000
 
 # Find module command and purge:
-source "$HOMEwfs/modulefiles/module-setup.sh.inc" 
+source "$HOMEwamipe/modulefiles/module-setup.sh.inc" 
 
 # Load our modules:
-module use "$HOMEwfs/modulefiles" 
+module use "$HOMEwamipe/modulefiles" 
 
 if [[ -d /lfs3 ]] ; then
     # We are on NOAA Jet

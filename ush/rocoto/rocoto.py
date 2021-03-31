@@ -12,7 +12,6 @@
         rahul.mahajan@noaa.gov
 '''
 
-from builtins import str
 def create_metatask(task_dict, metatask_dict):
     '''
     create a Rocoto metatask given a dictionary containing task and metatask information

@@ -9,8 +9,6 @@
 ###############################################################
 
 from __future__ import print_function
-from builtins import input
-from builtins import range
 import os
 import sys
 import glob
@@ -93,7 +91,7 @@ def edit_baseconfig():
                     .replace('@CASEENS@', 'T%d' % resens) \
                     .replace('@CASECTL@', 'T%d' % resdet) \
                     .replace('@NMEM_ENKF@', '%d' % nens) \
-                    .replace('@HOMEwfs@', top) \
+                    .replace('@HOMEwamipe@', top) \
                     .replace('@wfs_cyc@', '%d' % wfs_cyc) \
                     .replace('@BASE_GIT@', base_git) \
                     .replace('@BASE_SVN@', base_svn) \

@@ -19,10 +19,6 @@
 from __future__ import division
 from __future__ import print_function
 
-from future import standard_library
-standard_library.install_aliases()
-from builtins import range
-from past.utils import old_div
 import os
 import sys
 import re
@@ -172,7 +168,7 @@ def get_definitions(base):
     strings.append('\t<!ENTITY ROTDIR "%s">\n' % base['ROTDIR'])
     strings.append('\n')
     strings.append('\t<!-- Directories for driving the workflow -->\n')
-    strings.append('\t<!ENTITY HOMEwfs  "%s">\n' % base['HOMEwfs'])
+    strings.append('\t<!ENTITY HOMEwamipe  "%s">\n' % base['HOMEwamipe'])
     strings.append('\t<!ENTITY JOBS_DIR "%s">\n' % base['BASE_JOB'])
     strings.append('\t<!ENTITY DMPDIR   "%s">\n' % base['DMPDIR'])
     strings.append('\n')
@@ -342,7 +338,7 @@ def get_wdaswfs_tasks(dict_configs, cdump='wdas'):
     if wfu.get_scheduler(wfu.detectMachine()) in ['slurm']:
         envars.append(rocoto.create_envar(name='SLURM_SET', value='YES'))
     envars.append(rocoto.create_envar(name='RUN_ENVIR', value='&RUN_ENVIR;'))
-    envars.append(rocoto.create_envar(name='HOMEwfs', value='&HOMEwfs;'))
+    envars.append(rocoto.create_envar(name='HOMEwamipe', value='&HOMEwamipe;'))
     envars.append(rocoto.create_envar(name='EXPDIR', value='&EXPDIR;'))
     envars.append(rocoto.create_envar(name='CDATE', value='<cyclestr>@Y@m@d@H</cyclestr>'))
     envars.append(rocoto.create_envar(name='CDUMP', value='%s' % cdump))
@@ -441,24 +437,24 @@ def get_hyb_tasks(dict_configs, cycledef='enkf'):
 
     eobs = dict_configs['eobs']
     nens_eomg = eobs['NMEM_EOMGGRP']
-    neomg_grps = old_div(nens, nens_eomg)
+    neomg_grps = nens // nens_eomg
     EOMGGROUPS = ' '.join(['%02d' % x for x in range(1, neomg_grps + 1)])
 
     efcs = dict_configs['efcs']
     nens_efcs = efcs['NMEM_EFCSGRP']
-    nefcs_grps = old_div(nens, nens_efcs)
+    nefcs_grps = nens // nens_efcs
     EFCSGROUPS = ' '.join(['%02d' % x for x in range(1, nefcs_grps + 1)])
 
     earc = dict_configs['earc']
     nens_earc = earc['NMEM_EARCGRP']
-    nearc_grps = old_div(nens, nens_earc)
+    nearc_grps = nens // nens_earc
     EARCGROUPS = ' '.join(['%02d' % x for x in range(0, nearc_grps + 1)])
 
     envars = []
     if wfu.get_scheduler(wfu.detectMachine()) in ['slurm']:
        envars.append(rocoto.create_envar(name='SLURM_SET', value='YES'))
     envars.append(rocoto.create_envar(name='RUN_ENVIR', value='&RUN_ENVIR;'))
-    envars.append(rocoto.create_envar(name='HOMEwfs', value='&HOMEwfs;'))
+    envars.append(rocoto.create_envar(name='HOMEwamipe', value='&HOMEwamipe;'))
     envars.append(rocoto.create_envar(name='EXPDIR', value='&EXPDIR;'))
     envars.append(rocoto.create_envar(name='CDATE', value='<cyclestr>@Y@m@d@H</cyclestr>'))
     #envars.append(rocoto.create_envar(name='CDUMP', value='%s' % cdump))

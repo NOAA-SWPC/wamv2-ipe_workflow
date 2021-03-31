@@ -23,19 +23,20 @@ export QUEUE_ARCH="dev_transfer"
 HPSS_PROJECT=swpc-para
 
 # Directories relative to installation areas:
-export PARMwfs=$HOMEwfs/parm
+export PARMwfs=$HOMEwamipe/parm
 export PARMDIR=$PARMwfs/parm_wamipe
-export FIXwfs=$HOMEwfs/fix
-export USHwfs=$HOMEwfs/ush
-export UTILwfs=$HOMEwfs/util
-export EXECwfs=$HOMEwfs/exec
-export SCRwfs=$HOMEwfs/scripts
+export FIXwfs=$HOMEwamipe/fix
+export USHwfs=$HOMEwamipe/ush
+export UTILwfs=$HOMEwamipe/util
+export EXECwfs=$HOMEwamipe/exec
+export SCRwfs=$HOMEwamipe/scripts
 
 ########################################################################
 
 # GLOBAL static environment parameters
 export NWPROD="${NWROOT:-"/gpfs/dell1/nco/ops/nwprod"}"
 export COMROOT="${COMROOT:-"/gpfs/dell1/nco/ops/com"}"
+export DATAROOT="${DATAROOT:-"/gpfs/dell1/nco/ops/tmpnwprd"}"
 export DMPDIR="/gpfs/dell3/emc/global/dump"
 export RTMFIX=$CRTM_FIX
 export DCOM=${DCOM:-"/gpfs/dell1/nco/ops/dcom/prod"}
@@ -52,7 +53,7 @@ export BASE_SVN="/gpfs/dell2/emc/modeling/noscrub/emc.glopara/git"
 
 # WAM-IPE paths
 export PARAMETER_PATH="/gpfs/dell2/swpc/noscrub/Adam.Kubaryk/WAM-IPE_INPUT_PARAMETERS"
-export IPE_IC_DIR="$HOMEwfs/fix/IPE_FIX" # need to change to IPE_FIX
+export IPE_IC_DIR="$HOMEwamipe/fix/IPE_FIX" # need to change to IPE_FIX
 
 # Toggle to turn on/off WFS downstream processing.
 export DO_BUFRSND="NO"
@@ -69,13 +70,12 @@ export REALTIME="NO"
 # FEEL FREE TO MOVE THEM ABOVE THIS LINE TO KEEP IT
 # CLEAR
 ####################################################
-# Build paths relative to $HOMEwfs
-export HOMEgsi="$HOMEwfs"
-export FIXgsi="$HOMEwfs/fix/fix_gsi"
-export HOMEgsmwam_ipe="$HOMEwfs/sorc/gsmwam_ipe.fd"
-export HOMEpost="$HOMEwfs"
-export HOMEobsproc_prep="$HOMEwfs/sorc/obsproc_prep.fd"
-export HOMEobsproc_network="$HOMEwfs/sorc/obsproc_wamipe.fd"
+# Build paths relative to $HOMEwamipe
+export HOMEgsi="$HOMEwamipe"
+export FIXgsi="$HOMEwamipe/fix/fix_gsi"
+export HOMEpost="$HOMEwamipe"
+export HOMEobsproc_prep="$HOMEwamipe/sorc/obsproc_prep.fd"
+export HOMEobsproc_network="$HOMEwamipe/sorc/obsproc_wamipe.fd"
 export HOMEobsproc_global=$HOMEobsproc_network
 export BASE_VERIF="$BASE_SVN/verif/global/tags/vsdb"
 
@@ -86,15 +86,15 @@ export NLN="/bin/ln -sf"
 export VERBOSE="YES"
 export KEEPDATA="NO"
 export CHGRP_CMD="chgrp rstprod"
-export NEMSIOGET="$HOMEwfs/exec/nemsio_get"
-export SIGHDR=$HOMEwfs/exec/global_sighdr
-export SFCHDR=$HOMEwfs/exec/global_sfchdr
-export CHGSFCFHREXEC=$HOMEwfs/exec/chgsfcfhr
-export CHGSIGFHREXEC=$HOMEwfs/exec/chgsigfhr
+export NEMSIOGET="$HOMEwamipe/exec/nemsio_get"
+export SIGHDR=$HOMEwamipe/exec/global_sighdr
+export SFCHDR=$HOMEwamipe/exec/global_sfchdr
+export CHGSFCFHREXEC=$HOMEwamipe/exec/chgsfcfhr
+export CHGSIGFHREXEC=$HOMEwamipe/exec/chgsigfhr
 
 # Machine environment, jobs, and other utility scripts
-export BASE_ENV="$HOMEwfs/env"
-export BASE_JOB="$HOMEwfs/jobs/rocoto"
+export BASE_ENV="$HOMEwamipe/env"
+export BASE_JOB="$HOMEwamipe/jobs/rocoto"
 
 # IPE stuff
 export IPEGRIDFILENAME=${IPEGRIDFILENAME:-"IPE_Grid.h5"}
@@ -106,16 +106,16 @@ export HWMPATH=${HWMPATH:-$IPE_IC_DIR}
 #export SDATE=@SDATE@
 #export EDATE=@EDATE@
 export assim_freq=6
-export PSLOT="WFS-OPS"
+export PSLOT="WAMIPE-OPS"
 export EXPDIR="$EXPDIR"
 export ROTDIR="$ROTDIR"
 export ROTDIR_DUMP="YES"                #Note: A value of "NO" does not currently work
 export DUMP_SUFFIX=""
-export RUNDIR="$PTMP/RUNDIRS/$PSLOT"
-export DATAROOT="$RUNDIR/$CDATE/$CDUMP"
 export ARCDIR="$NOSCRUB/archive/$PSLOT"
 export ICSDIR="/gpfs/dell2/ptmp/$USER/FV3ICS"
 export ATARDIR="/NCEPDEV/$HPSS_PROJECT/1year/$USER/$machine/scratch/$PSLOT"
+export COMIN="${COMIN:-"$COMROOT/$NET/$envir/$RUN.$PDY"}"
+export COMOUT="${COMOUT:-"$COMROOT/$NET/$envir/$RUN.$PDY"}"
 export ROTDIR=${ROTDIR:-$PTMP/$USER/$JOBNAME}              # where model I/O files are stored
 export RESTARTDIR=${RESTARTDIR:-$ROTDIR/restart_directory} # folder containing restart files
 export EXECGLOBAL=${EXECGLOBAL:-$BASE_NEMS/exe}            # NEMS executable directory
@@ -135,10 +135,10 @@ export LOGSCRIPT=${LOGSCRIPT:-""}
 export REDOUT="1>"
 export REDERR="2>"
 
-export SENDECF="NO"
-export SENDCOM="NO"
-export SENDDBN="NO"
-export SENDSDM="NO"
+export SENDECF=${SENDECF:-"NO"}
+export SENDCOM=${SENDCOM:-"NO"}
+export SENDDBN=${SENDDBN:-"NO"}
+export SENDSDM=${SENDSDM:-"NO"}
 
 # Resolution specific parameters
 export IDEA=${IDEA:-.true.}
@@ -183,11 +183,13 @@ export SUFOUT="" # ${SUFOUT:-".$CDATE"}
 export SWIO=${SWIO:-.false.}
 if [[ $SWIO = .true. ]] ; then
   if [[ $WAM_IPE_COUPLING = .true. ]] ; then
-    export SWIO_MODELS=${SWIO_MODELS:-"IIO03 IIO60 AIO60"}
-    export IIO03_PREFIX=${IIO03_PREFIX:-"ipe03"}
+    export SWIO_MODELS=${SWIO_MODELS:-"IIO05 IIO60 AIO05 AIO60"}
+    export IIO05_PREFIX=${IIO05_PREFIX:-"ipe05"}
+    export AIO05_PREFIX=${AIO05_PREFIX:-"gsm05"}
     export IIO60_PREFIX=${IIO60_PREFIX:-"ipe60"}
     export AIO60_PREFIX=${AIO60_PREFIX:-"gsm60"}
-    export IIO03_CADENCE=${IIO03_CADENCE:-"180"}
+    export IIO05_CADENCE=${IIO05_CADENCE:-"300"}
+    export AIO05_CADENCE=${AIO05_CADENCE:-"300"}
     export IIO60_CADENCE=${IIO60_CADENCE:-"3600"}
     export AIO60_CADENCE=${AIO60_CADENCE:-"3600"}
   else

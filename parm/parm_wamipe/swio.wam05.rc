@@ -39,7 +39,7 @@ output_fields::
 #
 compute_fields::
     column_interpolate  thermosphere_mass_density    height    400000.    den400    "kg m-3"
-    column_o_n2_ratio   O_Density    N2_Density    temp_neutral    height    2.e+21    ON2    "1"
+    column_o_n2_ratio   O_Density    N2_Density    temp_neutral    height    ${o_n2_ref_val}    ON2    "1"
 ::
 
 #

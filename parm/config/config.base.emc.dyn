@@ -23,14 +23,14 @@ export QUEUE_ARCH="@QUEUE_ARCH@"
 HPSS_PROJECT=swpc-para
 
 # Directories relative to installation areas:
-export HOMEwfs=@HOMEwfs@
-export PARMwfs=$HOMEwfs/parm
+export HOMEwamipe=@HOMEwamipe@
+export PARMwfs=$HOMEwamipe/parm
 export PARMDIR=$PARMwfs/parm_wamipe
-export FIXwfs=$HOMEwfs/fix
-export USHwfs=$HOMEwfs/ush
-export UTILwfs=$HOMEwfs/util
-export EXECwfs=$HOMEwfs/exec
-export SCRwfs=$HOMEwfs/scripts
+export FIXwfs=$HOMEwamipe/fix
+export USHwfs=$HOMEwamipe/ush
+export UTILwfs=$HOMEwamipe/util
+export EXECwfs=$HOMEwamipe/exec
+export SCRwfs=$HOMEwamipe/scripts
 
 ########################################################################
 
@@ -70,13 +70,12 @@ export REALTIME="NO"
 # FEEL FREE TO MOVE THEM ABOVE THIS LINE TO KEEP IT
 # CLEAR
 ####################################################
-# Build paths relative to $HOMEwfs
-export HOMEgsi="$HOMEwfs"
-export FIXgsi="$HOMEwfs/fix/fix_gsi"
-export HOMEgsmwam_ipe="$HOMEwfs/sorc/gsmwam_ipe.fd"
-export HOMEpost="$HOMEwfs"
-export HOMEobsproc_prep="$HOMEwfs/sorc/obsproc_prep.fd"
-export HOMEobsproc_network="$HOMEwfs/sorc/obsproc_wamipe.fd"
+# Build paths relative to $HOMEwamipe
+export HOMEgsi="$HOMEwamipe"
+export FIXgsi="$HOMEwamipe/fix/fix_gsi"
+export HOMEpost="$HOMEwamipe"
+export HOMEobsproc_prep="$HOMEwamipe/sorc/obsproc_prep.fd"
+export HOMEobsproc_network="$HOMEwamipe/sorc/obsproc_wamipe.fd"
 export HOMEobsproc_global=$HOMEobsproc_network
 export BASE_VERIF="$BASE_SVN/verif/global/tags/vsdb"
 
@@ -87,15 +86,15 @@ export NLN="/bin/ln -sf"
 export VERBOSE="YES"
 export KEEPDATA="NO"
 export CHGRP_CMD="chgrp rstprod"
-export NEMSIOGET="$HOMEwfs/exec/nemsio_get"
-export SIGHDR=$HOMEwfs/exec/global_sighdr
-export SFCHDR=$HOMEwfs/exec/global_sfchdr
-export CHGSFCFHREXEC=$HOMEwfs/exec/chgsfcfhr
-export CHGSIGFHREXEC=$HOMEwfs/exec/chgsigfhr
+export NEMSIOGET="$HOMEwamipe/exec/nemsio_get"
+export SIGHDR=$HOMEwamipe/exec/global_sighdr
+export SFCHDR=$HOMEwamipe/exec/global_sfchdr
+export CHGSFCFHREXEC=$HOMEwamipe/exec/chgsfcfhr
+export CHGSIGFHREXEC=$HOMEwamipe/exec/chgsigfhr
 
 # Machine environment, jobs, and other utility scripts
-export BASE_ENV="$HOMEwfs/env"
-export BASE_JOB="$HOMEwfs/jobs/rocoto"
+export BASE_ENV="$HOMEwamipe/env"
+export BASE_JOB="$HOMEwamipe/jobs/rocoto"
 
 # IPE stuff
 export IPEGRIDFILENAME=${IPEGRIDFILENAME:-"IPE_Grid.h5"}
@@ -112,8 +111,7 @@ export EXPDIR="@EXPDIR@/$PSLOT"
 export ROTDIR="@ROTDIR@/$PSLOT"
 export ROTDIR_DUMP="YES"                #Note: A value of "NO" does not currently work
 export DUMP_SUFFIX=""
-export RUNDIR="$PTMP/RUNDIRS/$PSLOT"
-export DATAROOT="$RUNDIR/$CDATE/$CDUMP"
+export DATAROOT="$PTMP/RUNDIRS/$PSLOT/$CDATE/$CDUMP"
 export ARCDIR="$NOSCRUB/archive/$PSLOT"
 export ICSDIR="@ICSDIR@"
 export ATARDIR="/NCEPDEV/$HPSS_PROJECT/1year/$USER/$machine/scratch/$PSLOT"

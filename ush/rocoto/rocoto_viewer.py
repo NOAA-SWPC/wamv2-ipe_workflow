@@ -18,14 +18,9 @@
 #
 ##@cond ROCOTO_VIEWER_CURSES
 
-from __future__ import division 
+from __future__ import division
 from __future__ import print_function
 
-from future import standard_library
-standard_library.install_aliases()
-from builtins import map
-from builtins import str
-from builtins import range
 import curses
 
 import os, sys, getpass, getopt, signal, tempfile

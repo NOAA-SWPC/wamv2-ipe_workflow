@@ -27,5 +27,15 @@
   mesh_fill       = ${mesh_fill}
 /
 &ELDYN
-  DYNAMO_EFIELD          = ${DYNAMO_EFIELD}
+  DYNAMO_EFIELD          = ${dynamo_efield}
 /
+&OPERATIONAL
+  COLFAC                 = ${colfac}
+  OFFSET1_DEG            = ${offset1}
+  OFFSET2_DEG            = ${offset2}
+  POTENTIAL_MODEL        = ${potential_model}
+  HPEQ                   = ${hpeq}
+  TRANSPORT_HIGHLAT_LP   = ${transport_highlat_lp}
+  PERP_TRANSPORT_MAX_LP  = ${perp_transport_max}
+/
+

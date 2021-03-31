@@ -5,9 +5,6 @@
 '''
 from __future__ import division
 from __future__ import print_function
-from builtins import str
-from past.builtins import basestring
-from past.utils import old_div
 import random
 import re
 import os, sys, stat
@@ -296,7 +293,7 @@ def get_resources(machine, cfg, task, cdump='wdas'):
     if machine in [ 'WCOSS_DELL_P3', 'HERA']:
         threads = cfg['nth_%s' % ltask]
 
-    nodes = np.int(np.ceil(old_div(np.float(tasks), np.float(ppn))))
+    nodes = int(np.ceil(np.float(tasks) / np.float(ppn)))
     if nodes == 1: ppn = tasks
 
     memstr = '' if memory is None else str(memory)

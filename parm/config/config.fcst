@@ -17,8 +17,8 @@ export med_model="swpc"
 export med_petlist_bounds="40 79"
 export ipm_petlist_bounds="0 39"
 export atm_petlist_bounds="80 111"
-export FORECASTSH="$HOMEwfs/scripts/exwamipe_fcst_nems.sh"
-export FCSTEXECDIR="$HOMEwfs/exec"
+export FORECASTSH="$HOMEwamipe/scripts/exwamipe_fcst_nems.sh"
+export FCSTEXECDIR="$HOMEwamipe/exec"
 export FCSTEXEC="global_gsmwam_ipe.x"
 export npe_wam=$npe_fcst # This is model resolution dependent, see note above
 
@@ -29,6 +29,8 @@ fi
 if [[ "$CDUMP" == "wfr" ]] ; then
    DATAPOLL=".true."
 fi
+
+export INPUT_PARAMETERS=realtime
 
 export DATAPOLL=${DATAPOLL:-".false."}
 if [[ $DATAPOLL = .true. ]] ; then
@@ -70,19 +72,6 @@ export random_clds=".false."
 export DELTIM=60      # GSM timestep
 export DELTIM_IPE=180 # IPE timestep
 export IPEFREQ=$((3600*3)) # seconds between IPE output
-
-export DYNAMO_EFIELD="T"
-export INPUT_PARAMETERS=realtime
-## if you are using fixderive or fixall, uncomment the following and set your fixed values
-# export FIX_F107=75.0     # F10.7 and F10.7d
-# export FIX_KP=2.0         # Kp and 24hr average Kp
-# export FIX_SWVEL=400.0    # solar wind velocity
-# export FIX_SWDEN=5.0      # solar wind density
-# export FIX_SWBY=1.0       # y-component of solar wind
-# export FIX_SWBZ=1.0       # z-component of solar wind
-# export FIX_GWATTS=4.5     # gigawatts
-# export FIX_HPI=2          # hemispheric power index
-
 
 #---------------------------------------------------------------------
 

@@ -53,6 +53,10 @@ cd ${pwd}/../ush                ||exit 8
         $LINK ../sorc/wamipe_utils.fd/ush/$file                  .
     done
 
+    for file in interpolate_input_parameters.py parse_realtime.py \
+        sw_from_f107_kp.py parse.py realtime_wrapper.py ; do
+        $LINK ../sorc/gsmwam_ipe.fd/scripts/interpolate_input_parameters/$file .
+    done
 
 #------------------------------
 #--add GSI file

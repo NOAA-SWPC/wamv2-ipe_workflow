@@ -4,7 +4,7 @@
 ## Abstract:
 ## Archive driver script
 ## RUN_ENVIR : runtime environment (emc | nco)
-## HOMEwfs   : /full/path/to/workflow
+## HOMEwamipe   : /full/path/to/workflow
 ## EXPDIR : /full/path/to/config/files
 ## CDATE  : current analysis date (YYYYMMDDHH)
 ## CDUMP  : cycle name (wdas / wfs)
@@ -14,7 +14,7 @@
 
 ###############################################################
 # Source wamipe workflow modules
-. $HOMEwfs/ush/load_wamipe_modules.sh
+. $HOMEwamipe/ush/load_wamipe_modules.sh
 status=$?
 [[ $status -ne 0 ]] && exit $status
 
@@ -73,10 +73,10 @@ ARCH_LIST="$COMIN/archlist"
 mkdir -p $ARCH_LIST
 cd $ARCH_LIST
 
-$HOMEwfs/ush/hpssarch_gen.sh $CDUMP
+$HOMEwamipe/ush/hpssarch_gen.sh $CDUMP
 status=$?
 if [ $status -ne 0  ]; then
-    echo "$HOMEwfs/ush/hpssarch_gen.sh $CDUMP failed, ABORT!"
+    echo "$HOMEwamipe/ush/hpssarch_gen.sh $CDUMP failed, ABORT!"
     exit $status
 fi
 

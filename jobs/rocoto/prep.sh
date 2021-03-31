@@ -2,7 +2,7 @@
 
 ###############################################################
 # Source WFS workflow modules
-. $HOMEwfs/ush/load_wamipe_modules.sh
+. $HOMEwamipe/ush/load_wamipe_modules.sh
 status=$?
 [[ $status -ne 0 ]] && exit $status
 
@@ -30,7 +30,7 @@ export COMOUT="$ROTDIR/$CDUMP.$PDY/$cyc"
 ###############################################################
 # If ROTDIR_DUMP=YES, copy dump files to rotdir 
 if [ $ROTDIR_DUMP = "YES" ]; then
-    $HOMEwfs/ush/getdump.sh $CDATE $PDUMP $DMPDIR/${PDUMP}${DUMP_SUFFIX}.${PDY}/${cyc} $COMOUT
+    $HOMEwamipe/ush/getdump.sh $CDATE $PDUMP $DMPDIR/${PDUMP}${DUMP_SUFFIX}.${PDY}/${cyc} $COMOUT
     status=$?
     [[ $status -ne 0 ]] && exit $status
 
@@ -42,7 +42,7 @@ if [ $ROTDIR_DUMP = "YES" ]; then
     PDUMP=gdas
     gCOMOUT="$ROTDIR/$GDUMP.$gPDY/$gcyc"
     if [ ! -s $gCOMOUT/$GDUMP.t${gcyc}z.updated.status.tm00.bufr_d ]; then
-     $HOMEwfs/ush/getdump.sh $GDATE gdas $DMPDIR/${PDUMP}${DUMP_SUFFIX}.${gPDY}/${gcyc} $gCOMOUT
+     $HOMEwamipe/ush/getdump.sh $GDATE gdas $DMPDIR/${PDUMP}${DUMP_SUFFIX}.${gPDY}/${gcyc} $gCOMOUT
      status=$?
      [[ $status -ne 0 ]] && exit $status
     fi

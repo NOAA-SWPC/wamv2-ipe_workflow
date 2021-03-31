@@ -1137,10 +1137,10 @@ if [ $IDEA = .true. ]; then
   export MSIS_TIME_STEP=${MSIS_TIME_STEP:-900}
   ${NLN} $memdir/$CDUMP.t${cyc}z.input_parameters wam_input_f107_kp.txt
   if [ $INPUT_PARAMETERS = realtime ] ; then
-    $HOMEgsmwam_ipe/scripts/interpolate_input_parameters/parse_realtime.py -s $($MDATE -$((36*60)) ${FDATE}00) -d $((60*(36+ 10#$FHMAX - 10#$FHINI))) -p $DCOM
+    $HOMEwamipe/ush/parse_realtime.py -s $($MDATE -$((36*60)) ${FDATE}00) -d $((60*(36+ 10#$FHMAX - 10#$FHINI))) -p $DCOM
   elif [ $INPUT_PARAMETERS = conops2 ] ; then
-    $HOMEgsmwam_ipe/scripts/interpolate_input_parameters/parse_realtime.py -s $($MDATE -$((36*60)) ${FDATE}00) -d $((2160+$data_poll_interval_min)) -p $DCOM
-    $HOMEgsmwam_ipe/scripts/interpolate_input_parameters/realtime_wrapper.py -e ${SWIO_EDATE:0:8}${SWIO_EDATE:9:4} -p $DCOM -d $data_poll_interval_min &
+    $HOMEwamipe/ush/parse_realtime.py -s $($MDATE -$((36*60)) ${FDATE}00) -d $((2160+$data_poll_interval_min)) -p $DCOM
+    $HOMEwamipe/ush/realtime_wrapper.py -e ${SWIO_EDATE:0:8}${SWIO_EDATE:9:4} -p $DCOM -d $data_poll_interval_min &
   else
     # work from the database
     echo "$FIX_F107"   >> temp_fix
@@ -1151,7 +1151,7 @@ if [ $IDEA = .true. ]; then
     echo "$FIX_SWBZ"   >> temp_fix
     echo "$FIX_GWATTS" >> temp_fix
     echo "$FIX_HPI"    >> temp_fix
-    $HOMEgsmwam_ipe/scripts/interpolate_input_parameters/interpolate_input_parameters.py \
+    $HOMEwamipe/ush/interpolate_input_parameters.py \
         -d $((36+ 10#$FHMAX - 10#$FHINI)) -s `$NDATE -36 $FDATE` \
         -p $PARAMETER_PATH -m $INPUT_PARAMETERS -f temp_fix
     rm -rf temp_fix

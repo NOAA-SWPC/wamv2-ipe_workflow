@@ -7,13 +7,11 @@ date
 
 
 ##############################################
-# Obtain unique process id (pid) and make temp directory
+# Run setpdy and initialize PDY variables
 ##############################################
-export pid=${pid:-$$}
-export outid=${outid:-"LL$job"}
-export DATA=${DATA:-${DATAROOT}/${jobid:?}}
-mkdir -p $DATA
-cd $DATA
+export cycle="t${cyc}z"
+setpdy.sh
+. ./PDY
 
 
 ##############################################
@@ -25,21 +23,6 @@ if [ $RUN_ENVIR = "nco" ]; then
     export ROTDIR=${COMROOT:?}/$NET/$envir
     export RSTDIR=${GESROOT:?}/$envir
 fi
-
-
-##############################################
-# Run setpdy and initialize PDY variables
-##############################################
-export cycle="t${cyc}z"
-setpdy.sh
-. ./PDY
-
-
-##############################################
-# Determine Job Output Name on System
-##############################################
-export pgmout="OUTPUT.${pid}"
-export pgmerr=errfile
 
 
 #############################
@@ -54,8 +37,9 @@ for config in $configs; do
     [[ $status -ne 0 ]] && exit $status
 done
 
-while read line; do export $line ; done < <($HOMEwamipe/ush/create_config.py \
+while read line; do export $line ; done < <($USHwamipe/create_config.py \
                                             -d $PARMDIR/default_config.json -p $DCOM)
+
 
 ##########################################
 # Source machine runtime environment
@@ -63,6 +47,23 @@ while read line; do export $line ; done < <($HOMEwamipe/ush/create_config.py \
 . $HOMEwamipe/env/${machine}.env fcst
 status=$?
 [[ $status -ne 0 ]] && exit $status
+
+
+##############################################
+# Obtain unique process id (pid) and make temp directory
+##############################################
+export pid=${pid:-$$}
+export outid=${outid:-"LL$job"}
+export DATA=${DATA:-${DATAROOT}/${jobid:?}}
+mkdir -p $DATA
+cd $DATA
+
+
+##############################################
+# Determine Job Output Name on System
+##############################################
+export pgmout="OUTPUT.${pid}"
+export pgmerr=errfile
 
 
 ##############################################
@@ -112,7 +113,7 @@ postmsg "$jlogfile" "$msg"
 $LOGSCRIPT
 
 
-${FORECASTSH:-$SCRwfs/exwamipe_fcst_nems.sh}
+${FORECASTSH:-$SCRwamipe/exwamipe_fcst_nems.sh}
 status=$?
 [[ $status -ne 0 ]] && exit $status
 

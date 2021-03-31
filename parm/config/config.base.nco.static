@@ -23,13 +23,13 @@ export QUEUE_ARCH="dev_transfer"
 HPSS_PROJECT=swpc-para
 
 # Directories relative to installation areas:
-export PARMwfs=$HOMEwamipe/parm
-export PARMDIR=$PARMwfs/parm_wamipe
-export FIXwfs=$HOMEwamipe/fix
-export USHwfs=$HOMEwamipe/ush
-export UTILwfs=$HOMEwamipe/util
-export EXECwfs=$HOMEwamipe/exec
-export SCRwfs=$HOMEwamipe/scripts
+export PARMwamipe=$HOMEwamipe/parm
+export PARMDIR=$PARMwamipe/parm_wamipe
+export FIXwamipe=$HOMEwamipe/fix
+export USHwamipe=$HOMEwamipe/ush
+export UTILwamipe=$HOMEwamipe/util
+export EXECwamipe=$HOMEwamipe/exec
+export SCRwamipe=$HOMEwamipe/scripts
 
 ########################################################################
 
@@ -108,7 +108,6 @@ export HWMPATH=${HWMPATH:-$IPE_IC_DIR}
 export assim_freq=6
 export PSLOT="WAMIPE-OPS"
 export EXPDIR="$EXPDIR"
-export ROTDIR="$ROTDIR"
 export ROTDIR_DUMP="YES"                #Note: A value of "NO" does not currently work
 export DUMP_SUFFIX=""
 export ARCDIR="$NOSCRUB/archive/$PSLOT"
@@ -116,11 +115,11 @@ export ICSDIR="/gpfs/dell2/ptmp/$USER/FV3ICS"
 export ATARDIR="/NCEPDEV/$HPSS_PROJECT/1year/$USER/$machine/scratch/$PSLOT"
 export COMIN="${COMIN:-"$COMROOT/$NET/$envir/$RUN.$PDY"}"
 export COMOUT="${COMOUT:-"$COMROOT/$NET/$envir/$RUN.$PDY"}"
-export ROTDIR=${ROTDIR:-$PTMP/$USER/$JOBNAME}              # where model I/O files are stored
+export ROTDIR=${ROTDIR:-$PTMP/$USER/$PSLOT}                # where model I/O files are stored
 export RESTARTDIR=${RESTARTDIR:-$ROTDIR/restart_directory} # folder containing restart files
 export EXECGLOBAL=${EXECGLOBAL:-$BASE_NEMS/exe}            # NEMS executable directory
-export FIXGLOBAL=${FIXGLOBAL:-$FIXwfs/GSM/fix_am}         # global fix files
-export FIX_IDEA=$FIXwfs/WAM_gh_l150
+export FIXGLOBAL=${FIXGLOBAL:-$FIXwamipe/GSM/fix_am}       # global fix files
+export FIX_IDEA=$FIXwamipe/WAM_gh_l150
 
 # Commonly defined parameters in JJOBS
 export envir=${envir:-"prod"}

@@ -132,7 +132,7 @@ def config_parser(files):
             in the script.
     :rtype: dict
     """
-    if isinstance(files,basestring):
+    if isinstance(files,str):
         files=[files]
     varbles=dict()
     for key,value in get_script_env(files).items():

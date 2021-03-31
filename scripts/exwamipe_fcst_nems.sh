@@ -1126,7 +1126,7 @@ export SWIO_EDATE=${SWIO_EDATE:0:8}_${SWIO_EDATE:8}
 # Mostly IDEA-related stuff in this section
 #--------------------------------------------------------------
 if [ $NEMS = .true. ] ; then # grids for mediator
-  [[ $IPE = .true. ]] && $NCP ${FIXwfs}/MED_SPACEWX/gsm%wam%T62_ipe%80x170/ipe3dgrid2.nc .
+  [[ $IPE = .true. ]] && $NCP ${FIXwamipe}/MED_SPACEWX/gsm%wam%T62_ipe%80x170/ipe3dgrid2.nc .
 fi
 
 if [ $IDEA = .true. ]; then

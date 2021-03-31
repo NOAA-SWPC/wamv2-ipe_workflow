@@ -70,7 +70,7 @@ export random_clds=".false."
 
 # Input parameter options
 export DELTIM=60      # GSM timestep
-export DELTIM_IPE=180 # IPE timestep
+export DELTIM_IPE=300 # IPE timestep
 export IPEFREQ=$((3600*3)) # seconds between IPE output
 
 #---------------------------------------------------------------------

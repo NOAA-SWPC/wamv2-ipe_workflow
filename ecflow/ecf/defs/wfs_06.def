@@ -1,23 +1,19 @@
   family wfs
     edit CYC '06'
-    edit ECF_FILES '/ecf/ecfnets/scripts/wfs_FV3'
+    edit ECF_FILES '/ecf/ecfnets/scripts/wfs_WAMIPE'
     edit PROJ 'WFS-OPS'
-    edit NET 'gfs'
+    edit NET 'wfs'
     edit RUN 'wfs'
     edit COM '/gpfs/dell1/nco/ops/com'
     edit QUEUESHARED 'prod_shared'
     edit QUEUESERV 'prod_transfer'
     edit QUEUE 'prod'
     family prep
-      task jwfs_emcsfc_sfc_prep
-        trigger ../dump/jwfs_dump:release_sfcprep
       task jwfs_prep
-        trigger ../dump/jwfs_dump eq complete and ../dump/jwfs_tropcy_qc_reloc eq complete
-      task jwfs_prep_post
-        trigger jwfs_prep eq complete and ../jwfs_analysis eq complete
+        trigger ../dump/jwfs_dump eq complete
     endfamily
     task jwfs_analysis
-      trigger prep/jwfs_prep eq complete and prep/jwfs_emcsfc_sfc_prep == complete
+      trigger prep/jwfs_prep eq complete
       event 1 release_fcst
     family forecast
       task jwfs_forecast_high

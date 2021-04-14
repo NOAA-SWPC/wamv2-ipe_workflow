@@ -33,8 +33,7 @@ export EXPDIR=${EXPDIR:-$HOMEwamipe/parm/config}
 config_path=${EXPDIR:-$NWROOT/wamipe.${wamipe_ver}/parm/config}
 for config in $configs; do
     . $config_path/config.$config
-    status=$?
-    [[ $status -ne 0 ]] && exit $status
+    export err=$? ; err_chk "Error sourcing config files in $config_path"
 done
 
 while read line; do export $line ; done < <($USHwamipe/create_config.py \
@@ -45,8 +44,7 @@ while read line; do export $line ; done < <($USHwamipe/create_config.py \
 # Source machine runtime environment
 ##########################################
 . $HOMEwamipe/env/${machine}.env fcst
-status=$?
-[[ $status -ne 0 ]] && exit $status
+export err=$? ; err_chk "Error sourcing env/${machine}.env"
 
 
 ##############################################
@@ -114,8 +112,7 @@ $LOGSCRIPT
 
 
 ${FORECASTSH:-$SCRwamipe/exwamipe_fcst_nems.sh}
-status=$?
-[[ $status -ne 0 ]] && exit $status
+export err=$? ; err_chk "forecast ex-script failure"
 
 
 ##############################################

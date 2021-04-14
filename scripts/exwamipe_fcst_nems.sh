@@ -1099,10 +1099,6 @@ done
 
 export wgrib=${wgrib:-$NWPROD/util/exec/wgrib}
 
-## copy configure files needed for NEMS GFS
-${NCP} ${MAPL:-$PARM_NGAC/MAPL.rc}                    MAPL.rc
-${NCP} ${CHEM_REGISTRY:-$PARM_NGAC/Chem_Registry.rc}  Chem_Registry.rc
-
 if [ $DOIAU = YES ]; then
   export RESTART=.false.
   export FHRES=3

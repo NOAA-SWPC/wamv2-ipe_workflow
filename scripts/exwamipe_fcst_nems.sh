@@ -410,6 +410,15 @@ MEMBER=${MEMBER:-"-1"} # -1: control, 0: ensemble mean, >0: ensemble member $MEM
 export ENS_NUM=${ENS_NUM:-1}
 export FM=${FM}
 
+# directories
+export COMIN=${COMIN:-$ROTDIR}
+export COMIN_OBS=${COMIN_OBS:-$COMIN}
+export COMIN_GES=${COMIN_GES:-$COMIN}
+export COMIN_GES_ENS=${COMIN_GES_ENS:-$COMIN_GES}
+export COMIN_GES_OBS=${COMIN_GES_OBS:-$COMIN_GES}
+export COMOUT=${COMOUT:-$COMIN}
+export RESTARTDIR=${RESTARTDIR:-$COMOUT/RESTART}
+
 #  Command line arguments.
 #if [ $NEMSIO_IN = .false. ] ; then
 # export SIGI=${1:-${SIGI:-?}}
@@ -463,30 +472,30 @@ EXECGLOBAL=${EXECGLOBAL:-$NWPROD/exec}
 DATA=${DATA:-$(pwd)}
 
 #  Filenames.
-GRDR1='${memdir}'/RESTART/grdr1
-GRDR2='${memdir}'/RESTART/grdr2
-SIGR1='${memdir}'/RESTART/sigr1
-SIGR2='${memdir}'/RESTART/sigr2
-SFCR='${memdir}'/RESTART/sfcr
-NSTR='${memdir}'/RESTART/nstr
-IPER='${memdir}'/RESTART/iper
-RSTR='${memdir}'/RESTART/WAM_IPE_RST_wrt
-FORT1051='${memdir}'/RESTART/fort.1051
+GRDR1=$COMOUT/RESTART/grdr1
+GRDR2=$COMOUT/RESTART/grdr2
+SIGR1=$COMOUT/RESTART/sigr1
+SIGR2=$COMOUT/RESTART/sigr2
+SFCR=$COMOUT/RESTART/sfcr
+NSTR=$COMOUT/RESTART/nstr
+IPER=$COMOUT/RESTART/iper
+RSTR=$COMOUT/RESTART/WAM_IPE_RST_wrt
+FORT1051=$COMOUT/RESTART/fort.1051
 
 ## Input Files
-SIGI=${SIGI:-'${memdir}'/$CDUMP.t${cyc}z.$ATM$SUFOUT}
-SFCI=${SFCI:-'${memdir}'/$CDUMP.t${cyc}z.$SFC$SUFOUT}
-PLASI=${PLASI:-'${memdir}'/$CDUMP.t${cyc}z.$PLAS.'${CIPEDATE}'.h5}
+SIGI=${SIGI:-$COMIN/$CDUMP.t${cyc}z.$ATM$SUFOUT}
+SFCI=${SFCI:-$COMIN/$CDUMP.t${cyc}z.$SFC$SUFOUT}
+PLASI=${PLASI:-$COMIN/$CDUMP.t${cyc}z.$PLAS.'${CIPEDATE}'.h5}
 
 ## History Files
-SIGO=${SIGO:-'${memdir}'/$CDUMP.t${cyc}z.${SIGOSUF}f'${FHIAU}''${MN}'$SUFOUT}
-SFCO=${SFCO:-'${memdir}'/$CDUMP.t${cyc}z.${SFCOSUF}f'${FHIAU}''${MN}'$SUFOUT}
-FLXO=${FLXO:-'${memdir}'/$CDUMP.t${cyc}z.${FLXOSUF}f'${FHIAU}''${MN}'$SUFOUT}
-PLSO=${PLSO:-'${memdir}'/$CDUMP.t${cyc}z.$PLAS.'${TIMESTAMP}'.h5}
-LOGO=${LOGO:-'${memdir}'/$CDUMP.t${cyc}z.logf'${FHIAU}''${MN}'$SUFOUT}
-D3DO=${D3DO:-'${memdir}'/$CDUMP.t${cyc}z.d3df'${FHIAU}''${MN}'$SUFOUT}
-NSTO=${NSTO:-'${memdir}'/$CDUMP.t${cyc}z.${NSTOSUF}f'${FHIAU}''${MN}'$SUFOUT}
-AERO=${AERO:-'${memdir}'/$CDUMP.t${cyc}z.aerf'${FH}''${MN}'$SUFOUT}
+SIGO=${SIGO:-$COMOUT/$CDUMP.t${cyc}z.${SIGOSUF}f'${FHIAU}''${MN}'$SUFOUT}
+SFCO=${SFCO:-$COMOUT/$CDUMP.t${cyc}z.${SFCOSUF}f'${FHIAU}''${MN}'$SUFOUT}
+FLXO=${FLXO:-$COMOUT/$CDUMP.t${cyc}z.${FLXOSUF}f'${FHIAU}''${MN}'$SUFOUT}
+PLSO=${PLSO:-$COMOUT/$CDUMP.t${cyc}z.$PLAS.'${TIMESTAMP}'.h5}
+LOGO=${LOGO:-$COMOUT/$CDUMP.t${cyc}z.logf'${FHIAU}''${MN}'$SUFOUT}
+D3DO=${D3DO:-$COMOUT/$CDUMP.t${cyc}z.d3df'${FHIAU}''${MN}'$SUFOUT}
+NSTO=${NSTO:-$COMOUT/$CDUMP.t${cyc}z.${NSTOSUF}f'${FHIAU}''${MN}'$SUFOUT}
+AERO=${AERO:-$COMOUT/$CDUMP.t${cyc}z.aerf'${FH}''${MN}'$SUFOUT}
 
 #  Executables.
 NCP=${NCP:-"/bin/cp -p"}
@@ -505,9 +514,8 @@ SUFOUT=${SUFOUT}
 
 prefix=$CDUMP
 rprefix=$rCDUMP
-memdir=$ROTDIR/${prefix}.$PDY/$cyc/
 
-mkdir -p $memdir/RESTART
+mkdir -p $RESTARTDIR
 if [[ $NEMS = .true. ]] ; then
   if [ $NEMSIO_IN = .true. ]; then
     idate=` $NEMSIOGET $GRDI idate  | tr -s ' ' | cut -d' ' -f 3-7`
@@ -568,7 +576,7 @@ else
  export FHINI=${FHINI:-$(echo ifhr|eval $SIGHDR ${SIGI}$FM)}
 fi
 
-if [ ! -d $memdir ]; then mkdir -p $memdir; fi
+if [ ! -d $COMOUT ]; then mkdir -p $COMOUT; fi
 
 ## The Rest
 
@@ -1084,7 +1092,7 @@ eval ln -fs $SFCR  SFCR
 eval ln -fs $NSTR  NSTR
 eval ln -fs $RSTR  WAM_IPE_RST_wrt
 
-$NLN $memdir SWIO
+$NLN $COMOUT SWIO
 
 #
 # Create Configure file (i.e. .rc file) here
@@ -1126,17 +1134,16 @@ if [ $NEMS = .true. ] ; then # grids for mediator
 fi
 
 if [ $IDEA = .true. ]; then
-  ${NLN} $memdir/wam_fields_${CDATE}_${cycle}.nc $DATA/wam_fields.nc
+  ${NLN} $COMOUT/wam_fields_${CDATE}_${cycle}.nc $DATA/wam_fields.nc
 
   export START_UT_SEC=$((10#$INI_HOUR*3600))
   export END_TIME=$((IPEFMAX+$START_UT_SEC))
   export MSIS_TIME_STEP=${MSIS_TIME_STEP:-900}
-  ${NLN} $memdir/$CDUMP.t${cyc}z.input_parameters wam_input_f107_kp.txt
+  ${NLN} $COMOUT/$CDUMP.t${cyc}z.input_parameters input_parameters.nc
   if [ $INPUT_PARAMETERS = realtime ] ; then
     $HOMEwamipe/ush/parse_realtime.py -s $($MDATE -$((36*60)) ${FDATE}00) -d $((60*(36+ 10#$FHMAX - 10#$FHINI))) -p $DCOM
   elif [ $INPUT_PARAMETERS = conops2 ] ; then
     $HOMEwamipe/ush/parse_realtime.py -s $($MDATE -$((36*60)) ${FDATE}00) -d $((2160+$data_poll_interval_min)) -p $DCOM
-    $HOMEwamipe/ush/realtime_wrapper.py -e ${SWIO_EDATE:0:8}${SWIO_EDATE:9:4} -p $DCOM -d $data_poll_interval_min &
   else
     # work from the database
     echo "$FIX_F107"   >> temp_fix
@@ -1281,7 +1288,7 @@ if [[ $NEMS = .true. ]] ; then
   export VC_LSCALE=${VC_LSCALE:-"1000.E3, 1000.E3, 2000.E3, 2000.E3, 2000.E3"}
   [[ $LEVR -gt $LEVS ]] && export LEVR=$LEVS
 
-  # GSM/WAM namelists   
+  # GSM/WAM namelists
   envsubst < $PARMDIR/atm_namelist > atm_namelist
   $NLN $PARMDIR/gwp_in .
   $NLN $PARMDIR/ion_in .
@@ -1299,7 +1306,12 @@ if [[ $NEMS = .true. ]] ; then
   fi
 fi # NEMS
 
-eval LD_LIBRARY_PATH=$LD_LIBRARY_PATH $FCSTENV $PGM #  $REDOUT$PGMOUT $REDERR$PGMERR
+if [ $INPUT_PARAMETERS = conops2 ] ; then
+  $NLN $PARMDIR/realtime_wrapper.sh .
+  eval LD_LIBRARY_PATH=$LD_LIBRARY_PATH mpirun -n 1 ./realtime_wrapper.sh : -n $((80+16)) $DATA/$(basename $FCSTEXEC)
+else # normal fcst
+  eval LD_LIBRARY_PATH=$LD_LIBRARY_PATH $FCSTENV $PGM #  $REDOUT$PGMOUT $REDERR$PGMERR
+fi
 
 export ERR=$?
 export err=$ERR

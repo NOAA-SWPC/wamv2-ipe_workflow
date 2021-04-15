@@ -10,8 +10,9 @@ import_fields::
     O_Density
     O2_Density
     N2_Density
-    thermosphere_mass_density
-    thermosphere_mean_molecular_mass
+    eastward_wind_neutral
+    northward_wind_neutral
+    upward_wind_neutral
 ::
 output_fields::
     height
@@ -19,8 +20,9 @@ output_fields::
     O_Density
     O2_Density
     N2_Density
-    thermosphere_mass_density
-    thermosphere_mean_molecular_mass
+    eastward_wind_neutral     u_neutral
+    northward_wind_neutral    v_neutral
+    upward_wind_neutral       w_neutral
 ::
 #
 # Output file format.
@@ -53,7 +55,7 @@ output_datatype: float
 #   <suffix>   : determined from output format:
 #                'hd5' for hdf5, 'nc' for pnetcdf
 #
-output_file_prefix: SWIO/${CDUMP}.t${cyc}z.gsm60
+output_file_prefix: SWIO/${CDUMP}.t${cyc}z.gsm10
 #
 # Output metadata.
 #
@@ -69,7 +71,7 @@ output_metadata::
   fcst_date     __swio_field_timestamp__
   run_type      $CDUMP
   model         wam
-  cadence       60
+  cadence       10
 ::
 #
 # Output grid type.
@@ -110,14 +112,6 @@ output_grid_level_range: 90. 1000.
 # Used if #levels = 0
 #
 output_grid_level_values::
-   90.
-  150.
-  300.
-  400.
-  500.
-  600.
-  700.
-  800.
 ::
 #
 # If true, this flag transforms the vertical coordinate (v),

@@ -63,6 +63,7 @@ cd ${pwd}/../ush                ||exit 8
 #------------------------------
 cd ${pwd}/../jobs               ||exit 8
     $LINK ../sorc/gsi.fd/jobs/JWAMIPE_ANALYSIS           .
+    $LINK ../sorc/obsproc_wamipe.fd/jobs/JWAMIPE_PREP    .
 cd ${pwd}/../scripts            ||exit 8
     $LINK ../sorc/gsi.fd/scripts/exwamipe_analysis.sh.ecf    .
 cd ${pwd}/../fix                ||exit 8

@@ -4,18 +4,18 @@
 
 set -ex
 
-pslot="run_test"
-expdir="/gpfs/dell2/swpc/noscrub/Adam.Kubaryk/exp"
-comrot="/gpfs/dell2/ptmp/Adam.Kubaryk"
-idate="2021033100"
-edate="2021033100"
+pslot="pseudoops"
+expdir="/gpfs/dell2/swpc/noscrub/$USER/exp"
+comrot="/gpfs/dell2/ptmp/$USER"
+idate="2021041406"
+edate="2021050100"
 
 ######################################
 # USER NEED NOT MODIFY BELOW THIS LINE
 ######################################
 
 [[ -d $expdir/$pslot ]] && rm -rf $expdir/$pslot
-[[ -d $comrot/$pslot ]] && rm -rf $comrot/$pslot
+#[[ -d $comrot/$pslot ]] && rm -rf $comrot/$pslot
 
 python setup_expt.py --pslot $pslot --comrot $comrot --expdir $expdir \
                      --idate $idate --edate $edate --configdir ../../parm/config

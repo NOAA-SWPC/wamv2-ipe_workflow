@@ -61,7 +61,7 @@ export DO_GEMPAK="NO"
 export DO_AWIPS="NO"
 
 # NO for retrospective parallel; YES for real-time parallel
-export REALTIME="NO"
+export REALTIME="YES"
 
 
 ####################################################
@@ -116,7 +116,7 @@ export ARCDIR="$NOSCRUB/archive/$PSLOT"
 export ICSDIR="@ICSDIR@"
 export ATARDIR="/NCEPDEV/$HPSS_PROJECT/1year/$USER/$machine/scratch/$PSLOT"
 export ROTDIR=${ROTDIR:-$PTMP/$USER/$JOBNAME}              # where model I/O files are stored
-export RESTARTDIR=${RESTARTDIR:-$ROTDIR/restart_directory} # folder containing restart files
+export RESTARTDIR=${RESTARTDIR:-$ROTDIR/$CDUMP.$PDY/$cyc/RESTART} # folder containing restart files
 export EXECGLOBAL=${EXECGLOBAL:-$BASE_NEMS/exe}            # NEMS executable directory
 export FIXGLOBAL=${FIXGLOBAL:-$FIXwamipe/GSM/fix_am}         # global fix files
 export FIX_IDEA=$FIXwamipe/WAM_gh_l150
@@ -187,7 +187,7 @@ if [[ $SWIO = .true. ]] ; then
     export IIO10_PREFIX=${IIO10_PREFIX:-"ipe10"}
     export AIO05_PREFIX=${AIO05_PREFIX:-"gsm05"}
     export AIO10_PREFIX=${AIO10_PREFIX:-"gsm10"}
-    export IIO05_CADENCE=${IIO03_CADENCE:-"300"}
+    export IIO05_CADENCE=${IIO05_CADENCE:-"300"}
     export IIO10_CADENCE=${IIO10_CADENCE:-"600"}
     export AIO05_CADENCE=${AIO05_CADENCE:-"300"}
     export AIO10_CADENCE=${AIO10_CADENCE:-"600"}

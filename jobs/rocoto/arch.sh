@@ -7,7 +7,7 @@
 ## HOMEwamipe   : /full/path/to/workflow
 ## EXPDIR : /full/path/to/config/files
 ## CDATE  : current analysis date (YYYYMMDDHH)
-## CDUMP  : cycle name (wdas / wfs)
+## CDUMP  : cycle name (wdas / wfs / wfr)
 ## PDY    : current date (YYYYMMDD)
 ## cyc    : current cycle (HH)
 ###############################################################
@@ -58,7 +58,7 @@ cd $COMIN
 if [ $HPSSARCH = "YES" ]; then
 ###############################################################
 
-#--determine when to save ICs for warm start and forecat-only runs 
+#--determine when to save ICs for warm start and forecat-only runs
 SAVEWARMICA="NO"
 SAVEWARMICB="NO"
 SAVEFCSTIC="NO"

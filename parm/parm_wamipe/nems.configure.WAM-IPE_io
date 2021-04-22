@@ -66,10 +66,10 @@ runSeq::
         ATM
       @
       IPM
-      IPM -> IIO05
-      IIO05
       ATM -> AIO05
       AIO05
+      IPM -> IIO05
+      IIO05
     @
     ATM -> AIO10
     AIO10

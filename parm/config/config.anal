@@ -20,7 +20,7 @@ if [[ "$CDUMP" = "wfs" ]] ; then
     export DIAG_TARBALL="NO"
 fi
 
-export ANALYSISSH="$HOMEgsi/scripts/exwamipe_analysis_fv3gfs.sh.ecf"
+export ANALYSISSH="$HOMEgsi/scripts/exwamipe_analysis.sh.ecf"
 export BERROR=${BERROR:-$FIXgsi/Big_Endian/global_berror_wdasf070.l150y96.f77}
 # need anavinfo
 export npe_gsi=$npe_anal
@@ -41,56 +41,38 @@ if [ $REALTIME = "NO" ]; then
     CDATE=${CDATE:-9999}   # provide default in case CDATE undefined
 
 #   Set CONVINFO
-    if [[ "$CDATE" -ge "2018022818" ]]; then
-	export CONVINFO=$FIXgsi/fv3_historical/global_convinfo.txt.2018022818
-    elif [[ "$CDATE" -ge "2018010512" ]]; then
-	export CONVINFO=$FIXgsi/fv3_historical/global_convinfo.txt.2018010512
-    elif [[ "$CDATE" -ge "2017071912" ]]; then
-	export CONVINFO=$FIXgsi/fv3_historical/global_convinfo.txt.2017071912
-    elif [[ "$CDATE" -ge "2016031512" ]]; then
-	export CONVINFO=$FIXgsi/fv3_historical/global_convinfo.txt.2016031512
-    elif [[ "$CDATE" -ge "2014041400" ]]; then
-	export CONVINFO=$FIXgsi/fv3_historical/global_convinfo.txt.2014041400
+    if [[ "$CDATE" -ge "2020091612" ]]; then
+	export CONVINFO=$FIXgsi/gfsv16_historical/global_convinfo.txt.2020091612
+    elif [[ "$CDATE" -ge "2020052612" ]]; then
+	export CONVINFO=$FIXgsi/gfsv16_historical/global_convinfo.txt.2020052612
+    elif [[ "$CDATE" -ge "2020040718" ]]; then
+	export CONVINFO=$FIXgsi/gfsv16_historical/global_convinfo.txt.2020040718
+    elif [[ "$CDATE" -ge "2019110706" ]]; then
+	export CONVINFO=$FIXgsi/gfsv16_historical/global_convinfo.txt.2019110706
+    elif [[ "$CDATE" -ge "2019021900" ]]; then
+	export CONVINFO=$FIXgsi/gfsv16_historical/global_convinfo.txt.2019021900
     else
 	echo "WARNING: No CONVINFO for $CDATE"
     fi
 
 #   Set OZINFO
-    if [[ "$CDATE" -ge "2018110700" ]]; then
-        export OZINFO=$FIXgsi/fv3_historical/global_ozinfo.txt.2018110700
-    elif [[ "$CDATE" -ge "2015110500" ]]; then
-        export OZINFO=$FIXgsi/fv3_historical/global_ozinfo.txt.2015110500
+    if [[ "$CDATE" -ge "2020011806" ]]; then
+        export OZINFO=$FIXgsi/gfsv16_historical/global_ozinfo.txt.2020011806
+    elif [[ "$CDATE" -ge "2020011600" ]]; then
+        export OZINFO=$FIXgsi/gfsv16_historical/global_ozinfo.txt.2020011600
+    elif [[ "$CDATE" -ge "2019021900" ]]; then
+        export OZINFO=$FIXgsi/gfsv16_historical/global_ozinfo.txt.2019021900
     else
         echo "WARNING: No OZINFO for $CDATE"
     fi
 
 #   Set SATINFO
-    if [[ "$CDATE" -ge "2018053012" ]]; then
-        export SATINFO=$FIXgsi/fv3_historical/global_satinfo.txt.2018053012
-    elif [[ "$CDATE" -ge "2018021212" ]]; then
-	export SATINFO=$FIXgsi/fv3_historical/global_satinfo.txt.2018021212
-    elif [[ "$CDATE" -ge "2017103118" ]]; then
-	export SATINFO=$FIXgsi/fv3_historical/global_satinfo.txt.2017103118
-    elif [[ "$CDATE" -ge "2017031612" ]]; then
-	export SATINFO=$FIXgsi/fv3_historical/global_satinfo.txt.2017031612
-    elif [[ "$CDATE" -ge "2017030812" ]]; then
-	export SATINFO=$FIXgsi/fv3_historical/global_satinfo.txt.2017030812
-    elif [[ "$CDATE" -ge "2016110812" ]]; then
-	export SATINFO=$FIXgsi/fv3_historical/global_satinfo.txt.2016110812
-    elif [[ "$CDATE" -ge "2016090912" ]]; then
-	export SATINFO=$FIXgsi/fv3_historical/global_satinfo.txt.2016090912
-    elif [[ "$CDATE" -ge "2016020312" ]]; then
-	export SATINFO=$FIXgsi/fv3_historical/global_satinfo.txt.2016020312
-    elif [[ "$CDATE" -ge "2016011912" ]]; then
-	export SATINFO=$FIXgsi/fv3_historical/global_satinfo.txt.2016011912
-    elif [[ "$CDATE" -ge "2015111012" ]]; then
-	export SATINFO=$FIXgsi/fv3_historical/global_satinfo.txt.2015111012
-    elif [[ "$CDATE" -ge "2015100118" ]]; then
-	export SATINFO=$FIXgsi/fv3_historical/global_satinfo.txt.2015100118
-    elif [[ "$CDATE" -ge "2015070218" ]]; then
-	export SATINFO=$FIXgsi/fv3_historical/global_satinfo.txt.2015070218
-    elif [[ "$CDATE" -ge "2015011412" ]]; then
-	export SATINFO=$FIXgsi/fv3_historical/global_satinfo.txt.2015011412
+    if   [[ "$CDATE" -ge "2020022012" ]]; then
+        export SATINFO=$FIXgsi/gfsv16_historical/global_satinfo.txt.2018053012
+    elif [[ "$CDATE" -ge "2019110706" ]]; then
+	export SATINFO=$FIXgsi/gfsv16_historical/global_satinfo.txt.2019110706
+    elif [[ "$CDATE" -ge "2019021900" ]]; then
+	export SATINFO=$FIXgsi/gfsv16_historical/global_satinfo.txt.2019021900
     else
 	echo "WARNING: No SATINFO for $CDATE"
     fi

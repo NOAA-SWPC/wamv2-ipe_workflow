@@ -28,21 +28,26 @@ fi
 
 if [[ "$CDUMP" == "wfr" ]] ; then
    DATAPOLL=".true."
+   export med_petlist_bounds="40 79"
+   export ipm_petlist_bounds="0 39"
+   export atm_petlist_bounds="80 95"
+   export npe_wam=$npe_fcst_wfr
 fi
 
 export INPUT_PARAMETERS=realtime
 
 export DATAPOLL=${DATAPOLL:-".false."}
-if [[ $DATAPOLL = .true. ]] ; then
+if [[ $DATAPOLL = ".true." ]] ; then
   export INPUT_PARAMETERS=conops2
   export data_poll_interval_min=${data_poll_interval_min:-15}
   export data_poll_dir=${data_poll_dir:-"."} # where to look for lockfiles
   export data_poll_interval=${data_poll_interval:-60} # polling interval
   export data_poll_interval_sec=${data_poll_interval_sec:-$((60*$data_poll_interval_min))} # DATAPOLL cycle interval
   export data_poll_max=${data_poll_max:-$((60*3))} # max tries
-  f107_kp_realtime_interval=${f107_kp_realtime_interval:-$data_poll_interval_min}
+  export dat_petlist_bounds="-1 -1"
+  ifp_realtime_interval=${ifp_realtime_interval:-$data_poll_interval_min}
 fi
-export f107_kp_realtime_interval=${f107_kp_realtime_interval:-"-1"}
+export ifp_realtime_interval=${ifp_realtime_interval:-"-1"}
 
 if [ $QUILTING = ".true." ]; then
     export npe_wam=$(echo " $npe_wam + $WRITE_GROUP * $WRTTASK_PER_GROUP" | bc)

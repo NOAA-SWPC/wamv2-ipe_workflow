@@ -13,7 +13,7 @@
         trigger ../dump/jwdas_dump == complete
     endfamily
     family analysis
-      task jwdas_analysis
+      task jwdas_analysis_noda
         trigger ../prep/jwdas_prep == complete
         event 1 release_fcst
     endfamily

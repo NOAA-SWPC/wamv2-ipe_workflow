@@ -15,7 +15,7 @@ fi
 echo gsmwam_ipe checkout ...
 if [[ ! -d gsmwam_ipe.fd ]] ; then
     rm -f ${topdir}/checkout-gsmwam_ipe.log
-    git clone --recursive https://github.com/NOAA-SWPC/GSMWAM-IPE.git --branch v1.0.2 gsmwam_ipe.fd     >> ${topdir}/checkout-gsmwam_ipe.log 2>&1
+    git clone --recursive https://github.com/NOAA-SWPC/GSMWAM-IPE.git --branch v1.0.3 gsmwam_ipe.fd     >> ${topdir}/checkout-gsmwam_ipe.log 2>&1
 else
     echo 'Skip.  Directory gsmwam_ipe.fd already exists.'
 fi
@@ -23,7 +23,7 @@ fi
 echo gsi checkout ...
 if [[ ! -d gsi.fd ]] ; then
     rm -f ${topdir}/checkout-gsi.log
-    git clone --recursive https://github.com/NOAA-SWPC/GSI            --branch v1.0.2 gsi.fd            >> ${topdir}/checkout-gsi.log 2>&1
+    git clone --recursive https://github.com/NOAA-SWPC/GSI            --branch v1.0.3 gsi.fd            >> ${topdir}/checkout-gsi.log 2>&1
 else
     echo 'Skip.  Directory gsi.fd already exists.'
 fi
@@ -39,7 +39,7 @@ fi
 echo obsproc_wamipe checkout ...
 if [[ ! -d obsproc_wamipe.fd ]] ; then
     rm -f ${topdir}/checkout-obsproc_wamipe.log
-    git clone --recursive https://github.com/NOAA-SWPC/obsproc_wamipe --branch v3.4.0 obsproc_wamipe.fd >> ${topdir}/checkout-obsproc_wamipe.log 2>&1
+    git clone --recursive https://github.com/NOAA-SWPC/obsproc_wamipe --branch v3.4.1 obsproc_wamipe.fd >> ${topdir}/checkout-obsproc_wamipe.log 2>&1
 else
     echo 'Skip.  Directory obsproc_wamipe.fd already exists.'
 fi
@@ -47,7 +47,7 @@ fi
 echo obsproc_prep checkout ...
 if [[ ! -d obsproc_prep.fd ]] ; then
     rm -f ${topdir}/checkout-obsproc_prep.log
-    git clone --recursive https://github.com/NOAA-SWPC/obsproc_prep   --branch v5.4.0 obsproc_prep.fd   >> ${topdir}/checkout-obsproc_prep.log 2>&1
+    git clone --recursive https://github.com/NOAA-SWPC/obsproc_prep   --branch v5.4.1 obsproc_prep.fd   >> ${topdir}/checkout-obsproc_prep.log 2>&1
 else
     echo 'Skip.  Directory obsproc_prep.fd already exists.'
 fi

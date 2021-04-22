@@ -54,12 +54,12 @@ DAT_attributes::
 runSeq::
   @900.0
     @300.0
-      @60.0
-        ATM
-      @
       ATM -> MED :remapMethod=redist
       MED
       MED -> IPM :remapMethod=redist
+      @60.0
+        ATM
+      @
       IPM
       IPM -> IIO05
       IIO05

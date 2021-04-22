@@ -3,7 +3,7 @@
 #BSUB -P %PROJ:SPACE%-%PROJENVIR%
 #BSUB -J %E%wdas_prep_%CYC%
 #BSUB -o %COM%/output/%ENVIR%/today/wdas_prep_%CYC%.o%J
-#BSUB -W 00:10
+#BSUB -W 00:15
 #BSUB -R span[ptile=3]; -R affinity[core]
 #BSUB -n 3
 #BSUB -M 18000

@@ -1,11 +1,12 @@
 #! /bin/sh
 #BSUB -q %QUEUE%
 #BSUB -P %PROJ:SPACE%-%PROJENVIR%
-#BSUB -J %E%wfr_analysis_high_%CYC%
-#BSUB -o %COM%/output/%ENVIR%/today/wfr_analysis_high_%CYC%.o%J
+#BSUB -J %E%wdas_analysis_high_noda_%CYC%
+#BSUB -o %COM%/output/%ENVIR%/today/wdas_analysis_high_noda_%CYC%.o%J
 #BSUB -W 00:05
 #BSUB -n 1
-#BSUB -R affinity[core(1)]
+#BSUB -R affinity[core]
+#BSUB -R span[ptile=1]
 #BSUB -M 2000
 #BSUB -cwd /tmp
 

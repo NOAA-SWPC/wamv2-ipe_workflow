@@ -32,20 +32,13 @@ if [ $type = "wfs" ]; then
   head="wfs.t${cyc}z."
 
   #..................
-  echo  "./logs/${CDATE}/wfs*.log                          " >>wfs.txt
+  for fstep in prep anal fcst ; do
+   if [ -s $ROTDIR/logs/${CDATE}/wfs${fstep}.log ]; then
+     echo  "./logs/${CDATE}/wfs${fstep}.log         " >>wfs.txt
+   fi
+  done
 
   fh=0
-  while [ $fh -le $FHMAX_WFS ]; do
-    fhr=$(printf %03i $fh)
-    echo  "${dirname}${head}logf${fhr}                     " >>wfs.txt
-
-    inc=$FHOUT_WFS
-    if [ $FHMAX_HF_WFS -gt 0 -a $FHOUT_HF_WFS -gt 0 -a $fh -lt $FHMAX_HF_WFS ]; then
-     inc=$FHOUT_HF_WFS
-    fi
-
-    fh=$((fh+inc))
-  done
 
 
   #..................
@@ -77,7 +70,11 @@ if [ $type = "wfr" ]; then
   head="wfr.t${cyc}z."
 
   #..................
-  echo  "./logs/${CDATE}/wfr*.log                          " >>wfr.txt
+  for fstep in prep anal fcst ; do
+   if [ -s $ROTDIR/logs/${CDATE}/wfr${fstep}.log ]; then
+     echo  "./logs/${CDATE}/wfr${fstep}.log         " >>wfr.txt
+   fi
+  done
 
   fh=0
 

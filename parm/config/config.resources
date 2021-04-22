@@ -80,7 +80,10 @@ elif [ $step = "fcst" ]; then
     if [[ $WAM_IPE_COUPLING = ".true." ]] ; then
       export npe_fcst=112
       export npe_fcst_wfs=112
-      export npe_fcst_wfr=112
+      export npe_fcst_wfr=96
+      if [[ $CDUMP = "wfr" ]] ; then
+        export npe_fcst=96
+      fi
     else
       export npe_fcst=32
       export npe_fcst_wfs=32

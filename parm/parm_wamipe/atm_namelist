@@ -31,7 +31,7 @@
   jcap=$JCAP, levs=$LEVS, levr=$LEVR, reduced_grid=$REDUCED_GRID,
   ntrac=$NTRAC, ntoz=$NTOZ, ntcw=$NTCW, ncld=$NCLD,
   lsoil=$LSOIL, nmtvr=$NMTVR, lsidea=$IDEA,
-  ifp_realtime_interval=-1,
+  ifp_realtime_interval=$ifp_realtime_interval,
   ngptc=$NGPTC, hybrid=$HYBRID, tfiltc=$TFILTC,
   gen_coord_hybrid=$GEN_COORD_HYBRID,
   thermodyn_id=$THERMODYN_ID, sfcpress_id=$SFCPRESS_ID,

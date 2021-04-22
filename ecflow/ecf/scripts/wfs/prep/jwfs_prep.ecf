@@ -4,7 +4,7 @@
 #BSUB -o  %COM%/output/%ENVIR%/today/wfs_prep_%CYC%.o%J
 #BSUB -cwd /tmp
 #BSUB -L /bin/sh
-#BSUB -W 00:20
+#BSUB -W 00:10
 #BSUB -R span[ptile=3]; -R affinity[core]
 #BSUB -n 3
 #BSUB -M 18000

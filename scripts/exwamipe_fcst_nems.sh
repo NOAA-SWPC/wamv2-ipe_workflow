@@ -411,11 +411,7 @@ export ENS_NUM=${ENS_NUM:-1}
 export FM=${FM}
 
 # directories
-export COMIN=${COMIN:-$ROTDIR}
-export COMIN_OBS=${COMIN_OBS:-$COMIN}
-export COMIN_GES=${COMIN_GES:-$COMIN}
-export COMIN_GES_ENS=${COMIN_GES_ENS:-$COMIN_GES}
-export COMIN_GES_OBS=${COMIN_GES_OBS:-$COMIN_GES}
+export COMIN=${COMIN:-$ROTDIR/$CDUMP.$PDY/$cyc}
 export COMOUT=${COMOUT:-$COMIN}
 export RESTARTDIR=${RESTARTDIR:-$COMOUT/RESTART}
 
@@ -472,15 +468,15 @@ EXECGLOBAL=${EXECGLOBAL:-$NWPROD/exec}
 DATA=${DATA:-$(pwd)}
 
 #  Filenames.
-GRDR1=$COMOUT/RESTART/grdr1
-GRDR2=$COMOUT/RESTART/grdr2
-SIGR1=$COMOUT/RESTART/sigr1
-SIGR2=$COMOUT/RESTART/sigr2
-SFCR=$COMOUT/RESTART/sfcr
-NSTR=$COMOUT/RESTART/nstr
-IPER=$COMOUT/RESTART/iper
-RSTR=$COMOUT/RESTART/WAM_IPE_RST_wrt
-FORT1051=$COMOUT/RESTART/fort.1051
+GRDR1=$RESTARTDIR/grdr1
+GRDR2=$RESTARTDIR/grdr2
+SIGR1=$RESTARTDIR/sigr1
+SIGR2=$RESTARTDIR/sigr2
+SFCR=$RESTARTDIR/sfcr
+NSTR=$RESTARTDIR/nstr
+IPER=$RESTARTDIR/iper
+RSTR=$RESTARTDIR/WAM_IPE_RST_wrt
+FORT1051=$RESTARTDIR/fort.1051
 
 ## Input Files
 SIGI=${SIGI:-$COMIN/$CDUMP.t${cyc}z.$ATM$SUFOUT}
@@ -1144,6 +1140,7 @@ if [ $IDEA = .true. ]; then
     $HOMEwamipe/ush/parse_realtime.py -s $($MDATE -$((36*60)) ${FDATE}00) -d $((60*(36+ 10#$FHMAX - 10#$FHINI))) -p $DCOM
   elif [ $INPUT_PARAMETERS = conops2 ] ; then
     $HOMEwamipe/ush/parse_realtime.py -s $($MDATE -$((36*60)) ${FDATE}00) -d $((2160+$data_poll_interval_min)) -p $DCOM
+    bash -c "ulimit -v 1000000 && $HOMEwamipe/ush/realtime_wrapper.py -e ${SWIO_EDATE:0:8}${SWIO_EDATE:9:4} -p $DCOM -d $data_poll_interval_min -c ${SWIO_IDATE:0:8}${SWIO_IDATE:9:2}15" &
   else
     # work from the database
     echo "$FIX_F107"   >> temp_fix
@@ -1306,12 +1303,7 @@ if [[ $NEMS = .true. ]] ; then
   fi
 fi # NEMS
 
-if [ $INPUT_PARAMETERS = conops2 ] ; then
-  $NLN $PARMDIR/realtime_wrapper.sh .
-  eval LD_LIBRARY_PATH=$LD_LIBRARY_PATH mpirun -n 1 ./realtime_wrapper.sh : -n $((80+16)) $DATA/$(basename $FCSTEXEC)
-else # normal fcst
-  eval LD_LIBRARY_PATH=$LD_LIBRARY_PATH $FCSTENV $PGM #  $REDOUT$PGMOUT $REDERR$PGMERR
-fi
+eval LD_LIBRARY_PATH=$LD_LIBRARY_PATH $FCSTENV bash -c "ulimit -v 4000000 && $PGM"
 
 export ERR=$?
 export err=$ERR

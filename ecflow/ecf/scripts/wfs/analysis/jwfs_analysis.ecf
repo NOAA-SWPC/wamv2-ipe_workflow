@@ -3,7 +3,7 @@
 #BSUB -P %PROJ%
 #BSUB -J %E%wfs_analysis_%CYC%
 #BSUB -o %COM%/output/%ENVIR%/today/wfs_analysis_%CYC%.o%J
-#BSUB -W 3:00
+#BSUB -W 00:45
 #BSUB -n 168
 #BSUB -R affinity[core(1)]
 #BSUB -R span[ptile=28]

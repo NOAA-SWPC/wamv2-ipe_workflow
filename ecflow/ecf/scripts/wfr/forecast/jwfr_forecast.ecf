@@ -3,7 +3,7 @@
 #BSUB -P %PROJ:SPACE%-%PROJENVIR%
 #BSUB -J %E%wfr_forecast_%CYC%
 #BSUB -o %COM%/output/%ENVIR%/today/wfr_forecast_%CYC%.o%J
-#BSUB -W 00:45
+#BSUB -W 06:00
 #BSUB -n 112
 #BSUB -R affinity[core(1)]
 #BSUB -R span[ptile=28]

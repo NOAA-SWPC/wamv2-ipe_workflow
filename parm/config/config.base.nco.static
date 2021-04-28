@@ -222,10 +222,10 @@ export FHMAX_WFS_12=48
 export FHMAX_WFS_18=48
 export FHMAX_WFS=$(eval echo \${FHMAX_WFS_$cyc})
 
-export FHMAX_WFR_00=9
-export FHMAX_WFR_06=9
-export FHMAX_WFR_12=9
-export FHMAX_WFR_18=9
+export FHMAX_WFR_00=7
+export FHMAX_WFR_06=7
+export FHMAX_WFR_12=7
+export FHMAX_WFR_18=7
 export FHMAX_WFR=$(eval echo \${FHMAX_WFR_$cyc})
 
 export FHOUT_WFS=3

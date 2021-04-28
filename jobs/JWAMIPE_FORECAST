@@ -82,6 +82,11 @@ if [ $CDUMP = "wfs" ]; then
     export FHOUT=$FHOUT_WFS
     export FHMAX_HF=$FHMAX_HF_WFS
     export FHOUT_HF=$FHOUT_HF_WFS
+elif [ $CDUMP = "wfr" ]; then
+    export FHMAX=$FHMAX_WFR
+    export FHOUT=$FHOUT_WFR
+    export FHMAX_HF=$FHMAX_HF_WFR
+    export FHOUT_HF=$FHOUT_HF_WFR
 else
     export FHMAX_HF=0
     export FHOUT_HF=1

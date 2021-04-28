@@ -12,7 +12,7 @@
       task jwfs_prep
         trigger ../dump/jwfs_dump eq complete
     endfamily
-    task jwfs_analysis_noda
+    task jwfs_analysis
       trigger prep/jwfs_prep eq complete
       event 1 release_fcst
     family forecast

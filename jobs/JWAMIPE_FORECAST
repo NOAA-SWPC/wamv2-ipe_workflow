@@ -30,7 +30,7 @@ fi
 #############################
 configs="base fcst"
 export EXPDIR=${EXPDIR:-$HOMEwamipe/parm/config}
-config_path=${EXPDIR:-$NWROOT/wamipe.${wamipe_ver}/parm/config}
+config_path=${EXPDIR:-$HOMEwamipe/parm/config}
 for config in $configs; do
     . $config_path/config.$config
     export err=$? ; err_chk "Error sourcing config files in $config_path"

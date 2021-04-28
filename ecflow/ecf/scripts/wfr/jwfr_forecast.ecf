@@ -1,9 +1,9 @@
 #! /bin/sh
 #BSUB -q %QUEUE%
-#BSUB -P %PROJ%
-#BSUB -J %E%wfs_forecast_high_%CYC%
-#BSUB -o %COM%/output/%ENVIR%/today/wfs_forecast_high_%CYC%.o%J
-#BSUB -W 3:00
+#BSUB -P %PROJ:SPACE%-%PROJENVIR%
+#BSUB -J %E%wfr_forecast_%CYC%
+#BSUB -o %COM%/output/%ENVIR%/today/wfr_forecast_%CYC%.o%J
+#BSUB -W 06:00
 #BSUB -n 112
 #BSUB -R affinity[core(1)]
 #BSUB -R span[ptile=28]
@@ -21,9 +21,6 @@ export CDUMP=%RUN%
 model=wamipe
 %include <model_ver.h>
 
-# Configuration files
-export EXPDIR=${HOMEwfs}/parm/config
-
 ############################################################
 # Load modules
 ############################################################
@@ -34,18 +31,21 @@ module load impi/$impi_ver
 module load ESMF/$ESMF_ver
 module load NetCDF/$NetCDF_ver
 module load HDF5-parallel/$HDF5_parallel_ver
+module load python/$python_ver
 
 module list
 
+#%include <ecf_client.h>
 export USE_CFP=YES
-export ROTDIR=%COM%
 export cyc=%CYC%
 export cycle=t%CYC%z
+export NET=%NET:wfs%
+export RUN=%RUN:wfr%
 
 ############################################################
 # CALL executable job script here
 ############################################################
-${HOMEwfs}/jobs/JWAMIPE_FORECAST
+${HOMEwamipe}/jobs/JWAMIPE_FORECAST
 
 if [ $? -ne 0 ]; then
    ecflow_client --msg="***JOB ${ECF_NAME} ERROR RUNNING J-SCRIPT ***"

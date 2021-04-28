@@ -1,0 +1,47 @@
+extern /prod00/gdas/atmos/obsproc/dump/jgdas_atmos_dump_post
+extern /prod00/gfs/atmos/obsproc/dump/jgfs_atmos_dump_post
+
+suite para00
+  family wamipe
+    defstatus complete
+    edit NET 'wfs'
+    edit ECF_FILES '/ecf/ecfnets/scripts/para/wamipe'
+    edit COM '/gpfs/dell1/nco/ops/com'
+    edit QUEUESHARED 'preprod_shared'
+    edit QUEUESERV 'prod_transfer'
+    edit QUEUE 'preprod'
+
+    family wdas
+      edit RUN 'wdas'
+      task jwdas_prep
+        trigger /prod00/gdas/atmos/obsproc/dump/jgdas_atmos_dump_post == complete
+      task jwdas_analysis_high
+        trigger jwdas_prep == complete
+        event 1 release_fcst
+      task jwdas_forecast
+        trigger jwdas_analysis_high:release_fcst or jwdas_analysis_high == complete
+    endfamily
+   
+    family wfs
+      edit RUN 'wfs'
+      task jwfs_prep
+        trigger /prod00/gfs/atmos/obsproc/dump/jgfs_atmos_dump_post == complete
+      task jwfs_analysis
+        trigger jwfs_prep eq complete
+        event 1 release_fcst
+      task jwfs_forecast_high
+        trigger jwfs_analysis:release_fcst or jwfs_analysis == complete
+    endfamily
+   
+    family wfr
+      edit RUN 'wfr'
+      task jwfr_analysis_high
+        trigger ../wfs/jwfs_forecast_high == complete
+        event 1 release_fcst
+      task jwfr_forecast
+        trigger jwfr_analysis_high:release_fcst or jwfr_analysis_high == complete
+    endfamily
+
+  endfamily
+endsuite
+

@@ -1303,7 +1303,11 @@ if [[ $NEMS = .true. ]] ; then
   fi
 fi # NEMS
 
-eval LD_LIBRARY_PATH=$LD_LIBRARY_PATH $FCSTENV bash -c "ulimit -v 4000000 && $PGM"
+if [ $INPUT_PARAMETERS = conops2 ] ; then
+    eval LD_LIBRARY_PATH=$LD_LIBRARY_PATH $FCSTENV mpirun -n 96 'bash -c "ulimit -v 4000000 && ./global_gsmwam_ipe.x"'
+else
+    eval LD_LIBRARY_PATH=$LD_LIBRARY_PATH $FCSTENV $PGM
+fi
 
 export ERR=$?
 export err=$ERR

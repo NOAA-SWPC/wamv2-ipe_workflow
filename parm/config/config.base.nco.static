@@ -6,7 +6,6 @@
 echo "BEGIN: config.base"
 export NODA=NO
 [[ $CDUMP = "wfr" ]] && export NODA=YES
-[[ $cyc = "18" ]] && export NODA=YES
 
 # Machine environment
 export machine="WCOSS_DELL_P3"
@@ -37,7 +36,7 @@ export SCRwamipe=$HOMEwamipe/scripts
 export NWPROD="${NWROOT:-"/gpfs/dell1/nco/ops/nwprod"}"
 export COMROOT="${COMROOT:-"/gpfs/dell1/nco/ops/com"}"
 export DATAROOT="${DATAROOT:-"/gpfs/dell1/nco/ops/tmpnwprd"}"
-export DMPDIR="/gpfs/dell3/emc/global/dump"
+export DMPDIR=$(compath.py gfs/prod)
 export RTMFIX=$CRTM_FIX
 export DCOM=${DCOM:-"/gpfs/dell1/nco/ops/dcom/prod"}
 

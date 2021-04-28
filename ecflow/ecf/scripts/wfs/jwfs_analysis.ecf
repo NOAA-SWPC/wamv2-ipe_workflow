@@ -1,13 +1,12 @@
 #! /bin/sh
 #BSUB -q %QUEUE%
-#BSUB -P %PROJ%
-#BSUB -J %E%wfs_analysis_noda_%CYC%
-#BSUB -o %COM%/output/%ENVIR%/today/wfs_analysis_noda_%CYC%.o%J
-#BSUB -W 00:05
-#BSUB -n 1
-#BSUB -R affinity[core]
-#BSUB -R span[ptile=1]
-#BSUB -M 2000
+#BSUB -P %PROJ:SPACE%-%PROJENVIR%
+#BSUB -J %E%wfs_analysis_%CYC%
+#BSUB -o %COM%/output/%ENVIR%/today/wfs_analysis_%CYC%.o%J
+#BSUB -W 00:45
+#BSUB -n 168
+#BSUB -R affinity[core(1)]
+#BSUB -R span[ptile=28]
 #BSUB -cwd /tmp
 
 %include <head.h>
@@ -43,11 +42,13 @@ export ROTDIR=%COM%
 export cyc=%CYC%
 export cycle=t%CYC%z
 export PREINP=${CDUMP}.${cycle}.
+export NET=%NET:wfs%
+export RUN=%RUN:wfs%
 
 ############################################################
 # CALL executable job script here
 ############################################################
-${HOMEwfs}/jobs/JWAMIPE_ANALYSIS
+${HOMEwamipe}/jobs/JWAMIPE_ANALYSIS
 
 if [ $? -ne 0 ]; then
    ecflow_client --msg="***JOB ${ECF_NAME} ERROR RUNNING J-SCRIPT ***"

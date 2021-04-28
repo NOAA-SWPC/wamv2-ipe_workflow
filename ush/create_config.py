@@ -23,7 +23,8 @@ DEFAULT = ['jh0=1.75',
            'transport_highlat_lp=30',
            'perp_transport_max=151',
            'hpeq=0.0',
-           'colfac=1.3']
+           'colfac=1.3',
+           'ipe_coldstart=F']
 
 def print_default():
     for line in DEFAULT:
@@ -36,7 +37,7 @@ def main():
 
     args = parser.parse_args()
 
-    files = glob('{}/wam-ipe_config*json'.format(args.path))
+    files = glob('{}/????????/swpc/wam/*json'.format(args.path))
 
     if len(files) == 0:
         file = args.default

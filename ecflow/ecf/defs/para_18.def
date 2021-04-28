@@ -15,22 +15,22 @@ suite para18
       edit RUN 'wdas'
       task jwdas_prep
         trigger /prod18/gdas/atmos/obsproc/dump/jgdas_atmos_dump_post == complete
-      task jwdas_analysis_high_noda
+      task jwdas_analysis_high
         trigger jwdas_prep == complete
         event 1 release_fcst
       task jwdas_forecast
-        trigger jwdas_analysis_high_noda:release_fcst or jwdas_analysis_high_noda == complete
+        trigger jwdas_analysis_high:release_fcst or jwdas_analysis_high == complete
     endfamily
    
     family wfs
       edit RUN 'wfs'
       task jwfs_prep
         trigger /prod18/gfs/atmos/obsproc/dump/jgfs_atmos_dump_post == complete
-      task jwfs_analysis_noda
+      task jwfs_analysis
         trigger jwfs_prep eq complete
         event 1 release_fcst
       task jwfs_forecast_high
-        trigger jwfs_analysis_noda:release_fcst or jwfs_analysis_noda == complete
+        trigger jwfs_analysis:release_fcst or jwfs_analysis == complete
     endfamily
    
     family wfr

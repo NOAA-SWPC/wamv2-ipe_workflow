@@ -1,7 +1,7 @@
 #!/bin/ksh -x
 
 ###############################################################
-# Source WFS workflow modules
+# Source WAM-IPE workflow modules
 . $HOMEwamipe/ush/load_wamipe_modules.sh
 status=$?
 [[ $status -ne 0 ]] && exit $status

@@ -1140,7 +1140,6 @@ if [ $IDEA = .true. ]; then
     $HOMEwamipe/ush/parse_realtime.py -s $($MDATE -$((36*60)) ${FDATE}00) -d $((60*(36+ 10#$FHMAX - 10#$FHINI))) -p $DCOM
   elif [ $INPUT_PARAMETERS = conops2 ] ; then
     $HOMEwamipe/ush/parse_realtime.py -s $($MDATE -$((36*60)) ${FDATE}00) -d $((2160+$data_poll_interval_min)) -p $DCOM
-    bash -c "ulimit -v 1000000 && $HOMEwamipe/ush/realtime_wrapper.py -e ${SWIO_EDATE:0:8}${SWIO_EDATE:9:4} -p $DCOM -d $data_poll_interval_min -c ${SWIO_IDATE:0:8}${SWIO_IDATE:9:2}15" &
   else
     # work from the database
     echo "$FIX_F107"   >> temp_fix
@@ -1303,11 +1302,7 @@ if [[ $NEMS = .true. ]] ; then
   fi
 fi # NEMS
 
-if [ $INPUT_PARAMETERS = conops2 ] ; then
-    eval LD_LIBRARY_PATH=$LD_LIBRARY_PATH $FCSTENV mpirun -n 96 'bash -c "ulimit -v 4000000 && ./global_gsmwam_ipe.x"'
-else
-    eval LD_LIBRARY_PATH=$LD_LIBRARY_PATH $FCSTENV $PGM
-fi
+eval LD_LIBRARY_PATH=$LD_LIBRARY_PATH $FCSTENV $PGM
 
 export ERR=$?
 export err=$ERR

@@ -52,7 +52,7 @@ export err=$? ; err_chk "Error sourcing env/${machine}.env"
 ##############################################
 export pid=${pid:-$$}
 export outid=${outid:-"LL$job"}
-export DATA=${DATA:-${DATAROOT}/${jobid:?}}
+export DATA=${DATA:-${DATAROOT}/${job:?}}
 mkdir -p $DATA
 cd $DATA
 
@@ -115,9 +115,15 @@ msg="HAS BEGUN on `hostname`"
 postmsg "$jlogfile" "$msg"
 $LOGSCRIPT
 
+wfr_service=${wfr_service:-"NO"}
 
-${FORECASTSH:-$SCRwamipe/exwamipe_fcst_nems.sh}
-export err=$? ; err_chk "forecast ex-script failure"
+if [ $wfr_service = "YES" ]; then
+    $SCRwamipe/exwamipe_fcst_service.sh
+    export err=$? ; err_chk "wfr service ex-script failure"
+else
+    ${FORECASTSH:-$SCRwamipe/exwamipe_fcst_nems.sh}
+    export err=$? ; err_chk "forecast ex-script failure"
+fi
 
 
 ##############################################

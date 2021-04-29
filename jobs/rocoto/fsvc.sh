@@ -8,6 +8,8 @@ status=$?
 
 ###############################################################
 # Execute the JJOB
-$HOMEwamipe/jobs/JWAMIPE_PREP
+export wfr_service="YES"
+
+$HOMEwamipe/jobs/JWAMIPE_FORECAST
 status=$?
 exit $status

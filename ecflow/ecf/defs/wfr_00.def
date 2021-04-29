@@ -13,8 +13,12 @@
         trigger ../prep/jwfs_forecast == complete
         event 1 release_fcst
     endfamily
+    family 
+      task jwfr_fservice
+        trigger ../analysis/jwfr_analysis:release_fcst
+    endfamily
     family forecast
-      task jwfr_forecast_high
+      task jwfr_forecast
         trigger ../analysis/jwfr_analysis:release_fcst
     endfamily
   endfamily

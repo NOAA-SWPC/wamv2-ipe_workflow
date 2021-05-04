@@ -1,0 +1,56 @@
+#! /bin/sh
+#BSUB -q %QUEUE%
+#BSUB -P %PROJ:SPACE%-%PROJENVIR%
+#BSUB -J %E%wdas_prep_%CYC%
+#BSUB -o %COM%/output/%ENVIR%/today/wdas_prep_noda_%CYC%.o%J
+#BSUB -W 00:05
+#BSUB -R span[ptile=1]; -R affinity[core]
+#BSUB -n 1
+#BSUB -M 1000
+#BSUB -cwd /tmp
+
+%include <head.h>
+%include <envir-p3.h>
+
+set -x
+
+export NODES=1
+
+export model=wamipe
+%include <model_ver.h>
+
+############################################################
+# Load modules
+############################################################
+#. $MODULESHOME/init/sh
+module load EnvVars/$EnvVars_ver
+module load ips/$ips_ver
+module load impi/$impi_ver
+module load CFP/$CFP_ver
+module load NetCDF/$NetCDF_ver
+module list
+
+############################################################
+# EXPORT list here
+############################################################
+export USE_CFP=YES
+export cyc=%CYC%
+export cycle=t%CYC%z
+export NET=%NET:wfs%
+export RUN=%RUN:wdas%
+
+############################################################
+# CALL executable job script here
+############################################################
+${HOMEwamipe}/jobs/JWAMIPE_PREP
+
+if [ $? -ne 0 ]; then
+   ecflow_client --msg="***JOB ${ECF_NAME} ERROR RUNNING J-SCRIPT ***"
+   ecflow_client --abort
+   exit
+fi
+
+%include <tail.h>
+%manual
+
+%end

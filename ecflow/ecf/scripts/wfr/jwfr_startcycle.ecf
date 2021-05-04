@@ -1,0 +1,32 @@
+#! /bin/sh
+#BSUB -q %QUEUESHARED%
+#BSUB -P %PROJ:SPACE%-%PROJENVIR%
+#BSUB -J %E%wfr_startcycle_%CYC%
+#BSUB -o %COM%/output/%ENVIR%/today/wfr_startcycle_%CYC%.o%J
+#BSUB -W 01:00
+#BSUB -n 1
+#BSUB -R affinity[core(1)]
+#BSUB -M 500
+#BSUB -cwd /tmp
+
+%include <head.h>
+%include <envir-p3.h>
+
+set -x
+
+export NET=%NET:wfs%
+export RUN=%RUN%
+export CDUMP=%RUN%
+
+model=wamipe
+%include <model_ver.h>
+
+cyc=%CYC%
+cycle=t%CYC%z
+
+${HOMEwamipe}/jobs/JWFR_STARTCYCLE
+
+%include <tail.h>
+%manual
+
+%end

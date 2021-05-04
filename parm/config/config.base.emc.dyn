@@ -6,6 +6,7 @@
 echo "BEGIN: config.base"
 export NODA=NO
 [[ $CDUMP = "wfr" ]] && export NODA=YES
+[[ $cyc = "06" || $cyc = "18" ]] && export NODA=YES
 
 # Machine environment
 export machine="@MACHINE@"

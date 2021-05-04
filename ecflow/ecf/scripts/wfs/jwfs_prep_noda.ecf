@@ -1,0 +1,63 @@
+#!/bin/sh
+#BSUB -P %PROJ:SPACE%-%PROJENVIR%
+#BSUB -q %QUEUESHARED%
+#BSUB -J %E%wfs_prep_noda_%CYC%
+#BSUB -o  %COM%/output/%ENVIR%/today/wfs_prep_noda_%CYC%.o%J
+#BSUB -cwd /tmp
+#BSUB -L /bin/sh
+#BSUB -W 00:05
+#BSUB -R span[ptile=1]; -R affinity[core]
+#BSUB -n 1
+#BSUB -M 1000
+
+%include <head.h>
+%include <envir-p3.h>
+
+export NODES=1
+
+export model=wamipe
+%include <model_ver.h>
+
+#############################################################
+## Load modules
+##############################################################
+#. $MODULESHOME/init/sh
+module load EnvVars/$EnvVars_ver
+module load ips/$ips_ver
+module load impi/$impi_ver
+module load CFP/$CFP_ver
+module load NetCDF/$NetCDF_ver
+module list
+
+#############################################################
+## WCOSS_C environment settings
+##############################################################
+
+################################################
+# EXPORT list here
+
+set -x
+
+export cyc=%CYC%
+export NET=%NET:wfs%
+export RUN=%RUN:wfs%
+
+# CALL executable job script here
+${HOMEwamipe}/jobs/JWAMIPE_PREP
+
+%include <tail.h>
+%manual
+######################################################################
+# Purpose:
+#
+#
+######################################################################
+
+######################################################################
+# Job specific troubleshooting instructions:
+#  see generic troubleshoot manual page
+#
+######################################################################
+
+# include manual page below
+%end

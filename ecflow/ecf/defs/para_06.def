@@ -13,30 +13,33 @@ suite para06
 
     family wdas
       edit RUN 'wdas'
-      task jwdas_prep
+      task jwdas_prep_noda
         trigger /prod06/gdas/atmos/obsproc/dump/jgdas_atmos_dump_post == complete
-      task jwdas_analysis_high
-        trigger jwdas_prep == complete
+      task jwdas_analysis_noda
+        trigger jwdas_prep_noda == complete
         event 1 release_fcst
       task jwdas_forecast
-        trigger jwdas_analysis_high:release_fcst or jwdas_analysis_high == complete
+        trigger jwdas_analysis_noda:release_fcst or jwdas_analysis_noda == complete
     endfamily
    
     family wfs
       edit RUN 'wfs'
-      task jwfs_prep
+      task jwfs_prep_noda
         trigger /prod06/gfs/atmos/obsproc/dump/jgfs_atmos_dump_post == complete
-      task jwfs_analysis
-        trigger jwfs_prep eq complete
+      task jwfs_analysis_noda
+        trigger jwfs_prep_noda eq complete
         event 1 release_fcst
       task jwfs_forecast_high
-        trigger jwfs_analysis:release_fcst or jwfs_analysis == complete
+        trigger jwfs_analysis_noda:release_fcst or jwfs_analysis_noda == complete
     endfamily
    
     family wfr
       edit RUN 'wfr'
+      task jwfr_startcycle
+        defstatus complete
+        trigger ../wfs/jwfs_analysis:release_fcst or ../wfs/jwfs_analysis == complete
       task jwfr_analysis_high
-        trigger ../wfs/jwfs_forecast_high == complete
+        trigger jwfr_startcycle == complete
         event 1 release_fcst
       task jwfr_fservice
         trigger jwfr_analysis_high:release_fcst or jwfr_analysis_high == complete

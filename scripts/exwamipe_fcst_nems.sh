@@ -1118,6 +1118,15 @@ SWIO_IDATE=${SWIO_IDATE:-${CDATE}0000}
 SWIO_SDATE=${FDATE}0000
 SWIO_EDATE=$($NDATE $((FHMAX-$FHROT)) $FDATE)0000
 
+if [ $CDUMP = "wfr" ] ; then
+    sdate=${FDATE}15
+    edate=${SWIO_EDATE:0:12}
+    while [ $sdate -le $edate ] ; do
+        $NLN $COMOUT/${CDUMP}.t${cyc}z.${sdate:0:8}_${sdate:8}00.lock ${sdate:0:8}_${sdate:8}00.lock
+        sdate=$($MDATE 15 $sdate)
+    done
+fi
+
 export CDUMP=${CDUMP:-"compset_run"}
 export SWIO_IDATE=${SWIO_IDATE:0:8}_${SWIO_IDATE:8}
 export SWIO_SDATE=${SWIO_SDATE:0:8}_${SWIO_SDATE:8}
@@ -1139,7 +1148,7 @@ if [ $IDEA = .true. ]; then
   if [ $INPUT_PARAMETERS = realtime ] ; then
     $HOMEwamipe/ush/parse_realtime.py -s $($MDATE -$((36*60)) ${FDATE}00) -d $((60*(36+ 10#$FHMAX - 10#$FHINI))) -p $DCOM
   elif [ $INPUT_PARAMETERS = conops2 ] ; then
-    $HOMEwamipe/ush/parse_realtime.py -s $($MDATE -$((36*60)) ${FDATE}00) -d $((2160+$data_poll_interval_min)) -p $DCOM
+    [[ ! -f input_parameters.nc ]] && $HOMEwamipe/ush/parse_realtime.py -s $($MDATE -$((36*60)) ${FDATE}00) -d $((2160+$data_poll_interval_min)) -p $DCOM
   else
     # work from the database
     echo "$FIX_F107"   >> temp_fix

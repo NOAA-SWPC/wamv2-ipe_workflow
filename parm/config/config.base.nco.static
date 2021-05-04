@@ -6,12 +6,13 @@
 echo "BEGIN: config.base"
 export NODA=NO
 [[ $CDUMP = "wfr" ]] && export NODA=YES
+[[ $cyc = "06" || $cyc = "18" ]] && export NODA=YES
 
 # Machine environment
 export machine="WCOSS_DELL_P3"
 
 # EMC parallel or NCO production
-export RUN_ENVIR="emc"
+export RUN_ENVIR="nco"
 
 # Account, queue, etc.
 export ACCOUNT="SPACE-T2O"

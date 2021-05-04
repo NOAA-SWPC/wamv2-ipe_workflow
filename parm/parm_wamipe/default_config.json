@@ -20,4 +20,5 @@
       "perp_transport_max": 151,
       "hpeq": 0.0,
       "colfac": 1.3,
+      "vertical_wind_limit": 100.0,
       "ipe_coldstart": false}

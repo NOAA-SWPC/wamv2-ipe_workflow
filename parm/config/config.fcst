@@ -28,9 +28,6 @@ fi
 
 if [[ "$CDUMP" == "wfr" ]] ; then
    DATAPOLL=".true."
-   export med_petlist_bounds="40 79"
-   export ipm_petlist_bounds="0 39"
-   export atm_petlist_bounds="80 95"
    export npe_wam=$npe_fcst_wfr
 fi
 

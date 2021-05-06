@@ -15,7 +15,7 @@ fi
 echo gsmwam_ipe checkout ...
 if [[ ! -d gsmwam_ipe.fd ]] ; then
     rm -f ${topdir}/checkout-gsmwam_ipe.log
-    git clone --recursive https://github.com/NOAA-SWPC/GSMWAM-IPE.git --branch v1.0.6 gsmwam_ipe.fd     >> ${topdir}/checkout-gsmwam_ipe.log 2>&1
+    git clone --recursive https://github.com/NOAA-SWPC/GSMWAM-IPE.git --branch v1.0.7 gsmwam_ipe.fd     >> ${topdir}/checkout-gsmwam_ipe.log 2>&1
 else
     echo 'Skip.  Directory gsmwam_ipe.fd already exists.'
 fi

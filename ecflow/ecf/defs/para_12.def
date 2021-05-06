@@ -33,20 +33,6 @@ suite para12
         trigger jwfs_analysis:release_fcst or jwfs_analysis == complete
     endfamily
    
-    family wfr
-      edit RUN 'wfr'
-      task jwfr_startcycle
-        defstatus complete
-        trigger ../wfs/jwfs_analysis:release_fcst or ../wfs/jwfs_analysis == complete
-      task jwfr_analysis_high
-        trigger jwfr_startcycle == complete
-        event 1 release_fcst
-      task jwfr_fservice
-        trigger jwfr_analysis_high:release_fcst or jwfr_analysis_high == complete
-      task jwfr_forecast
-        trigger jwfr_analysis_high:release_fcst or jwfr_analysis_high == complete
-    endfamily
-
   endfamily
 endsuite
 

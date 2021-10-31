@@ -34,6 +34,7 @@ fi
 target=""
 source ./machine-setup.sh > /dev/null 2>&1
 
+source ../versions/build.ver
 #------------------------------------
 # INCLUDE PARTIAL BUILD 
 #------------------------------------

@@ -20,7 +20,7 @@ if [[ "$CDUMP" = "wfs" ]] ; then
     export DIAG_TARBALL="NO"
 fi
 
-export ANALYSISSH="$HOMEgsi/scripts/exwamipe_analysis.sh.ecf"
+export ANALYSISSH="$HOMEgsi/scripts/exwamipe_analysis.sh"
 export BERROR=${BERROR:-$FIXgsi/Big_Endian/global_berror_wdasf070.l150y96.f77}
 # need anavinfo
 export npe_gsi=$npe_anal

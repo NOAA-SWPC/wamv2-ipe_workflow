@@ -81,6 +81,16 @@ elif [[ -L /usrx && "$( readlink /usrx 2> /dev/null )" =~ dell ]] ; then
 
 ##---------------------------------------------------------------------------
 
+elif [[ -d /lfs/h1 ]] ; then
+    # We are on NOAA WCOSS2
+    if ( ! eval module help > /dev/null 2>&1 ) ; then
+	echo load the module command 1>&2
+	#source /usrx/local/prod/lmod/lmod/init/$__ms_shell
+    fi
+    target=wcoss2
+
+##---------------------------------------------------------------------------
+
 elif [[ -d /dcom && -d /hwrf ]] ; then
     # We are on NOAA Tide or Gyre
     if ( ! eval module help > /dev/null 2>&1 ) ; then

@@ -2,9 +2,6 @@
 set -ax
 
 # path/variable setup
-COMIN=${COMIN:-$ROTDIR/$CDUMP.$PDY/$cyc}
-COMOUT=${COMOUT:-$COMIN}
-
 SIGI=${SIGI:-$COMIN/$CDUMP.t${cyc}z.$ATM$SUFOUT}
 
 CDATE=$(eval $SIGHDR $SIGI idate)
@@ -30,6 +27,6 @@ while [ ! -f input_parameters.nc ] ; do
 done
 
 # and then pull and write drivers as they come in
-$HOMEwamipe/ush/realtime_wrapper.py -e $SWIO_EDATE -p $DCOM -d $data_poll_interval_min -c $($MDATE -$((36*60)) ${FDATE}00)
+$HOMEwfs/ush/realtime_wrapper.py -e $SWIO_EDATE -p $DCOM -d $data_poll_interval_min -c $($MDATE -$((36*60)) ${FDATE}00)
 
 exit $?

@@ -1,8 +1,8 @@
 #!/bin/ksh -x
-
+if [ ! -z ${PBS_O_WORKDIR} ]; then cd $PBS_O_WORKDIR; fi
 ###############################################################
 # Source WAM-IPE workflow modules
-. $HOMEwamipe/ush/load_wamipe_modules.sh
+. $HOMEwfs/ush/load_wamipe_modules.sh
 status=$?
 [[ $status -ne 0 ]] && exit $status
 
@@ -10,6 +10,6 @@ status=$?
 # Execute the JJOB
 export wfr_service="YES"
 
-$HOMEwamipe/jobs/JWAMIPE_FORECAST
+$HOMEwfs/jobs/JWAMIPE_FORECAST
 status=$?
 exit $status

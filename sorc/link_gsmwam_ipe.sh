@@ -8,16 +8,16 @@ machine=${2}
 
 if [ $# -lt 2 ]; then
     echo '***ERROR*** must specify two arguements: (1) RUN_ENVIR, (2) machine'
-    echo ' Syntax: link_gsmwam_ipe.sh ( nco | emc ) ( cray | dell | hera )'
+    echo ' Syntax: link_gsmwam_ipe.sh ( nco | emc ) ( cray | dell | wcoss2 | hera )'
     exit 1
 fi
 
 if [ $RUN_ENVIR != emc -a $RUN_ENVIR != nco ]; then
-    echo 'Syntax: link_gsmwam_ipe.sh ( nco | emc ) ( cray | dell | hera )'
+    echo 'Syntax: link_gsmwam_ipe.sh ( nco | emc ) ( cray | dell | wcoss2 | hera )'
     exit 1
 fi
 if [ $machine != cray -a -a $machine != dell -a $machine != hera ]; then
-    echo 'Syntax: link_gsmwam_ipe.sh ( nco | emc ) ( cray | dell | hera )'
+    echo 'Syntax: link_gsmwam_ipe.sh ( nco | emc ) ( cray | dell | wcoss2 | hera )'
     exit 1
 fi
 
@@ -36,6 +36,8 @@ elif [ $machine = "dell" ]; then
     FIX_DIR="/gpfs/dell2/swpc/noscrub/Adam.Kubaryk/WAM_FIX"
 elif [ $machine = "hera" ]; then
     FIX_DIR="/scratch1/NCEPDEV/swpc/WAM-IPE_DATA/WAM_FIX"
+elif [ $machine = "wcoss2" ]; then
+    FIX_DIR="/lfs/h1/swpc/wam/noscrub/Adam.Kubaryk/WAM_FIX"
 fi
 cd ${pwd}/../fix                ||exit 8
 for dir in GSM IPE_FIX MED_SPACEWX WAM_gh_L150 ; do
@@ -65,7 +67,7 @@ cd ${pwd}/../jobs               ||exit 8
     $LINK ../sorc/gsi.fd/jobs/JWAMIPE_ANALYSIS           .
     $LINK ../sorc/obsproc_wamipe.fd/jobs/JWAMIPE_PREP    .
 cd ${pwd}/../scripts            ||exit 8
-    $LINK ../sorc/gsi.fd/scripts/exwamipe_analysis.sh.ecf    .
+    $LINK ../sorc/gsi.fd/scripts/exwamipe_analysis.sh    .
 cd ${pwd}/../fix                ||exit 8
     [[ -d fix_gsi ]] && rm -rf fix_gsi
     $LINK ../sorc/gsi.fd/fix  fix_gsi

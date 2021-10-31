@@ -7,6 +7,17 @@ date
 
 
 ##############################################
+# Obtain unique process id (pid) and make temp directory
+##############################################
+jobid=${jobid:-${job}.$(hostname -s).$$}
+export pid=${pid:-$$}
+export outid=${outid:-"LL$job"}
+export DATA=${DATA:-${DATAROOT}/${jobid:?}}
+mkdir -p $DATA
+cd $DATA
+
+
+##############################################
 # Run setpdy and initialize PDY variables
 ##############################################
 export cycle="t${cyc}z"
@@ -20,7 +31,6 @@ setpdy.sh
 export CDATE=${CDATE:-${PDY}${cyc}}
 export CDUMP=${CDUMP:-${RUN:-"wfs"}}
 if [ $RUN_ENVIR = "nco" ]; then
-    export ROTDIR=${COMROOT:?}/$NET/$envir
     export RSTDIR=${GESROOT:?}/$envir
 fi
 
@@ -29,8 +39,8 @@ fi
 # Source relevant config files
 #############################
 configs="base fcst"
-export EXPDIR=${EXPDIR:-$HOMEwamipe/parm/config}
-config_path=${EXPDIR:-$HOMEwamipe/parm/config}
+export EXPDIR=${EXPDIR:-$HOMEwfs/parm/config}
+config_path=${EXPDIR:-$HOMEwfs/parm/config}
 for config in $configs; do
     . $config_path/config.$config
     export err=$? ; err_chk "Error sourcing config files in $config_path"
@@ -43,18 +53,8 @@ while read line; do export $line ; done < <($USHwamipe/create_config.py \
 ##########################################
 # Source machine runtime environment
 ##########################################
-. $HOMEwamipe/env/${machine}.env fcst
+. $HOMEwfs/env/${machine}.env fcst
 export err=$? ; err_chk "Error sourcing env/${machine}.env"
-
-
-##############################################
-# Obtain unique process id (pid) and make temp directory
-##############################################
-export pid=${pid:-$$}
-export outid=${outid:-"LL$job"}
-export DATA=${DATA:-${DATAROOT}/${job:?}}
-mkdir -p $DATA
-cd $DATA
 
 
 ##############################################
@@ -92,12 +92,16 @@ else
     export FHOUT_HF=1
 fi
 
+export COMIN=${COMIN:-$(compath.py $NET/${wfs_ver}/$CDUMP.$PDY/$cyc)}
+export COMIN_GES=${COMIN_GES:-$(compath.py $NET/${wfs_ver}/$GDUMP.$gPDY/$gcyc)}
+export COMOUT=${COMOUT:-$(compath.py -o $NET/${wfs_ver}/$CDUMP.$PDY/$cyc)}
+
 # IAU handling
 if [ $DOIAU = "YES" ] ; then
-    export SFCI=$ROTDIR/$CDUMP.$PDY/$cyc/$CDUMP.t${cyc}z.${SFC:0:3}a03
-    export SIGI=$ROTDIR/$GDUMP.$gPDY/$gcyc/$GDUMP.t${gcyc}z.${ATM:0:3}f03
-    IAU_FG=$ROTDIR/$rCDUMP.$gPDY/$gcyc/$rCDUMP.t${gcyc}z.${ATM:0:3}f06
-    IAU_ANL=$ROTDIR/$CDUMP.$PDY/$cyc/$CDUMP.t${cyc}z.${ATM}
+    export SFCI=$COMIN/$CDUMP.t${cyc}z.${SFC:0:3}a03
+    export SIGI=$COMIN_GES/$GDUMP.t${gcyc}z.${ATM:0:3}f03
+    IAU_FG=$COMIN_GES/$GDUMP.t${gcyc}z.${ATM:0:3}f06
+    IAU_ANL=$COMIN/$CDUMP.t${cyc}z.${ATM}
 
     export FHINI=3
     export FHROT=3
@@ -111,9 +115,6 @@ fi
 ###############################################################
 # Run relevant exglobal script
 env
-msg="HAS BEGUN on `hostname`"
-postmsg "$jlogfile" "$msg"
-$LOGSCRIPT
 
 wfr_service=${wfr_service:-"NO"}
 
@@ -125,6 +126,13 @@ else
     export err=$? ; err_chk "forecast ex-script failure"
 fi
 
+##############################################
+## Call dbn_alert
+if [ $RUN == wfs ]; then
+    if [ $SENDDBN == YES ]; then
+        ${HOMEwfs}/scripts/exwamipe_dbnalert.sh
+    fi
+fi
 
 ##############################################
 # End JOB SPECIFIC work
@@ -136,9 +144,6 @@ fi
 if [ -e "$pgmout" ] ; then
   cat $pgmout
 fi
-
-msg="ENDED NORMALLY."
-postmsg "$jlogfile" "$msg"
 
 ##########################################
 # Remove the Temporary working directory

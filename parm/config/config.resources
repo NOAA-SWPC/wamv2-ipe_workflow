@@ -26,6 +26,8 @@ if [[ "$machine" = "WCOSS_DELL_P3" ]]; then
    fi
 elif [[ "$machine" = "WCOSS_C" ]]; then
    export npe_node_max=24
+elif [[ "$machine" = "WCOSS2" ]]; then
+   export npe_node_max=128
 elif [[ "$machine" = "JET" ]]; then
    export npe_node_max=24
 elif [[ "$machine" = "HERA" ]]; then
@@ -56,6 +58,9 @@ elif [ $step = "anal" ]; then
       export npe_node_anal=$(echo "$npe_node_max / $nth_anal" | bc)
       if [[ "$machine" = "WCOSS_DELL_P3" ]]; then
         export npe_anal=168
+      fi
+      if [[ "$machine" = "WCOSS2" ]]; then
+        export npe_anal=256
       fi
      fi
     fi

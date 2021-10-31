@@ -1,10 +1,10 @@
 #!/bin/ksh -x
-
+if [ ! -z ${PBS_O_WORKDIR} ]; then cd $PBS_O_WORKDIR; fi
 ###############################################################
 ## Abstract:
 ## Archive driver script
 ## RUN_ENVIR : runtime environment (emc | nco)
-## HOMEwamipe   : /full/path/to/workflow
+## HOMEwfs   : /full/path/to/workflow
 ## EXPDIR : /full/path/to/config/files
 ## CDATE  : current analysis date (YYYYMMDDHH)
 ## CDUMP  : cycle name (wdas / wfs / wfr)
@@ -14,7 +14,7 @@
 
 ###############################################################
 # Source wamipe workflow modules
-. $HOMEwamipe/ush/load_wamipe_modules.sh
+. $HOMEwfs/ush/load_wamipe_modules.sh
 status=$?
 [[ $status -ne 0 ]] && exit $status
 
@@ -73,10 +73,10 @@ ARCH_LIST="$COMIN/archlist"
 mkdir -p $ARCH_LIST
 cd $ARCH_LIST
 
-$HOMEwamipe/ush/hpssarch_gen.sh $CDUMP
+$HOMEwfs/ush/hpssarch_gen.sh $CDUMP
 status=$?
 if [ $status -ne 0  ]; then
-    echo "$HOMEwamipe/ush/hpssarch_gen.sh $CDUMP failed, ABORT!"
+    echo "$HOMEwfs/ush/hpssarch_gen.sh $CDUMP failed, ABORT!"
     exit $status
 fi
 

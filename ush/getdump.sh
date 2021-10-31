@@ -30,10 +30,12 @@ if [ -s ${prefix}updated.status.tm00.bufr_d ]; then
         for file in `ls ${prefix}*bufr_d ${prefix}*engicegrb ${prefix}*dump_alert_flag* ${prefix}*rtgssthr* \
                         ${prefix}*seaice.5min* ${prefix}*snogrb* ${prefix}*imssnow96*                       \
                         ${prefix}*NPR.SNW?.SP.S1200.MESH16* ${prefix}*syndata.tcvitals*`; do
-            cp $SOURCE_DIR/$file $TARGET_DIR/w${file:1}
+            cp --preserve=mode,ownership $SOURCE_DIR/$file $TARGET_DIR/w${file:1}
         done
     else
-        for file in `ls ${prefix}*`; do
+        for file in `ls ${prefix}*bufr_d ${prefix}*engicegrb ${prefix}*dump_alert_flag* ${prefix}*rtgssthr* \
+                        ${prefix}*seaice.5min* ${prefix}*snogrb* ${prefix}*imssnow96*                       \
+                        ${prefix}*NPR.SNW?.SP.S1200.MESH16* ${prefix}*syndata.tcvitals*`; do
             ln -fs $SOURCE_DIR/$file $TARGET_DIR/w${file:1}
         done
     fi

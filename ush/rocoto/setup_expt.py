@@ -91,7 +91,7 @@ def edit_baseconfig():
                     .replace('@CASEENS@', 'T%d' % resens) \
                     .replace('@CASECTL@', 'T%d' % resdet) \
                     .replace('@NMEM_ENKF@', '%d' % nens) \
-                    .replace('@HOMEwamipe@', top) \
+                    .replace('@HOMEwfs@', top) \
                     .replace('@wfs_cyc@', '%d' % wfs_cyc) \
                     .replace('@BASE_GIT@', base_git) \
                     .replace('@BASE_SVN@', base_svn) \
@@ -107,9 +107,6 @@ def edit_baseconfig():
                     .replace('@QUEUE_ARCH@', queue_arch) \
                     .replace('@PARAMETER_PATH@', parameter_path) \
                     .replace('@IPE_IC_DIR@', ipe_ic_dir) \
-                    .replace('@HOMEobsproc_global@', obsproc_global) \
-                    .replace('@HOMEobsproc_prep@', obsproc_prep) \
-                    .replace('@UTILDIR@', utildir) \
                     .replace('@DCOM@', dcom) 
                 if expdir is not None:
                     line = line.replace('@EXPDIR@', os.path.dirname(expdir))
@@ -187,10 +184,28 @@ link initial condition files from $ICSDIR to $COMROT'''
       queue_arch = 'dev_transfer'
       ipe_ic_dir = '/gpfs/dell2/swpc/noscrub/Adam.Kubaryk/refactored_ipe_input_decks'
       parameter_path = '/gpfs/dell2/swpc/noscrub/Adam.Kubaryk/WAM-IPE_INPUT_PARAMETERS'
-      obsproc_global = '/gpfs/dell2/swpc/noscrub/Adam.Kubaryk/obsproc/obsproc_global.v3.2.6'
-      obsproc_prep = '/gpfs/dell2/swpc/noscrub/Adam.Kubaryk/obsproc/obsproc_prep_RB-5.2.0'
-      utildir =  '/gpfs/dell2/swpc/noscrub/Adam.Kubaryk/util/exec'
       dcom = '/gpfs/dell1/nco/ops/dcom/prod'
+
+      if partition in ['3p5']:
+        queue = 'dev2'
+        queue_arch = 'dev2_transfer'
+
+    elif machine == 'WCOSS2':
+      base_git = '/lfs/h2/emc/noscrub/emc.glopara/git'
+      base_svn = '/lfs/h2/emc/noscrub/emc.glopara/git'
+      dmpdir = '/lfs/h2/emc/global/noscrub/dump'
+      nwprod = '${NWROOT:-"/lfs/h1/ops/prod/nwprod"}'
+      comroot = '${COMROOT:-"/lfs/h1/ops/prod/com"}'
+      homedir = '/lfs/h1/swpc/wam/noscrub/$USER'
+      stmp = '/lfs/h1/swpc/stmp/$USER'
+      ptmp = '/lfs/h1/swpc/ptmp/$USER'
+      noscrub = '/lfs/h1/swpc/wam/noscrub/$USER'
+      account = 'WFS-DEV'
+      queue = 'dev'
+      queue_arch = 'dev_transfer'
+      ipe_ic_dir = '/lfs/h1/swpc/wam/noscrub/Adam.Kubaryk/WAM_FIX/IPE_FIX'
+      parameter_path = '/lfs/h1/gpfs/dell2/swpc/noscrub/Adam.Kubaryk/WAM-IPE_INPUT_PARAMETERS'
+      dcom = '/lfs/h1/ops/canned/dcom' # prod
 
       if partition in ['3p5']:
         queue = 'dev2'
@@ -223,9 +238,6 @@ link initial condition files from $ICSDIR to $COMROT'''
       queue_arch = 'service'
       ipe_ic_dir = '/scratch1/NCEPDEV/swpc/WAM-IPE_DATA/IPE_FIX'
       parameter_path = '/scratch1/NCEPDEV/swpc/WAM-IPE_DATA/INPUT_PARAMETERS'
-      obsproc_global = '/scratch1/NCEPDEV/swpc/Adam.Kubaryk/obsproc/obsproc_global.v3.2.6'
-      obsproc_prep = '/scratch1/NCEPDEV/swpc/Adam.Kubaryk/obsproc/obsproc_prep_RB-5.2.0'
-      utildir =  '/scratch1/NCEPDEV/swpc/Adam.Kubaryk/util/exec'
       dcom = '/scratch1/NCEPDEV/swpc/George.Millward/dcom'
 
     if args.icsdir is not None and not os.path.exists(icsdir):

@@ -1,5 +1,5 @@
 #!/bin/ksh -x
-
+if [ ! -z ${PBS_O_WORKDIR} ]; then cd $PBS_O_WORKDIR; fi
 ###############################################################
 ## Abstract:
 ## Get GFS intitial conditions

@@ -20,7 +20,8 @@ DATE_ENV_VARS=['CDATE','SDATE','EDATE']
 SCHEDULER_MAP={'HERA':'slurm',
                'WCOSS':'lsf',
                'WCOSS_DELL_P3':'lsf',
-               'WCOSS_C':'lsfcray'}
+               'WCOSS_C':'lsfcray',
+               'WCOSS2': 'pbs'}
 
 class UnknownMachineError(Exception): pass
 class UnknownConfigError(Exception): pass
@@ -147,7 +148,7 @@ def config_parser(files):
 
 def detectMachine():
 
-    machines = ['HERA', 'WCOSS_C', 'WCOSS_DELL_P3']
+    machines = ['HERA', 'WCOSS_C', 'WCOSS_DELL_P3', 'WCOSS2']
 
     if os.path.exists('/scratch1/NCEPDEV'):
         return 'HERA'
@@ -155,6 +156,8 @@ def detectMachine():
         return 'WCOSS_C'
     elif os.path.exists('/gpfs/dell2'):
         return 'WCOSS_DELL_P3'
+    elif os.path.exists('/lfs/h1'):
+        return 'WCOSS2'
     else:
         print('workflow is currently only supported on: %s' % ' '.join(machines))
         raise NotImplementedError('Cannot auto-detect platform, ABORT!')
@@ -290,9 +293,10 @@ def get_resources(machine, cfg, task, cdump='wdas'):
     else:
         ppn = cfg['npe_node_%s' % ltask]
 
-    if machine in [ 'WCOSS_DELL_P3', 'HERA']:
+    if machine in [ 'WCOSS_DELL_P3', 'HERA', 'WCOSS2']:
         threads = cfg['nth_%s' % ltask]
 
+    print(machine,task,cdump,tasks,ppn)
     nodes = int(np.ceil(np.float(tasks) / np.float(ppn)))
     if nodes == 1: ppn = tasks
 
@@ -302,7 +306,7 @@ def get_resources(machine, cfg, task, cdump='wdas'):
     if scheduler in ['slurm']:
         natstr = '--export=NONE'
 
-    if machine in ['HERA', 'WCOSS_C', 'WCOSS_DELL_P3']:
+    if machine in ['HERA', 'WCOSS_C', 'WCOSS_DELL_P3', 'WCOSS2']:
 
         if machine in ['HERA']:
             resstr = '<nodes>%d:ppn=%d:tpp=%d</nodes>' % (nodes, ppn, threads)

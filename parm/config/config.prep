@@ -15,15 +15,15 @@ export DO_MAKEPREPBUFR="YES"   # if NO, will copy prepbufr from globaldump
 export PROCESS_TROPCY=${PROCESS_TROPCY:-NO}
 [[ $RUN_ENVIR == "nco" && $envir == "prod" ]] && export PROCESS_TROPCY="YES"
 export DO_RELOCATE="NO"
-export TROPCYQCRELOSH="$HOMEwamipe/scripts/extropcy_qc_reloc.sh.ecf"
+export TROPCYQCRELOSH="$HOMEwfs/scripts/extropcy_qc_reloc.sh.ecf"
 export SENDCOM=YES
 
-export COMINsyn=${COMINsyn:-$(compath.py gfs/prod/syndat)}
+export COMINsyn=${COMINsyn:-$(compath.py canned/gfs/v16.2/syndat)} # compath.py gfs/prod/syndat)}
 if [ $machine = "HERA" ]; then
     export COMINsyn="${COMROOT}/arch/prod/syndat"
 fi
 
-export HOMERELO=$HOMEwamipe
+export HOMERELO=$HOMEwfs
 export EXECRELO=${HOMERELO}/exec
 export FIXRELO=${HOMERELO}/fix/fix_am
 export USHRELO=${HOMERELO}/ush

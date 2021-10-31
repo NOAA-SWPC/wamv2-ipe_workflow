@@ -23,14 +23,14 @@ export QUEUE_ARCH="@QUEUE_ARCH@"
 HPSS_PROJECT=swpc-para
 
 # Directories relative to installation areas:
-export HOMEwamipe=@HOMEwamipe@
-export PARMwamipe=$HOMEwamipe/parm
+export HOMEwfs=@HOMEwfs@
+export PARMwamipe=$HOMEwfs/parm
 export PARMDIR=$PARMwamipe/parm_wamipe
-export FIXwamipe=$HOMEwamipe/fix
-export USHwamipe=$HOMEwamipe/ush
-export UTILwamipe=$HOMEwamipe/util
-export EXECwamipe=$HOMEwamipe/exec
-export SCRwamipe=$HOMEwamipe/scripts
+export FIXwamipe=$HOMEwfs/fix
+export USHwamipe=$HOMEwfs/ush
+export UTILwamipe=$HOMEwfs/util
+export EXECwamipe=$HOMEwfs/exec
+export SCRwamipe=$HOMEwfs/scripts
 
 ########################################################################
 
@@ -70,12 +70,12 @@ export REALTIME="YES"
 # FEEL FREE TO MOVE THEM ABOVE THIS LINE TO KEEP IT
 # CLEAR
 ####################################################
-# Build paths relative to $HOMEwamipe
-export HOMEgsi="$HOMEwamipe"
-export FIXgsi="$HOMEwamipe/fix/fix_gsi"
-export HOMEpost="$HOMEwamipe"
-export HOMEobsproc_prep="$HOMEwamipe/sorc/obsproc_prep.fd"
-export HOMEobsproc_network="$HOMEwamipe/sorc/obsproc_wamipe.fd"
+# Build paths relative to $HOMEwfs
+export HOMEgsi="$HOMEwfs"
+export FIXgsi="$HOMEwfs/fix/fix_gsi"
+export HOMEpost="$HOMEwfs"
+export HOMEobsproc_prep="$HOMEwfs/sorc/obsproc_prep.fd"
+export HOMEobsproc_network="$HOMEwfs/sorc/obsproc_wamipe.fd"
 export HOMEobsproc_global=$HOMEobsproc_network
 export BASE_VERIF="$BASE_SVN/verif/global/tags/vsdb"
 
@@ -86,15 +86,15 @@ export NLN="/bin/ln -sf"
 export VERBOSE="YES"
 export KEEPDATA="NO"
 export CHGRP_CMD="chgrp rstprod"
-export NEMSIOGET="$HOMEwamipe/exec/nemsio_get"
-export SIGHDR=$HOMEwamipe/exec/global_sighdr
-export SFCHDR=$HOMEwamipe/exec/global_sfchdr
-export CHGSFCFHREXEC=$HOMEwamipe/exec/chgsfcfhr
-export CHGSIGFHREXEC=$HOMEwamipe/exec/chgsigfhr
+export NEMSIOGET="$HOMEwfs/exec/nemsio_get"
+export SIGHDR=$HOMEwfs/exec/global_sighdr
+export SFCHDR=$HOMEwfs/exec/global_sfchdr
+export CHGSFCFHREXEC=$HOMEwfs/exec/chgsfcfhr
+export CHGSIGFHREXEC=$HOMEwfs/exec/chgsigfhr
 
 # Machine environment, jobs, and other utility scripts
-export BASE_ENV="$HOMEwamipe/env"
-export BASE_JOB="$HOMEwamipe/jobs/rocoto"
+export BASE_ENV="$HOMEwfs/env"
+export BASE_JOB="$HOMEwfs/jobs/rocoto"
 
 # IPE stuff
 export IPEGRIDFILENAME=${IPEGRIDFILENAME:-"IPE_Grid.h5"}

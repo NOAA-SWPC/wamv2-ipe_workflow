@@ -1,36 +1,41 @@
-#! /bin/sh
-#BSUB -q %QUEUE%
-#BSUB -P %PROJ:SPACE%-%PROJENVIR%
-#BSUB -J %E%wdas_forecast_%CYC%
-#BSUB -o %COM%/output/%ENVIR%/today/wdas_forecast_%CYC%.o%J
-#BSUB -W 00:45
-#BSUB -n 112
-#BSUB -R affinity[core(1)]
-#BSUB -R span[ptile=28]
-#BSUB -cwd /tmp
+#! /bin/bash
+#PBS -N wdas_forecast_%CYC%
+#PBS -j oe
+#PBS -S /bin/bash
+#PBS -q %QUEUE%
+#PBS -A %PROJ%-%PROJENVIR%
+#PBS -l walltime=00:45:00
+#PBS -l select=1:ncpus=112:mem=120GB
+#PBS -l debug=true
 
 %include <head.h>
-%include <envir-p3.h>
+%include <envir-p1.h>
 
 set -x
 
 export NET=%NET:wfs%
-export RUN=%RUN%
-export CDUMP=%RUN%
+export RUN=%RUN:wdas%
+export CDUMP=%RUN:wdas%
 
-model=wamipe
-%include <model_ver.h>
+export HOMEwfs=%PACKAGEHOME%
+. $HOMEwfs/versions/run.ver
 
 ############################################################
 # Load modules
 ############################################################
-module load EnvVars/$EnvVars_ver
-module load lsf/$lsf_ver
-module load ips/$ips_ver
-module load impi/$impi_ver
-module load ESMF/$ESMF_ver
-module load NetCDF/$NetCDF_ver
-module load HDF5-parallel/$HDF5_parallel_ver
+module load envvar/$envvar_ver
+module load prod_envir/$prod_envir_ver
+module load prod_util/$prod_util_ver
+module load PrgEnv-intel/$PrgEnv_intel_ver
+module load craype/$craype_ver
+module load intel/$intel_ver
+module load cray-mpich/$cray_mpich_ver
+module load cray-libsci/$cray_libsci_ver
+module load cray-pals/$cray_pals_ver
+module load cfp/$cfp_ver
+module load esmf/$esmf_ver
+module load netcdf/$netcdf_ver
+module load hdf5/$hdf5_ver
 module load python/$python_ver
 
 module list
@@ -43,7 +48,7 @@ export cycle=t%CYC%z
 ############################################################
 # CALL executable job script here
 ############################################################
-${HOMEwamipe}/jobs/JWAMIPE_FORECAST
+${HOMEwfs}/jobs/JWAMIPE_FORECAST
 
 if [ $? -ne 0 ]; then
    ecflow_client --msg="***JOB ${ECF_NAME} ERROR RUNNING J-SCRIPT ***"
@@ -53,5 +58,9 @@ fi
 
 %include <tail.h>
 %manual
-
+# Runs WDAS forecast job. Typical runtime ~30 min. No restart capability.  Prep
+# and analysis jobs take a few minutes total to run, so if in doubt, rerun them.
+# Prep job processes GDAS input (various bufr_d files from current cycle's atmos
+# dir), so rerun from prep job if something went wrong with GDAS once corrected.
+# The only WAM-IPE data needed is the *previous* cycle's WDAS forecast output.
 %end

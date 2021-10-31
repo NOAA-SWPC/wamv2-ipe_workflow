@@ -411,8 +411,6 @@ export ENS_NUM=${ENS_NUM:-1}
 export FM=${FM}
 
 # directories
-export COMIN=${COMIN:-$ROTDIR/$CDUMP.$PDY/$cyc}
-export COMOUT=${COMOUT:-$COMIN}
 export RESTARTDIR=${RESTARTDIR:-$COMOUT/RESTART}
 
 #  Command line arguments.
@@ -829,7 +827,7 @@ export CYCLVARS=${CYCLVARS}
 export POSTGPVARS=${POSTGPVARS}
 export NTHREADS=${NTHREADS:-1}
 export SEMILAG=${SEMILAG:-${semilag:-.false.}}
-export OMP_NUM_THREADS=${OMP_NUM_THREADS:-${NTHREADS:-1}}
+export OMP_NUM_THREADS=${NTHREADS:-1}
 export SPECTRAL_LOOP=${SPECTRAL_LOOP:-2}
 export FILESTYLE=${FILESTYLE:-'L'}
 export PGMOUT=${PGMOUT:-${pgmout:-'&1'}}
@@ -1146,9 +1144,9 @@ if [ $IDEA = .true. ]; then
   export MSIS_TIME_STEP=${MSIS_TIME_STEP:-900}
   ${NLN} $COMOUT/$CDUMP.t${cyc}z.input_parameters input_parameters.nc
   if [ $INPUT_PARAMETERS = realtime ] ; then
-    $HOMEwamipe/ush/parse_realtime.py -s $($MDATE -$((36*60)) ${FDATE}00) -d $((60*(36+ 10#$FHMAX - 10#$FHINI))) -p $DCOM
+    $HOMEwfs/ush/parse_realtime.py -s $($MDATE -$((36*60)) ${FDATE}00) -d $((60*(36+ 10#$FHMAX - 10#$FHINI))) -p $DCOM
   elif [ $INPUT_PARAMETERS = conops2 ] ; then
-    [[ ! -f input_parameters.nc ]] && $HOMEwamipe/ush/parse_realtime.py -s $($MDATE -$((36*60)) ${FDATE}00) -d $((2160+$data_poll_interval_min)) -p $DCOM
+    [[ ! -f input_parameters.nc ]] && $HOMEwfs/ush/parse_realtime.py -s $($MDATE -$((36*60)) ${FDATE}00) -d $((2160+$data_poll_interval_min)) -p $DCOM
   else
     # work from the database
     echo "$FIX_F107"   >> temp_fix
@@ -1159,7 +1157,7 @@ if [ $IDEA = .true. ]; then
     echo "$FIX_SWBZ"   >> temp_fix
     echo "$FIX_GWATTS" >> temp_fix
     echo "$FIX_HPI"    >> temp_fix
-    $HOMEwamipe/ush/interpolate_input_parameters.py \
+    $HOMEwfs/ush/interpolate_input_parameters.py \
         -d $((36+ 10#$FHMAX - 10#$FHINI)) -s `$NDATE -36 $FDATE` \
         -p $PARAMETER_PATH -m $INPUT_PARAMETERS -f temp_fix
     rm -rf temp_fix

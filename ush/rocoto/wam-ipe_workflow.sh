@@ -4,11 +4,11 @@
 
 set -ex
 
-pslot="pseudoops"
-expdir="/gpfs/dell2/swpc/noscrub/$USER/exp"
-comrot="/gpfs/dell2/ptmp/$USER"
-idate="2021041406"
-edate="2021050100"
+pslot="canned_test"
+expdir="/lfs/h1/swpc/wam/noscrub/$USER/exp"
+comrot="/lfs/h1/swpc/ptmp/$USER"
+idate="2021082400"
+edate="2021082406"
 
 ######################################
 # USER NEED NOT MODIFY BELOW THIS LINE

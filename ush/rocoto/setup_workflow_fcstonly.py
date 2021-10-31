@@ -119,7 +119,7 @@ def get_definitions(base):
     strings.append('\t<!ENTITY ICSDIR "%s">\n' % base['ICSDIR'])
     strings.append('\n')
     strings.append('\t<!-- Directories for driving the workflow -->\n')
-    strings.append('\t<!ENTITY HOMEwamipe  "%s">\n' % base['HOMEwamipe'])
+    strings.append('\t<!ENTITY HOMEwfs  "%s">\n' % base['HOMEwfs'])
     strings.append('\t<!ENTITY JOBS_DIR "%s">\n' % base['BASE_JOB'])
     strings.append('\n')
     strings.append('\t<!-- Machine related entities -->\n')
@@ -218,7 +218,7 @@ def get_workflow(dict_configs, cdump='wdas'):
 
     envars = []
     envars.append(rocoto.create_envar(name='RUN_ENVIR', value='&RUN_ENVIR;'))
-    envars.append(rocoto.create_envar(name='HOMEwamipe', value='&HOMEwamipe;'))
+    envars.append(rocoto.create_envar(name='HOMEwfs', value='&HOMEwfs;'))
     envars.append(rocoto.create_envar(name='EXPDIR', value='&EXPDIR;'))
     envars.append(rocoto.create_envar(name='CDATE', value='<cyclestr>@Y@m@d@H</cyclestr>'))
     envars.append(rocoto.create_envar(name='CDUMP', value='&CDUMP;'))

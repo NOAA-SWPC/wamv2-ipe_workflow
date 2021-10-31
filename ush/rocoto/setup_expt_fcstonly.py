@@ -65,7 +65,7 @@ def edit_baseconfig():
                     .replace('@SDATE@', idate.strftime('%Y%m%d%H')) \
                     .replace('@EDATE@', edate.strftime('%Y%m%d%H')) \
                     .replace('@CASECTL@', 'T%d' % res) \
-                    .replace('@HOMEwamipe@', top) \
+                    .replace('@HOMEwfs@', top) \
                     .replace('@wfs_cyc@', '%d' % wfs_cyc) \
                     .replace('@BASE_GIT@', base_git) \
                     .replace('@BASE_SVN@', base_svn) \

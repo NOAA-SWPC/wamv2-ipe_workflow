@@ -168,7 +168,7 @@ def get_definitions(base):
     strings.append('\t<!ENTITY ROTDIR "%s">\n' % base['ROTDIR'])
     strings.append('\n')
     strings.append('\t<!-- Directories for driving the workflow -->\n')
-    strings.append('\t<!ENTITY HOMEwamipe  "%s">\n' % base['HOMEwamipe'])
+    strings.append('\t<!ENTITY HOMEwfs  "%s">\n' % base['HOMEwfs'])
     strings.append('\t<!ENTITY JOBS_DIR "%s">\n' % base['BASE_JOB'])
     strings.append('\t<!ENTITY DMPDIR   "%s">\n' % base['DMPDIR'])
     strings.append('\n')
@@ -338,12 +338,13 @@ def get_wdaswfs_tasks(dict_configs, cdump='wdas'):
     if wfu.get_scheduler(wfu.detectMachine()) in ['slurm']:
         envars.append(rocoto.create_envar(name='SLURM_SET', value='YES'))
     envars.append(rocoto.create_envar(name='RUN_ENVIR', value='&RUN_ENVIR;'))
-    envars.append(rocoto.create_envar(name='HOMEwamipe', value='&HOMEwamipe;'))
+    envars.append(rocoto.create_envar(name='HOMEwfs', value='&HOMEwfs;'))
     envars.append(rocoto.create_envar(name='EXPDIR', value='&EXPDIR;'))
     envars.append(rocoto.create_envar(name='CDATE', value='<cyclestr>@Y@m@d@H</cyclestr>'))
     envars.append(rocoto.create_envar(name='CDUMP', value='%s' % cdump))
     envars.append(rocoto.create_envar(name='PDY', value='<cyclestr>@Y@m@d</cyclestr>'))
     envars.append(rocoto.create_envar(name='cyc', value='<cyclestr>@H</cyclestr>'))
+    envars.append(rocoto.create_envar(name='DATAROOT', value='&ROTDIR;/RUNDIRS/&PSLOT;'))
 
     base = dict_configs['base']
     wfs_cyc = base.get('wfs_cyc', 0)
@@ -454,7 +455,7 @@ def get_hyb_tasks(dict_configs, cycledef='enkf'):
     if wfu.get_scheduler(wfu.detectMachine()) in ['slurm']:
        envars.append(rocoto.create_envar(name='SLURM_SET', value='YES'))
     envars.append(rocoto.create_envar(name='RUN_ENVIR', value='&RUN_ENVIR;'))
-    envars.append(rocoto.create_envar(name='HOMEwamipe', value='&HOMEwamipe;'))
+    envars.append(rocoto.create_envar(name='HOMEwfs', value='&HOMEwfs;'))
     envars.append(rocoto.create_envar(name='EXPDIR', value='&EXPDIR;'))
     envars.append(rocoto.create_envar(name='CDATE', value='<cyclestr>@Y@m@d@H</cyclestr>'))
     #envars.append(rocoto.create_envar(name='CDUMP', value='%s' % cdump))
@@ -807,8 +808,6 @@ def create_xml(dict_configs):
     elif wfs_cyc == 0 and dohybvar in ['Y', 'YES'] and eupd_cyc in ['BOTH', 'WFS']:
         xmlfile.append(dict_wfs_tasks['wfsprep'])
         xmlfile.append('\n')
-
-    xmlfile.append(wfu.create_firstcyc_task())
 
     xmlfile.append(workflow_footer)
 

@@ -17,8 +17,8 @@ export med_model="swpc"
 export med_petlist_bounds="40 79"
 export ipm_petlist_bounds="0 39"
 export atm_petlist_bounds="80 111"
-export FORECASTSH="$HOMEwamipe/scripts/exwamipe_fcst_nems.sh"
-export FCSTEXECDIR="$HOMEwamipe/exec"
+export FORECASTSH="$HOMEwfs/scripts/exwamipe_fcst_nems.sh"
+export FCSTEXECDIR="$HOMEwfs/exec"
 export FCSTEXEC="global_gsmwam_ipe.x"
 export npe_wam=$npe_fcst # This is model resolution dependent, see note above
 

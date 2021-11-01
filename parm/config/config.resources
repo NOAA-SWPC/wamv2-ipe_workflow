@@ -60,7 +60,7 @@ elif [ $step = "anal" ]; then
         export npe_anal=168
       fi
       if [[ "$machine" = "WCOSS2" ]]; then
-        export npe_anal=256
+        export npe_anal=128
       fi
      fi
     fi

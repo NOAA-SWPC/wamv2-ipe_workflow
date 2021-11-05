@@ -4,7 +4,7 @@ export gsmwam_ipe_ver=v1.1.0
 export gsi_ver=v1.1.0
 export wamipe_utils_ver=v1.1.0
 export obsproc_wamipe_ver=v3.5.0
-export obsproc_prep_ver=v5.5.0
+export obsproc_prep_ver=v5.6.0
 
 # main modules
 export envvar_ver=1.0

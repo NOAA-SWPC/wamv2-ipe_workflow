@@ -18,7 +18,7 @@ export DO_RELOCATE="NO"
 export TROPCYQCRELOSH="$HOMEwfs/scripts/extropcy_qc_reloc.sh.ecf"
 export SENDCOM=YES
 
-export COMINsyn=${COMINsyn:-$(compath.py canned/gfs/v16.2/syndat)} # compath.py gfs/prod/syndat)}
+export COMINsyn=${COMINsyn:-$(compath.py gfs/${gfs_ver}/syndat)} # compath.py gfs/prod/syndat)}
 if [ $machine = "HERA" ]; then
     export COMINsyn="${COMROOT}/arch/prod/syndat"
 fi

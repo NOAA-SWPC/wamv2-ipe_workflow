@@ -9,7 +9,7 @@ export NODA=NO
 [[ $cyc = "06" || $cyc = "18" ]] && export NODA=YES
 
 # Machine environment
-export machine="WCOSS_DELL_P3"
+export machine="WCOSS2"
 
 # EMC parallel or NCO production
 export RUN_ENVIR="nco"

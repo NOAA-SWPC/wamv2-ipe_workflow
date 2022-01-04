@@ -11,6 +11,7 @@ source "$HOMEwfs/modulefiles/module-setup.sh.inc"
 
 # Load our modules:
 module use "$HOMEwfs/modulefiles" 
+source "$HOMEwfs/versions/run.ver"
 
 if [[ -d /lfs3 ]] ; then
     # We are on NOAA Jet

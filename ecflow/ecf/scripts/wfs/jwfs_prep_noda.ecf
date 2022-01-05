@@ -19,8 +19,6 @@ export HOMEwfs=%PACKAGEHOME%
 #############################################################
 ## Load modules
 ##############################################################
-#. $MODULESHOME/init/sh
-module load envvar/$envvar_ver
 module load PrgEnv-intel/$PrgEnv_intel_ver
 module load craype/$craype_ver
 module load intel/$intel_ver

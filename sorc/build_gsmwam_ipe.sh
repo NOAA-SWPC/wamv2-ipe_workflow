@@ -2,6 +2,7 @@
 set -eux
 
 source ./machine-setup.sh > /dev/null 2>&1
+[[ -z ${comio_ver+x} ]] && source ../versions/build.ver
 cwd=`pwd`
 
 USE_PREINST_LIBS=${USE_PREINST_LIBS:-"true"}

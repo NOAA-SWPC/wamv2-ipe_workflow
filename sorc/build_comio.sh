@@ -2,6 +2,7 @@
 set -eux
 
 source ./machine-setup.sh > /dev/null 2>&1
+[[ -z ${comio_ver+x} ]] && source ../versions/build.ver
 cwd=`pwd`
 
 if [ $target = "wcoss2" ] ; then

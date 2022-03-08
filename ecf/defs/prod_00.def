@@ -1,0 +1,57 @@
+suite prod
+  family primary
+    family 00
+      family obsproc
+        family v1.0
+        family gfs
+	family atmos
+ 	family dump
+  	   task jobsproc_gfs_atmos_dump_post
+        endfamily
+        endfamily
+        endfamily
+
+        family gdas
+	family atmos
+ 	family dump
+  	   task jobsproc_gdas_atmos_dump_post
+        endfamily
+        endfamily
+        endfamily
+
+        endfamily  ## v1.0 
+      endfamily    ## obsproc
+
+      family wfs
+        defstatus complete
+        edit PROJ 'WFS'
+        edit PACKAGEHOME '/lfs/h1/ops/%ENVIR%/packages/wfs.%wfs_ver%'
+        family v1.1
+
+          family wdas
+            task jwdas_prep
+              trigger /prod/primary/00/obsproc/v1.0/gdas/atmos/dump/jobsproc_gdas_atmos_dump_post ==  complete
+            task jwdas_analysis_high
+              trigger jwdas_prep == complete
+              event 1 release_fcst
+            task jwdas_forecast
+              trigger jwdas_analysis_high == complete
+          endfamily # wdas
+
+          family wfs
+            task jwfs_prep
+#             time 03:00
+              trigger /prod/primary/00/obsproc/v1.0/gfs/atmos/dump/jobsproc_gfs_atmos_dump_post == complete
+            task jwfs_analysis
+              trigger jwfs_prep eq complete
+              event 1 release_fcst
+            task jwfs_forecast_high
+              trigger jwfs_analysis == complete
+          endfamily # wfs
+
+        endfamily # version
+      endfamily # wfs
+    endfamily # 00
+  endfamily # primary
+endsuite
+

@@ -5,20 +5,17 @@
 #PBS -q %QUEUE%
 #PBS -A %PROJ%-%PROJENVIR%
 #PBS -l walltime=00:10:00
-#PBS -l select=1:ncpus=3:mem=18GB
+#PBS -l place=shared,select=1:ncpus=3:mem=18GB
 #PBS -l debug=true
 
+model=wfs
 %include <head.h>
 %include <envir-p1.h>
-
-export NODES=1
-
-export HOMEwfs=%PACKAGEHOME%
-. $HOMEwfs/versions/run.ver
 
 #############################################################
 ## Load modules
 ##############################################################
+#. $MODULESHOME/init/sh
 module load PrgEnv-intel/$PrgEnv_intel_ver
 module load craype/$craype_ver
 module load intel/$intel_ver

@@ -1,24 +1,23 @@
 #! /bin/bash
-#PBS -N wdas_forecast_%CYC%
+#PBS -N wfs_forecast_high_%CYC%
 #PBS -j oe
 #PBS -S /bin/bash
 #PBS -q %QUEUE%
 #PBS -A %PROJ%-%PROJENVIR%
-#PBS -l walltime=00:45:00
-#PBS -l select=1:ncpus=112:mem=120GB
+#PBS -l walltime=03:30:00
+#PBS -l place=excl,select=1:ncpus=112
+##:mem=120GB
 #PBS -l debug=true
 
+model=wfs
 %include <head.h>
 %include <envir-p1.h>
 
 set -x
 
 export NET=%NET:wfs%
-export RUN=%RUN:wdas%
-export CDUMP=%RUN:wdas%
-
-export HOMEwfs=%PACKAGEHOME%
-. $HOMEwfs/versions/run.ver
+export RUN=%RUN:wfs%
+export CDUMP=%RUN:wfs%
 
 ############################################################
 # Load modules
@@ -37,7 +36,6 @@ module load python/$python_ver
 
 module list
 
-#%include <ecf_client.h>
 export USE_CFP=YES
 export cyc=%CYC%
 export cycle=t%CYC%z
@@ -55,9 +53,9 @@ fi
 
 %include <tail.h>
 %manual
-# Runs WDAS forecast job. Typical runtime ~30 min. No restart capability.  Prep
+# Runs WFS forecast job. Typical runtime ~3 hours. No restart capability.  Prep
 # and analysis jobs take a few minutes total to run, so if in doubt, rerun them.
-# Prep job processes GDAS input (various bufr_d files from current cycle's atmos
-# dir), so rerun from prep job if something went wrong with GDAS once corrected.
+# Prep job processes GFS input (various bufr_d files from current cycle's atmos
+# dir), so rerun from prep job if something went wrong with GFS once corrected.
 # The only WAM-IPE data needed is the *previous* cycle's WDAS forecast output.
 %end

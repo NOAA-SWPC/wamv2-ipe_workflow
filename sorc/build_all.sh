@@ -10,6 +10,7 @@ set +x
 #------------------------------------
 
 export USE_PREINST_LIBS="true"
+module purge
 
 #------------------------------------
 # END USER DEFINED STUFF

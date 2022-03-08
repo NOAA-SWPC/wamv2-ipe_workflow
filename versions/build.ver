@@ -44,4 +44,4 @@ export git_ver=2.29.0
 export prod_util_ver=2.0.9
 
 # compath.py for canned inputs
-export COMPATH=/lfs/h1/ops/canned/com/wfs:/lfs/h1/ops/canned/com/gfs
+#export COMPATH=/lfs/h1/ops/canned/com/wfs:/lfs/h1/ops/canned/com/gfs

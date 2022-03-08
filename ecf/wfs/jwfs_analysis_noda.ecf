@@ -1,24 +1,22 @@
-#! /bin/bash
-#PBS -N wdas_analysis_high_%CYC%
+#!/bin/bash
+#PBS -N wfs_analysis_noda_%CYC%
 #PBS -j oe
 #PBS -S /bin/bash
 #PBS -q %QUEUE%
 #PBS -A %PROJ%-%PROJENVIR%
-#PBS -l walltime=00:45:00
-#PBS -l select=1:ncpus=128:mem=500GB
+#PBS -l walltime=00:05:00
+#PBS -l place=shared,select=1:ncpus=1:mem=1GB
 #PBS -l debug=true
 
+model=wfs
 %include <head.h>
 %include <envir-p1.h>
 
 set -x
 
 export NET=%NET:wfs%
-export RUN=%RUN:wdas%
-export CDUMP=%RUN:wdas%
-
-export HOMEwfs=%PACKAGEHOME%
-. $HOMEwfs/versions/run.ver
+export RUN=%RUN:wfs%
+export CDUMP=%RUN:wfs%
 
 ############################################################
 # Load modules
@@ -40,8 +38,6 @@ export USE_CFP=YES
 export cyc=%CYC%
 export cycle=t%CYC%z
 export PREINP=${CDUMP}.${cycle}.
-export NET=%NET:wfs%
-export RUN=%RUN:wdas%
 
 ############################################################
 # CALL executable job script here

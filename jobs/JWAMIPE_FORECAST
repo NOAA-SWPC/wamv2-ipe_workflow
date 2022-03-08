@@ -30,9 +30,6 @@ setpdy.sh
 ##############################################
 export CDATE=${CDATE:-${PDY}${cyc}}
 export CDUMP=${CDUMP:-${RUN:-"wfs"}}
-if [ $RUN_ENVIR = "nco" ]; then
-    export RSTDIR=${GESROOT:?}/$envir
-fi
 
 
 #############################
@@ -40,10 +37,10 @@ fi
 #############################
 configs="base fcst"
 export EXPDIR=${EXPDIR:-$HOMEwfs/parm/config}
-config_path=${EXPDIR:-$HOMEwfs/parm/config}
+export config_path=${config_path:-$HOMEwfs/parm/config}
 for config in $configs; do
     . $config_path/config.$config
-    export err=$? ; err_chk "Error sourcing config files in $config_path"
+    export err=$? ; err_chk
 done
 
 while read line; do export $line ; done < <($USHwamipe/create_config.py \
@@ -54,7 +51,7 @@ while read line; do export $line ; done < <($USHwamipe/create_config.py \
 # Source machine runtime environment
 ##########################################
 . $HOMEwfs/env/${machine}.env fcst
-export err=$? ; err_chk "Error sourcing env/${machine}.env"
+export err=$? ; err_chk
 
 
 ##############################################
@@ -121,10 +118,10 @@ wfr_service=${wfr_service:-"NO"}
 
 if [ $wfr_service = "YES" ]; then
     $SCRwamipe/exwamipe_fcst_service.sh
-    export err=$? ; err_chk "wfr service ex-script failure"
+    export err=$? ; err_chk
 else
     ${FORECASTSH:-$SCRwamipe/exwamipe_fcst_nems.sh}
-    export err=$? ; err_chk "forecast ex-script failure"
+    export err=$? ; err_chk
 fi
 
 ##############################################

@@ -25,23 +25,17 @@ prefix="$CDUMP.t${cyc}z."
 
 # Link dump files from SOURCE_DIR to TARGET_DIR
 cd $SOURCE_DIR
-if [ -s ${prefix}updated.status.tm00.bufr_d ]; then
     if [ $RUN_ENVIR = 'nco' ] ; then
-        for file in `ls ${prefix}*bufr_d ${prefix}*engicegrb ${prefix}*dump_alert_flag* ${prefix}*rtgssthr* \
-                        ${prefix}*seaice.5min* ${prefix}*imssnow96* ${prefix}*NPR.SNW?.SP.S1200.MESH16* `; do
+        for file in `ls ${prefix}*seaice.5min* ${prefix}*snogrb* \
+		        ${prefix}*syndata.tcvitals*`; do
             cp --preserve=mode,ownership $SOURCE_DIR/$file $TARGET_DIR/w${file:1}
         done
     else
-        for file in `ls ${prefix}*bufr_d ${prefix}*engicegrb ${prefix}*dump_alert_flag* ${prefix}*rtgssthr* \
-                        ${prefix}*seaice.5min* ${prefix}*imssnow96* ${prefix}*NPR.SNW?.SP.S1200.MESH16* `; do
+        for file in `ls ${prefix}*seaice.5min* ${prefix}*snogrb* \
+                        ${prefix}*syndata.tcvitals*`; do
             ln -fs $SOURCE_DIR/$file $TARGET_DIR/w${file:1}
         done
     fi
-else
-    echo "***ERROR*** ${prefix}updated.status.tm00.bufr_d NOT FOUND in $SOURCE_DIR"
-    exit 99
-fi
-
 exit 0
 
 

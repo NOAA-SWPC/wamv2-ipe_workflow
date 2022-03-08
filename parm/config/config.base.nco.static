@@ -34,25 +34,25 @@ export SCRwamipe=$HOMEwfs/scripts
 ########################################################################
 
 # GLOBAL static environment parameters
-export NWPROD="${NWROOT:-"/gpfs/dell1/nco/ops/nwprod"}"
-export COMROOT="${COMROOT:-"/gpfs/dell1/nco/ops/com"}"
-export DATAROOT="${DATAROOT:-"/gpfs/dell1/nco/ops/tmpnwprd"}"
-export DMPDIR=$(compath.py gfs/prod)
+export NWPROD="${NWROOT:-"/lfs/h1/ops/para/packages"}"
+export COMROOT="${COMROOT:-"/lfs/h1/ops/prod/com"}"
+export DATAROOT="${DATAROOT:-"/lfs/f1/ops/prod/tmp"}"
+export DMPDIR=$(compath.py gfs/$gfs_ver)
 export RTMFIX=$CRTM_FIX
-export DCOM=${DCOM:-"/gpfs/dell1/nco/ops/dcom/prod"}
+export DCOM=${DCOM:-"/lfs/h1/ops/prod/dcom"}
 
 # USER specific paths
-export HOMEDIR="/gpfs/dell2/swpc/noscrub/$USER"
-export STMP="/gpfs/dell2/stmp/$USER"
-export PTMP="/gpfs/dell2/ptmp/$USER"
-export NOSCRUB="/gpfs/dell2/swpc/noscrub/$USER"
+export HOMEDIR="/lfs/h1/swpc/wam/noscrub/$USER"
+export STMP="/lfs/h1/swpc/stmp/$USER"
+export PTMP="/lfs/h1/swpc/ptmp/$USER"
+export NOSCRUB="/lfs/h1/swpc/wam/noscrub/$USER"
 
 # Base directories for various builds
-export BASE_GIT="/gpfs/dell2/emc/modeling/noscrub/emc.glopara/git"
-export BASE_SVN="/gpfs/dell2/emc/modeling/noscrub/emc.glopara/git"
+#export BASE_GIT="/gpfs/dell2/emc/modeling/noscrub/emc.glopara/git"
+#export BASE_SVN="/gpfs/dell2/emc/modeling/noscrub/emc.glopara/git"
 
 # WAM-IPE paths
-export PARAMETER_PATH="/gpfs/dell2/swpc/noscrub/Adam.Kubaryk/WAM-IPE_INPUT_PARAMETERS"
+export PARAMETER_PATH="/lfs/h1/swpc/wam/noscrub/Adam.Kubaryk/WAM-IPE_INPUT_PARAMETERS"
 export IPE_IC_DIR="$HOMEwfs/fix/IPE_FIX" # need to change to IPE_FIX
 
 # Toggle to turn on/off WFS downstream processing.
@@ -111,11 +111,11 @@ export EXPDIR="$EXPDIR"
 export ROTDIR_DUMP="YES"                #Note: A value of "NO" does not currently work
 export DUMP_SUFFIX=""
 export ARCDIR="$NOSCRUB/archive/$PSLOT"
-export ICSDIR="/gpfs/dell2/ptmp/$USER/FV3ICS"
+export ICSDIR="/lfs/h1/swpc/ptmp/$USER/FV3ICS"
 export ATARDIR="/NCEPDEV/$HPSS_PROJECT/1year/$USER/$machine/scratch/$PSLOT"
-export COMIN="${COMIN:-"$COMROOT/$NET/$envir/$RUN.$PDY/$cyc"}"
-export COMOUT="${COMOUT:-"$COMROOT/$NET/$envir/$RUN.$PDY/$cyc"}"
-export ROTDIR=${ROTDIR:-$PTMP/$USER/$PSLOT}                # where model I/O files are stored
+export COMIN="${COMIN:-$(compath.py $NET/$wfs_ver)/$RUN.$PDY/$cyc}"
+export COMOUT="${COMOUT:-$(compath.py -o $NET/$wfs_ver)/$RUN.$PDY/$cyc}"
+export ROTDIR=${ROTDIR:-$(compath.py $NET/$wfs_ver)}                # where model I/O files are stored
 export RESTARTDIR=${RESTARTDIR:-$COMOUT/RESTART} # folder containing restart files
 export EXECGLOBAL=${EXECGLOBAL:-$BASE_NEMS/exe}            # NEMS executable directory
 export FIXGLOBAL=${FIXGLOBAL:-$FIXwamipe/GSM/fix_am}       # global fix files

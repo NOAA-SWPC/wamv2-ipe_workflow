@@ -88,6 +88,7 @@ elif [[ -d /lfs/h1 ]] ; then
 	#source /usrx/local/prod/lmod/lmod/init/$__ms_shell
     fi
     target=wcoss2
+    module reset
 
 ##---------------------------------------------------------------------------
 

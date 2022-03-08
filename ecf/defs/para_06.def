@@ -1,9 +1,9 @@
-extern /para/primary/18/gfs/v16.2/gdas/atmos/obsproc/dump/jgdas_atmos_dump_post
-extern /para/primary/18/gfs/v16.2/gfs/atmos/obsproc/dump/jgfs_atmos_dump_post
+#extern /para/primary/06/gfs/v16.2/gdas/atmos/obsproc/dump/jgdas_atmos_dump_post
+#extern /para/primary/06/gfs/v16.2/gfs/atmos/obsproc/dump/jgfs_atmos_dump_post
 
 suite para
   family primary
-    family 18
+    family 06
       family wfs
         defstatus complete
         edit PROJ 'WFS'
@@ -12,22 +12,24 @@ suite para
         family v1.1
           family wdas
             task jwdas_prep_noda
-              trigger /para/primary/18/gfs/v16.2/gdas/atmos/obsproc/dump/jgdas_atmos_dump_post == complete
+              #trigger /para/primary/06/gfs/v16.2/gdas/atmos/obsproc/dump/jgdas_atmos_dump_post == complete
+              time 12:00
             task jwdas_analysis_noda
               trigger jwdas_prep_noda == complete
               event 1 release_fcst
             task jwdas_forecast
-              trigger jwdas_analysis_noda:release_fcst or jwdas_analysis_high == complete
+              trigger jwdas_analysis_noda == complete
           endfamily
 
           family wfs
             task jwfs_prep_noda
-              trigger /para/primary/18/gfs/v16.2/gfs/atmos/obsproc/dump/jgfs_atmos_dump_post == complete
+              #trigger /para/primary/06/gfs/v16.2/gfs/atmos/obsproc/dump/jgfs_atmos_dump_post == complete
+              time 09:00
             task jwfs_analysis_noda
               trigger jwfs_prep_noda eq complete
               event 1 release_fcst
             task jwfs_forecast_high
-              trigger jwfs_analysis:release_fcst or jwfs_analysis == complete
+              trigger jwfs_analysis_noda == complete
           endfamily
         endfamily
 

@@ -16,7 +16,7 @@ if [ $RUN_ENVIR != emc -a $RUN_ENVIR != nco ]; then
     echo 'Syntax: link_gsmwam_ipe.sh ( nco | emc ) ( cray | dell | wcoss2 | hera )'
     exit 1
 fi
-if [ $machine != cray -a -a $machine != dell -a $machine != hera ]; then
+if [ $machine != cray -a -a $machine != dell -a $machine != hera -a $machine != wcoss2 ]; then
     echo 'Syntax: link_gsmwam_ipe.sh ( nco | emc ) ( cray | dell | wcoss2 | hera )'
     exit 1
 fi

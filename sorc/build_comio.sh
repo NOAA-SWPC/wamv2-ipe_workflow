@@ -2,10 +2,10 @@
 set -eux
 
 source ./machine-setup.sh > /dev/null 2>&1
+[[ -z ${comio_ver+x} ]] && source ../versions/build.ver
 cwd=`pwd`
 
 if [ $target = "wcoss2" ] ; then
-  module load envvar/$envvar_ver
   module load PrgEnv-intel/$PrgEnv_intel_ver
   module load craype/$craype_ver
   module load intel/$intel_ver

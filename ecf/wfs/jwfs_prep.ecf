@@ -1,26 +1,21 @@
 #!/bin/bash
-#PBS -N wfs_prep_noda_%CYC%
+#PBS -N wfs_prep_%CYC%
 #PBS -j oe
 #PBS -S /bin/bash
 #PBS -q %QUEUE%
 #PBS -A %PROJ%-%PROJENVIR%
-#PBS -l walltime=00:05:00
-#PBS -l select=1:ncpus=1:mem=1GB
+#PBS -l walltime=00:10:00
+#PBS -l place=shared,select=1:ncpus=3:mem=18GB
 #PBS -l debug=true
 
+model=wfs
 %include <head.h>
 %include <envir-p1.h>
-
-export NODES=1
-
-export HOMEwfs=%PACKAGEHOME%
-. $HOMEwfs/versions/run.ver
 
 #############################################################
 ## Load modules
 ##############################################################
 #. $MODULESHOME/init/sh
-module load envvar/$envvar_ver
 module load PrgEnv-intel/$PrgEnv_intel_ver
 module load craype/$craype_ver
 module load intel/$intel_ver
